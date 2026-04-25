@@ -1,0 +1,32 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "yap0KwoxTo_1gbARbhC8l"
+uri = "file://artifacts/portfolio/public/images/hero-bg.png"
+type = "image"
+title = "Chrome torus hero background"
+
+[[generated]]
+id = "OcjrScH2JyTkvn1GX5mcd"
+uri = "file://artifacts/portfolio/public/images/solutions-bg.png"
+type = "image"
+title = "Chrome sculpture solutions background"
+
+[[generated]]
+id = "ybXkp4YBrUUtZYtRThkxK"
+uri = "file://artifacts/portfolio/public/images/shape-1.png"
+type = "image"
+title = "Data Analysis abstract shape"
+
+[[generated]]
+id = "BWWcgUfWjhR4h7E8uyhiq"
+uri = "file://artifacts/portfolio/public/images/shape-2.png"
+type = "image"
+title = "Interactive Dashboards shape"
+
+[[generated]]
+id = "JmUP_HjJlYk9CkDy2FpKK"
+uri = "file://artifacts/portfolio/public/images/shape-3.png"
+type = "image"
+title = "Full-Stack Web Apps shape"
