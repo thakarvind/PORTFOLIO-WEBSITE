@@ -49,9 +49,11 @@ export function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="group bg-white/[0.03] backdrop-blur-2xl rounded-3xl border border-white/10 p-8 relative overflow-hidden hover:-translate-y-1 hover:bg-white/[0.05] hover:border-white/20 transition-all duration-500 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+              className="group bg-white/[0.04] backdrop-blur-[40px] backdrop-saturate-150 rounded-3xl border border-white/15 p-8 relative overflow-hidden hover:-translate-y-1 hover:bg-white/[0.06] hover:border-white/25 transition-all duration-500 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.15)]"
             >
-              <div className="absolute -inset-px rounded-3xl bg-gradient-to-b from-white/10 via-transparent to-transparent pointer-events-none" />
+              {/* Glass specular highlights */}
+              <div className="absolute -top-px inset-x-8 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02] pointer-events-none rounded-3xl" />
               <div className="relative z-10 flex flex-col h-full">
                 <span className="text-sm font-medium text-gray-500 mb-8">{card.num}</span>
                 <div className="w-full aspect-square mb-8 rounded-2xl overflow-hidden bg-white/[0.02] backdrop-blur-xl border border-white/10 relative">

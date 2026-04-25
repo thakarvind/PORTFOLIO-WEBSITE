@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 border-b border-white/5 pb-12 mb-8">
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-semibold tracking-tight mb-2">THAK ARAVIND</h3>
-            <p className="text-gray-400 text-sm">Data Analyst & Full-Stack Developer · India</p>
+            <p className="text-gray-400 text-sm">Data Analyst · Project Management · Gen AI Researcher</p>
           </div>
           
           <div className="flex items-center gap-4">

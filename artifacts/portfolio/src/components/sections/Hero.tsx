@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { DashboardMock } from "../ui/DashboardMock";
 import { useEffect, useState } from "react";
 
 export function Hero() {
@@ -18,41 +17,44 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden" id="about">
-      {/* Background Image & Glow */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center">
-        <motion.div
-          className="relative aspect-square w-[min(70vw,520px)] sm:w-[min(60vw,560px)] md:w-[min(50vw,600px)] lg:w-[min(40vw,640px)] opacity-70"
-          style={{
-            x: (mousePos.x - 0.5) * -20,
-            y: (mousePos.y - 0.5) * -20,
-          }}
-        >
-          {/* Continuously rotating torus */}
-          <motion.div
-            className="absolute inset-0 bg-[url('/images/hero-bg.png')] bg-contain bg-center bg-no-repeat"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_75%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black" />
-      </div>
+    <section
+      className="relative h-[100dvh] w-full flex flex-col items-center justify-end overflow-hidden"
+      id="about"
+    >
+      {/* Full-bleed photo background */}
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          x: (mousePos.x - 0.5) * -16,
+          y: (mousePos.y - 0.5) * -16,
+        }}
+      >
+        <img
+          src="/images/arvind.jpg"
+          alt="Thak Aravind"
+          className="absolute inset-0 w-full h-full object-cover object-center grayscale contrast-110 scale-110"
+        />
+        {/* Cinematic vignettes */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.85)_95%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+      </motion.div>
 
-      <div className="relative z-10 container px-4 mx-auto flex flex-col items-center text-center">
+      {/* Hero content sits at the bottom of the viewport so the face stays visible */}
+      <div className="relative z-10 container px-4 mx-auto flex flex-col items-center text-center pb-20 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-4xl mx-auto"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium tracking-tighter text-white mb-6 leading-[1.05]">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tighter text-white mb-5 leading-[1.05] drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
             Turning data into decisions, and ideas into products.
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            I'm Aravind — a data analyst and developer building dashboards, analytics tools, and end-to-end web experiences that turn raw numbers into clear, beautiful insight.
+          <p className="text-sm sm:text-base md:text-lg text-gray-200 max-w-2xl mx-auto mb-8 leading-relaxed drop-shadow-[0_2px_20px_rgba(0,0,0,0.9)]">
+            I'm Aravind — a data analyst, project manager and Gen AI researcher turning messy numbers into clear, beautiful insight.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#work"
@@ -64,49 +66,16 @@ export function Hero() {
               </div>
             </a>
             <a
-              href="#"
-              className="group flex items-center justify-between gap-4 bg-white/10 text-white px-6 py-3 rounded-full font-medium text-lg border border-white/10 backdrop-blur-md transition-all hover:bg-white/20 w-full sm:w-auto"
+              href="/Thak_Aravind_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-between gap-4 bg-white/10 text-white px-6 py-3 rounded-full font-medium text-lg border border-white/15 backdrop-blur-md transition-all hover:bg-white/20 w-full sm:w-auto"
             >
               Resume
               <div className="bg-white text-black rounded-full p-1 transition-transform group-hover:translate-x-1">
                 <ArrowRight className="w-4 h-4" />
               </div>
             </a>
-          </div>
-        </motion.div>
-
-        {/* Featured Project Floating Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-16 sm:mt-24 w-full max-w-6xl mx-auto relative"
-          id="work"
-        >
-          <div className="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent rounded-[2rem] blur-sm" />
-          <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-8 md:p-12 shadow-2xl overflow-hidden">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-              <div className="flex-1 text-left w-full">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-4 font-semibold">Featured Project</p>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-medium text-white mb-4 tracking-tight">
-                  Uber NCR — End-to-end ride bookings analysis
-                </h3>
-                <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-8">
-                  An interactive analytics dashboard exploring 100k+ ride bookings across the Delhi NCR region — surfacing demand patterns, peak-hour pricing, cancellation drivers, and route economics.
-                </p>
-                <a
-                  href="https://github.com/thakarvind/UBER-NCR-data-analysis"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-white font-medium hover:text-gray-300 transition-colors"
-                >
-                  View on GitHub <ArrowRight className="w-4 h-4" />
-                </a>
-              </div>
-              <div className="flex-1 w-full relative">
-                <DashboardMock />
-              </div>
-            </div>
           </div>
         </motion.div>
       </div>

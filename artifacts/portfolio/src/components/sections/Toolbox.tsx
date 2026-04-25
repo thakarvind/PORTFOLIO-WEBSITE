@@ -46,8 +46,9 @@ export function Toolbox() {
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_70%)]" />
             </div>
 
-            <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-xl rounded-full border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden">
-              <div className="w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center z-20 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+            <div className="absolute inset-0 bg-white/[0.04] backdrop-blur-[40px] backdrop-saturate-150 rounded-full border border-white/15 flex items-center justify-center shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.15)] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02] pointer-events-none" />
+              <div className="w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center z-20 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
                 <Plus className="w-8 h-8" />
               </div>
 
@@ -84,10 +85,12 @@ export function Toolbox() {
                     className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
                   >
                     <div className="flex flex-col items-center gap-1.5">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/[0.06] backdrop-blur-2xl border border-white/15 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all group-hover:scale-110 group-hover:bg-white/[0.12] group-hover:border-white/30">
-                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white/80 transition-colors group-hover:text-white" />
+                      <div className="relative w-12 h-12 sm:w-14 sm:h-14 bg-white/[0.06] backdrop-blur-[40px] backdrop-saturate-150 border border-white/20 rounded-2xl flex items-center justify-center shadow-[0_12px_36px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.25)] transition-all group-hover:scale-110 group-hover:bg-white/[0.12] group-hover:border-white/35 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-white/5 pointer-events-none" />
+                        <div className="absolute -top-px inset-x-2 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+                        <Icon className="relative w-5 h-5 sm:w-6 sm:h-6 text-white/90 transition-colors group-hover:text-white" />
                       </div>
-                      <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">{tool.label}</span>
+                      <span className="text-[10px] uppercase tracking-wider text-gray-300 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">{tool.label}</span>
                     </div>
                   </motion.div>
                 );

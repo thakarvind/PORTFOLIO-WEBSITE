@@ -50,9 +50,16 @@ export function Services() {
               className={`relative rounded-3xl p-8 flex flex-col h-full border overflow-hidden ${
                 service.inverted 
                   ? "bg-white text-black border-transparent shadow-2xl" 
-                  : "bg-white/[0.03] backdrop-blur-2xl border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
+                  : "bg-white/[0.04] backdrop-blur-[40px] backdrop-saturate-150 border-white/15 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.15)]"
               }`}
             >
+              {!service.inverted && (
+                <>
+                  <div className="absolute -top-px inset-x-8 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02] pointer-events-none rounded-3xl" />
+                </>
+              )}
+              <div className="relative z-10 flex flex-col h-full">
               <h3 className="text-2xl font-medium mb-4 tracking-tight">{service.title}</h3>
               <p className={`mb-8 ${service.inverted ? "text-gray-600" : "text-gray-400"}`}>
                 {service.desc}
@@ -82,6 +89,7 @@ export function Services() {
                   <ArrowRight className="w-4 h-4" />
                 </div>
               </a>
+              </div>
             </motion.div>
           ))}
         </div>

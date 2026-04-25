@@ -39,9 +39,10 @@ export function Cta() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 sm:p-12 md:p-16 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden"
+          className="relative bg-white/[0.04] backdrop-blur-[40px] backdrop-saturate-150 border border-white/15 rounded-[2.5rem] p-8 sm:p-12 md:p-16 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8),inset_0_1px_0_0_rgba(255,255,255,0.15)] overflow-hidden"
         >
-          <div className="absolute -inset-px rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute -top-px inset-x-12 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-white/[0.02] pointer-events-none rounded-[2.5rem]" />
           <div className="relative flex flex-col md:flex-row items-start justify-between gap-12 md:gap-16">
             <div className="flex-1">
               <p className="text-[11px] uppercase tracking-[0.3em] text-gray-400 mb-6 font-semibold">Get in touch</p>
@@ -66,7 +67,9 @@ export function Cta() {
                   </div>
                 </a>
                 <a
-                  href="#"
+                  href="/Thak_Aravind_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group flex items-center justify-between gap-4 bg-white/[0.05] text-white px-8 py-4 rounded-full font-medium text-base sm:text-lg border border-white/15 backdrop-blur-xl transition-all hover:bg-white/10 w-full sm:w-auto"
                 >
                   Resume
