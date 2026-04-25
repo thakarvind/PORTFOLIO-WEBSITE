@@ -15,9 +15,9 @@ const services = [
     inverted: true
   },
   {
-    title: "Project Management",
-    desc: "Plan, scope, and ship work end-to-end with calm and clarity.",
-    bullets: ["Roadmaps & milestones", "Sprint planning & standups", "Stakeholder communication", "Risk tracking & delivery"],
+    title: "Prompt Engineering & Gen AI",
+    desc: "Design prompts and Gen AI workflows that produce sharper, more reliable outputs.",
+    bullets: ["ChatGPT & Gemini workflows", "Prompt design & evaluation", "AI-assisted analysis", "Automation & summarization"],
     inverted: false
   }
 ];
@@ -47,10 +47,10 @@ export function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={`rounded-3xl p-8 flex flex-col h-full border ${
+              className={`relative rounded-3xl p-8 flex flex-col h-full border overflow-hidden ${
                 service.inverted 
-                  ? "bg-white text-black border-transparent shadow-xl" 
-                  : "bg-gradient-to-b from-[#181818] to-[#0a0a0a] border-white/5"
+                  ? "bg-white text-black border-transparent shadow-2xl" 
+                  : "bg-white/[0.03] backdrop-blur-2xl border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
               }`}
             >
               <h3 className="text-2xl font-medium mb-4 tracking-tight">{service.title}</h3>

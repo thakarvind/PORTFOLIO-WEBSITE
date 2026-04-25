@@ -84,7 +84,8 @@ export function Projects() {
               A few things I've shipped.
             </p>
 
-            <div className="relative min-h-[250px] bg-[#0a0a0a] border border-white/5 rounded-3xl p-8 md:p-10 flex flex-col justify-between">
+            <div className="relative min-h-[250px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden">
+              <div className="absolute -inset-px rounded-3xl bg-gradient-to-b from-white/10 via-transparent to-transparent pointer-events-none" />
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}

@@ -28,7 +28,12 @@ export function Hero() {
             y: (mousePos.y - 0.5) * -20,
           }}
         >
-          <div className="absolute inset-0 bg-[url('/images/hero-bg.png')] bg-contain bg-center bg-no-repeat" />
+          {/* Continuously rotating torus */}
+          <motion.div
+            className="absolute inset-0 bg-[url('/images/hero-bg.png')] bg-contain bg-center bg-no-repeat"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          />
         </motion.div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_75%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black" />

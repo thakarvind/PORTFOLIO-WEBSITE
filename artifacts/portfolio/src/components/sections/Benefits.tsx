@@ -25,7 +25,7 @@ export function Benefits() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="bg-white text-black rounded-3xl p-10 md:p-16 flex flex-col justify-center min-h-[300px] shadow-xl"
+              className="relative bg-white text-black rounded-3xl p-10 md:p-16 flex flex-col justify-center min-h-[300px] shadow-2xl overflow-hidden"
             >
               <h3 className="text-7xl md:text-8xl font-medium tracking-tighter mb-6">+47%</h3>
               <p className="text-xl md:text-2xl text-gray-600 font-medium">
@@ -38,7 +38,7 @@ export function Benefits() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-gradient-to-b from-[#181818] to-[#0a0a0a] border border-white/5 rounded-3xl p-10 md:p-16 flex flex-col justify-center min-h-[300px]"
+              className="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-10 md:p-16 flex flex-col justify-center min-h-[300px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden"
             >
               <h3 className="text-7xl md:text-8xl font-medium tracking-tighter mb-6">100k+</h3>
               <p className="text-xl md:text-2xl text-gray-400 font-medium">

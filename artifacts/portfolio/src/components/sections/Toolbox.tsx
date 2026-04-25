@@ -1,16 +1,14 @@
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
-import { SiPython, SiPandas, SiReact, SiTypescript, SiNodedotjs, SiPostgresql, SiTailwindcss, SiFigma } from "react-icons/si";
+import { Plus, Database, BarChart3, FileSpreadsheet } from "lucide-react";
+import { SiOpenai, SiJira, SiGooglegemini } from "react-icons/si";
 
 const tools = [
-  { icon: SiPython, label: "Python", color: "hover:text-[#3776AB]" },
-  { icon: SiPandas, label: "Pandas", color: "hover:text-[#150458]" },
-  { icon: SiReact, label: "React", color: "hover:text-[#61DAFB]" },
-  { icon: SiTypescript, label: "TypeScript", color: "hover:text-[#3178C6]" },
-  { icon: SiNodedotjs, label: "Node.js", color: "hover:text-[#339933]" },
-  { icon: SiPostgresql, label: "PostgreSQL", color: "hover:text-[#4169E1]" },
-  { icon: SiTailwindcss, label: "Tailwind", color: "hover:text-[#06B6D4]" },
-  { icon: SiFigma, label: "Figma", color: "hover:text-[#F24E1E]" },
+  { icon: Database, label: "SQL" },
+  { icon: BarChart3, label: "Power BI" },
+  { icon: FileSpreadsheet, label: "Excel" },
+  { icon: SiOpenai, label: "ChatGPT" },
+  { icon: SiJira, label: "Jira" },
+  { icon: SiGooglegemini, label: "Gemini" },
 ];
 
 export function Toolbox() {
@@ -85,8 +83,11 @@ export function Toolbox() {
                     style={{ top: `${top}%`, left: `${left}%` }}
                     className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
                   >
-                    <div className="w-11 h-11 sm:w-12 sm:h-12 bg-white/5 backdrop-blur-xl border border-white/15 rounded-xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all group-hover:scale-110 group-hover:bg-white/10 group-hover:border-white/25">
-                      <Icon className={`w-5 h-5 sm:w-6 sm:h-6 text-gray-300 transition-colors ${tool.color}`} />
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/[0.06] backdrop-blur-2xl border border-white/15 rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all group-hover:scale-110 group-hover:bg-white/[0.12] group-hover:border-white/30">
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white/80 transition-colors group-hover:text-white" />
+                      </div>
+                      <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">{tool.label}</span>
                     </div>
                   </motion.div>
                 );
