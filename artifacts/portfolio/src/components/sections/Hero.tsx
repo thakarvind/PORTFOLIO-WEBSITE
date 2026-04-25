@@ -20,15 +20,17 @@ export function Hero() {
   return (
     <section className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-32 pb-24 overflow-hidden" id="about">
       {/* Background Image & Glow */}
-      <div className="absolute inset-0 z-0">
-        <motion.div 
-          className="absolute inset-0 bg-[url('/images/hero-bg.png')] bg-cover bg-center bg-no-repeat opacity-60"
+      <div className="absolute inset-0 z-0 flex items-center justify-center">
+        <motion.div
+          className="relative aspect-square w-[min(70vw,520px)] sm:w-[min(60vw,560px)] md:w-[min(50vw,600px)] lg:w-[min(40vw,640px)] opacity-70"
           style={{
             x: (mousePos.x - 0.5) * -20,
             y: (mousePos.y - 0.5) * -20,
           }}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_80%)]" />
+        >
+          <div className="absolute inset-0 bg-[url('/images/hero-bg.png')] bg-contain bg-center bg-no-repeat" />
+        </motion.div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_75%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black" />
       </div>
 
@@ -39,11 +41,11 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-4xl mx-auto"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tighter text-white mb-6 leading-[1.1]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium tracking-tighter text-white mb-6 leading-[1.05]">
             Turning data into decisions, and ideas into products.
           </h1>
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            I'm Arvind — a data analyst and developer building dashboards, analytics tools, and end-to-end web experiences that turn raw numbers into clear, beautiful insight.
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            I'm Aravind — a data analyst and developer building dashboards, analytics tools, and end-to-end web experiences that turn raw numbers into clear, beautiful insight.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -73,18 +75,18 @@ export function Hero() {
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-24 w-full max-w-6xl mx-auto relative"
+          className="mt-16 sm:mt-24 w-full max-w-6xl mx-auto relative"
           id="work"
         >
           <div className="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent rounded-[2rem] blur-sm" />
-          <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8 md:p-12 shadow-2xl overflow-hidden">
-            <div className="flex flex-col lg:flex-row gap-12 items-center">
-              <div className="flex-1 text-left">
+          <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-8 md:p-12 shadow-2xl overflow-hidden">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+              <div className="flex-1 text-left w-full">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-4 font-semibold">Featured Project</p>
-                <h3 className="text-3xl md:text-4xl font-medium text-white mb-4 tracking-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-medium text-white mb-4 tracking-tight">
                   Uber NCR — End-to-end ride bookings analysis
                 </h3>
-                <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-8">
                   An interactive analytics dashboard exploring 100k+ ride bookings across the Delhi NCR region — surfacing demand patterns, peak-hour pricing, cancellation drivers, and route economics.
                 </p>
                 <a

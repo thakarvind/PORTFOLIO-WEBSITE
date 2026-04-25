@@ -15,9 +15,9 @@ const services = [
     inverted: true
   },
   {
-    title: "Full-Stack Builds",
-    desc: "Complete web products, from API to UI.",
-    bullets: ["React + TypeScript front-end", "Node / Express APIs", "PostgreSQL + Drizzle", "Deployment & monitoring"],
+    title: "Project Management",
+    desc: "Plan, scope, and ship work end-to-end with calm and clarity.",
+    bullets: ["Roadmaps & milestones", "Sprint planning & standups", "Stakeholder communication", "Risk tracking & delivery"],
     inverted: false
   }
 ];

@@ -40,35 +40,37 @@ export function Toolbox() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="flex-1 w-full max-w-md relative aspect-square"
+            className="flex-1 w-full max-w-md mx-auto relative aspect-square"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#181818] to-[#0a0a0a] rounded-full border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-[url('/images/solutions-bg.png')] bg-cover bg-center opacity-20 mix-blend-screen grayscale" />
-              
+            {/* Blurred background image */}
+            <div className="absolute inset-[-10%] rounded-full overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/solutions-bg.png')] bg-cover bg-center opacity-40 grayscale blur-2xl scale-110" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_70%)]" />
+            </div>
+
+            <div className="absolute inset-0 bg-white/[0.02] backdrop-blur-xl rounded-full border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden">
               <div className="w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center z-20 shadow-[0_0_40px_rgba(255,255,255,0.2)]">
                 <Plus className="w-8 h-8" />
               </div>
 
               {/* Connecting Lines */}
               <div className="absolute inset-0 z-10">
-                <svg className="w-full h-full text-white/5" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  {/* Lines radiating from center (50,50) */}
-                  <line x1="50" y1="50" x2="50" y2="15" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="85" y2="50" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="50" y2="85" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="15" y2="50" stroke="currentColor" strokeWidth="0.5" />
-                  
-                  <line x1="50" y1="50" x2="75" y2="25" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="75" y2="75" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="25" y2="75" stroke="currentColor" strokeWidth="0.5" />
-                  <line x1="50" y1="50" x2="25" y2="25" stroke="currentColor" strokeWidth="0.5" />
+                <svg className="w-full h-full text-white/10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <line x1="50" y1="50" x2="50" y2="15" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="85" y2="50" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="50" y2="85" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="15" y2="50" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="75" y2="25" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="75" y2="75" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="25" y2="75" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
+                  <line x1="50" y1="50" x2="25" y2="25" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1,1" />
                 </svg>
               </div>
 
-              {/* Floating Icons */}
+              {/* Floating Glass Icons */}
               {tools.map((tool, i) => {
                 const angle = (i * Math.PI * 2) / tools.length - Math.PI / 2;
-                const radius = 38; // percentage
+                const radius = 38;
                 const top = 50 + radius * Math.sin(angle);
                 const left = 50 + radius * Math.cos(angle);
                 const Icon = tool.icon;
@@ -83,8 +85,8 @@ export function Toolbox() {
                     style={{ top: `${top}%`, left: `${left}%` }}
                     className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
                   >
-                    <div className="w-12 h-12 bg-[#0f0f0f] border border-white/10 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-                      <Icon className={`w-6 h-6 text-gray-400 transition-colors ${tool.color}`} />
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 bg-white/5 backdrop-blur-xl border border-white/15 rounded-xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all group-hover:scale-110 group-hover:bg-white/10 group-hover:border-white/25">
+                      <Icon className={`w-5 h-5 sm:w-6 sm:h-6 text-gray-300 transition-colors ${tool.color}`} />
                     </div>
                   </motion.div>
                 );

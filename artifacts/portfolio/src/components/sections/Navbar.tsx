@@ -35,8 +35,8 @@ export function Navbar() {
             : "bg-transparent border-transparent"
         }`}
       >
-        <a href="#" className="text-white font-medium text-lg tracking-tight px-2">
-          Arvind Thakkar
+        <a href="#" className="text-white font-medium text-base sm:text-lg tracking-tight px-2 whitespace-nowrap">
+          THAK ARAVIND
         </a>
 
         {/* Desktop Nav */}

@@ -39,15 +39,34 @@ export function Projects() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="flex-1 w-full lg:w-1/2 aspect-square rounded-[2rem] overflow-hidden relative"
+            className="flex-1 w-full lg:w-1/2 aspect-square rounded-[2rem] overflow-hidden relative border border-white/10 shadow-2xl"
           >
-            <img 
-              src="/images/solutions-bg.png" 
-              alt="Abstract background" 
+            <motion.img
+              key={active}
+              src="/images/solutions-bg.png"
+              alt="Abstract background"
+              initial={{ scale: 1.05, opacity: 0.8 }}
+              animate={{ scale: 1.15, opacity: 1 }}
+              transition={{ duration: 8, ease: "easeOut" }}
               className="w-full h-full object-cover filter grayscale contrast-125"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-            <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,black_95%)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mb-2 font-semibold">Now showing</p>
+              <AnimatePresence mode="wait">
+                <motion.h4
+                  key={active}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-white text-xl sm:text-2xl font-medium tracking-tight"
+                >
+                  {projects[active].title}
+                </motion.h4>
+              </AnimatePresence>
+            </div>
           </motion.div>
 
           <motion.div 
