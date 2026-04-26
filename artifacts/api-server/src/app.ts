@@ -4,20 +4,30 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
+type PinoRequestLike = {
+  id?: string | number;
+  method?: string;
+  url?: string;
+};
+
+type PinoResponseLike = {
+  statusCode: number;
+};
+
 const app: Express = express();
 
 app.use(
-  pinoHttp({
+  (pinoHttp as unknown as typeof import("pino-http").default)({
     logger,
     serializers: {
-      req(req) {
+      req(req: PinoRequestLike) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      res(res: PinoResponseLike) {
         return {
           statusCode: res.statusCode,
         };
