@@ -1,0 +1,7 @@
+[build]
+  command = "PORT=4173 BASE_PATH=/ pnpm --filter @workspace/portfolio run build"
+  publish = "artifacts/portfolio/dist/public"
+
+[build.environment]
+  BASE_PATH = "/"
+  PORT = "4173"
