@@ -9,9 +9,9 @@ const services = [
     inverted: false
   },
   {
-    title: "Dashboards & Apps",
-    desc: "Production-ready interactive dashboards and internal tools.",
-    bullets: ["React + Recharts dashboards", "Streamlit prototypes", "Real-time data refresh", "User auth & access control"],
+    title: "Project Management",
+    desc: "Planning, coordination, and delivery tracking for work that needs structure.",
+    bullets: ["Roadmaps and milestones", "Task prioritization", "Timeline tracking", "Team coordination"],
     inverted: true
   },
   {
@@ -74,21 +74,6 @@ export function Services() {
                 ))}
               </ul>
 
-              <a
-                href="#contact"
-                className={`group flex items-center justify-between gap-4 px-6 py-3 rounded-full font-medium text-sm transition-transform hover:scale-105 mt-auto w-full ${
-                  service.inverted
-                    ? "bg-black text-white"
-                    : "bg-white text-black"
-                }`}
-              >
-                Get in Touch
-                <div className={`rounded-full p-1 transition-transform group-hover:translate-x-1 ${
-                  service.inverted ? "bg-white text-black" : "bg-black text-white"
-                }`}>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </a>
               </div>
             </motion.div>
           ))}

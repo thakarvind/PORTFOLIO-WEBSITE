@@ -1,99 +1,92 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Menu } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
+    let lastY = window.scrollY;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const currentY = window.scrollY;
+      setScrolled(currentY > 50);
+
+      // Toolbar animation behavior: hide while scrolling down, show while scrolling up.
+      if (currentY <= 24) {
+        setHidden(false);
+      } else if (currentY > lastY && currentY > 120) {
+        setHidden(true);
+      } else if (currentY < lastY) {
+        setHidden(false);
+      }
+
+      lastY = currentY;
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
-    { name: "Work", href: "#work" },
     { name: "About", href: "#about" },
+    { name: "Experience", href: "#experience" },
+    { name: "Projects", href: "#projects" },
     { name: "Skills", href: "#skills" },
+    { name: "Certifications", href: "#certifications" },
     { name: "Contact", href: "#contact" },
   ];
 
   return (
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4"
+      animate={{ y: hidden ? -120 : 0, opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-4 left-0 right-0 z-50 flex justify-center px-3 sm:px-4"
     >
       <div
-        className={`flex items-center justify-between w-full max-w-5xl rounded-full border px-4 py-2 transition-all duration-300 ${
+        className={`flex w-full max-w-6xl items-center justify-between gap-3 rounded-2xl border px-3 py-2 transition-all duration-300 sm:px-4 ${
           scrolled
-            ? "bg-black/80 backdrop-blur-xl border-white/10 shadow-2xl"
-            : "bg-transparent border-transparent"
+            ? "bg-black/82 backdrop-blur-xl border-white/10 shadow-[0_16px_50px_-24px_rgba(0,0,0,0.9)]"
+            : "bg-black/52 backdrop-blur-lg border-white/10 shadow-[0_10px_35px_-28px_rgba(0,0,0,0.7)]"
         }`}
       >
-        <a href="#" className="text-white font-medium text-base sm:text-lg tracking-tight px-2 whitespace-nowrap">
+        <a href="#" className="text-white font-medium text-sm sm:text-base lg:text-lg tracking-tight px-1 sm:px-2 whitespace-nowrap shrink-0">
           THAK ARAVIND
         </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full px-2 py-1 border border-white/10 backdrop-blur-md">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-gray-400 hover:text-white px-4 py-2 rounded-full transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
+        <div className="flex min-w-0 flex-1 items-center justify-center overflow-x-auto no-scrollbar">
+          <div className="flex min-w-max items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-1.5 py-1 backdrop-blur-md sm:px-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-gray-300 transition-colors hover:text-white sm:px-3 sm:text-sm"
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
         </div>
 
-        {/* Let's Talk Button */}
-        <div className="hidden md:block">
+        <div className="flex shrink-0 items-center gap-2">
           <a
             href="#contact"
-            className="group flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105"
+            className="hidden items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-gray-200 transition-colors hover:text-white sm:inline-flex"
           >
-            Let's Talk
-            <div className="bg-black text-white rounded-full p-1 transition-transform group-hover:translate-x-1">
-              <ArrowRight className="w-3 h-3" />
+            Contact
+          </a>
+          <a
+            href="#contact"
+            className="group inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-medium text-black transition-transform hover:scale-105 sm:px-4 sm:py-2.5 sm:text-sm"
+          >
+            <span className="hidden sm:inline">Contact</span>
+            <span className="sm:hidden">Hire</span>
+            <div className="rounded-full bg-black p-1 text-white transition-transform group-hover:translate-x-1">
+              <ArrowRight className="h-3 w-3" />
             </div>
           </a>
-        </div>
-
-        {/* Mobile Nav */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="text-white p-2">
-                <Menu className="w-6 h-6" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="bg-black/95 backdrop-blur-xl border-white/10 pt-20">
-              <div className="flex flex-col gap-6">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="text-2xl font-medium text-gray-400 hover:text-white transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-                <a
-                  href="#contact"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-medium text-lg mt-8"
-                >
-                  Let's Talk
-                  <ArrowRight className="w-5 h-5" />
-                </a>
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </motion.nav>
