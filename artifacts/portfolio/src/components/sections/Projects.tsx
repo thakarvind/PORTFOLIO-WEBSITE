@@ -47,6 +47,9 @@ export function Projects() {
   const prev = () => setActive((current) => (current - 1 + projects.length) % projects.length);
 
   const ActiveIcon = projects[active].icon;
+  const githubOverride = projects[active].title.includes("Wireshark")
+    ? "https://github.com/thakarvind/wireshark-network-traffic-analysis"
+    : projects[active].link;
 
   return (
     <section className="relative z-10 bg-black py-24 text-white lg:py-28" id="projects">
@@ -146,7 +149,7 @@ export function Projects() {
                     {projects[active].desc}
                   </p>
                   <a
-                    href={projects[active].link}
+                    href={githubOverride}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-fit items-center gap-2 font-medium text-white transition-colors hover:text-gray-300"
