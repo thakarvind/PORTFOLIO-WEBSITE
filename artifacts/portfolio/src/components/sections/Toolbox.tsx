@@ -38,11 +38,11 @@ export function Toolbox() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="flex-1 w-full max-w-md mx-auto relative aspect-square"
+            className="flex-1 w-full max-w-md mx-auto relative aspect-square overflow-hidden"
           >
             {/* Blurred background image */}
-            <div className="absolute inset-[-10%] rounded-full overflow-hidden">
-              <div className="absolute inset-0 bg-[url('/images/solutions-bg.png')] bg-cover bg-center opacity-40 grayscale blur-2xl scale-110" />
+            <div className="absolute inset-0 rounded-full overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/solutions-bg.png')] bg-cover bg-center opacity-40 grayscale blur-2xl" />
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_70%)]" />
             </div>
 

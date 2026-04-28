@@ -18,7 +18,7 @@ export function Hero() {
 
   return (
     <section
-      className="relative h-[100dvh] w-full flex flex-col items-center justify-end overflow-hidden"
+      className="relative h-[100dvh] w-full flex flex-col items-center justify-end overflow-hidden scroll-mt-28"
       id="about"
     >
       <motion.div

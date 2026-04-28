@@ -18,14 +18,14 @@ export function Cta() {
   const cardOpacity = useTransform(scrollYProgress, [0, 0.2, 1], [0.1, 1, 1]);
 
   return (
-    <section ref={ref} className="relative py-32 md:py-56 overflow-hidden bg-black border-y border-white/5" id="contact">
+    <section ref={ref} className="relative py-32 md:py-56 overflow-hidden bg-black border-y border-white/5 overflow-x-clip" id="contact">
       {/* Last-page torus animation */}
       <motion.div
         style={{ scale: torusScale, y: torusY, opacity: torusOpacity }}
         className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none"
       >
         <motion.div
-          className="relative w-[min(90vw,720px)] aspect-square"
+          className="relative w-[min(78vw,620px)] aspect-square sm:w-[min(90vw,720px)]"
           animate={{ rotate: 360 }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         >
