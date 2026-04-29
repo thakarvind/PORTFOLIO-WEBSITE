@@ -45,25 +45,35 @@ export function Navbar() {
       className="fixed top-3 left-0 right-0 z-50 flex justify-center px-3 sm:top-4 sm:px-4"
     >
       <div
-        className={`flex w-full max-w-5xl flex-col gap-2 rounded-2xl border px-2 py-2 transition-all duration-300 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-2 ${
+        className={`flex w-full max-w-5xl flex-col gap-1.5 rounded-2xl border px-1.5 py-1.5 transition-all duration-300 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-2 ${
           scrolled
             ? "bg-black/82 backdrop-blur-xl border-white/10 shadow-[0_16px_50px_-24px_rgba(0,0,0,0.9)]"
             : "bg-black/52 backdrop-blur-lg border-white/10 shadow-[0_10px_35px_-28px_rgba(0,0,0,0.7)]"
         }`}
       >
         <div className="flex items-center justify-between gap-2 sm:shrink-0">
-          <a href="#" className="text-white font-medium text-[11px] sm:text-base lg:text-lg tracking-tight px-1 sm:px-2 whitespace-nowrap shrink-0">
+          <a href="#" className="text-white font-medium text-[10px] sm:text-base lg:text-lg tracking-tight px-1 sm:px-2 whitespace-nowrap shrink-0">
             THAK ARAVIND
+          </a>
+
+          <a
+            href="#contact"
+            className="group inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-[9px] font-medium text-black transition-transform hover:scale-105 sm:hidden"
+          >
+            Contact
+            <div className="rounded-full bg-black p-0.5 text-white transition-transform group-hover:translate-x-0.5">
+              <ArrowRight className="h-2.5 w-2.5" />
+            </div>
           </a>
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-center overflow-x-auto no-scrollbar sm:overflow-visible">
-          <div className="flex min-w-max flex-wrap items-center justify-center gap-x-1 gap-y-1 rounded-xl border border-white/10 bg-white/5 px-1.5 py-1 backdrop-blur-md sm:min-w-0 sm:flex-nowrap sm:gap-1 sm:px-2">
+          <div className="flex min-w-max flex-wrap items-center justify-center gap-x-0.5 gap-y-0.5 rounded-xl border border-white/10 bg-white/5 px-1 py-0.5 backdrop-blur-md sm:min-w-0 sm:flex-nowrap sm:gap-1 sm:px-2">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="whitespace-nowrap rounded-lg px-2 py-1.5 text-[10px] font-medium text-gray-300 transition-colors hover:text-white sm:px-3 sm:text-sm"
+                className="whitespace-nowrap rounded-lg px-1.5 py-1 text-[9px] font-medium text-gray-300 transition-colors hover:text-white sm:px-3 sm:text-sm"
               >
                 {link.name}
               </a>
