@@ -68,7 +68,7 @@ export function Navbar() {
         </div>
 
         <div className="flex min-w-0 flex-1 items-center justify-center overflow-x-auto no-scrollbar sm:overflow-visible">
-          <div className="flex min-w-max flex-wrap items-center justify-center gap-x-0.5 gap-y-0.5 rounded-xl border border-white/10 bg-white/5 px-1 py-0.5 backdrop-blur-md sm:min-w-0 sm:flex-nowrap sm:gap-1 sm:px-2">
+          <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-0.5 gap-y-0.5 rounded-xl border border-white/10 bg-white/5 px-1 py-0.5 backdrop-blur-md sm:min-w-0 sm:flex-nowrap sm:gap-1 sm:px-2">
             {navLinks.map((link) => (
               <a
                 key={link.name}
