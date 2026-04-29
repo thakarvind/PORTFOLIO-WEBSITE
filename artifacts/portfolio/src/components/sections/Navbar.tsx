@@ -52,7 +52,7 @@ export function Navbar() {
         }`}
       >
         <div className="flex items-center justify-between gap-2 sm:shrink-0">
-          <a href="#" className="text-white font-medium text-[10px] sm:text-base lg:text-lg tracking-tight px-1 sm:px-2 whitespace-nowrap shrink-0">
+          <a href="#" className="text-white font-medium text-[11px] sm:text-base lg:text-lg tracking-tight px-1 sm:px-2 whitespace-nowrap shrink-0">
             THAK ARAVIND
           </a>
 
@@ -73,7 +73,7 @@ export function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="whitespace-nowrap rounded-lg px-1.5 py-1 text-[9px] font-medium text-gray-300 transition-colors hover:text-white sm:px-3 sm:text-sm"
+                className="whitespace-nowrap rounded-lg px-1.5 py-1 text-[10px] font-medium text-gray-300 transition-colors hover:text-white sm:px-3 sm:text-sm"
               >
                 {link.name}
               </a>
