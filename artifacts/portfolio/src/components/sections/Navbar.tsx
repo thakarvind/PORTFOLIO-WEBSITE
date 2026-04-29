@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function Navbar() {
@@ -34,7 +35,6 @@ export function Navbar() {
     { name: "Projects", href: "#projects" },
     { name: "Skills", href: "#skills" },
     { name: "Certifications", href: "#certifications" },
-    { name: "Contact", href: "#contact" },
   ];
 
   return (
@@ -70,6 +70,16 @@ export function Navbar() {
             ))}
           </div>
         </div>
+
+        <a
+          href="#contact"
+          className="hidden shrink-0 items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-black transition-transform hover:scale-105 sm:inline-flex"
+        >
+          Contact
+          <div className="rounded-full bg-black p-1 text-white transition-transform group-hover:translate-x-1">
+            <ArrowRight className="h-3 w-3" />
+          </div>
+        </a>
       </div>
     </motion.nav>
   );
