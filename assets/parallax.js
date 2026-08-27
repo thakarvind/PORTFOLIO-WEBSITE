@@ -1,6 +1,8 @@
 (function () {
   try {
-    if (!matchMedia('(pointer:fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!matchMedia('(pointer:fine)').matches ||
+        matchMedia('(max-width:860px)').matches ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var bg = document.getElementById('heroImg');
     if (!bg) return;

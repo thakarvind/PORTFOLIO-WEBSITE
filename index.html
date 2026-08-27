@@ -46,6 +46,7 @@
       mask-image:linear-gradient(to right, transparent 0%, #000 22%);
       filter:saturate(1.12) contrast(1.05) brightness(.96);
       backface-visibility:hidden;
+      opacity:1 !important;
     }
     @media (max-width:860px){
       .hero-bg{
@@ -53,7 +54,7 @@
         mask-image:linear-gradient(to bottom, #000 58%, transparent 92%);
       }
     }
-    .hero-backdrop{position:absolute !important; inset:0; z-index:1; pointer-events:none; overflow:hidden; background:#000;}
+    .hero-backdrop{display:none !important;}
     .hero-backdrop img{
       width:64%; height:100%; object-fit:cover; object-position:center top;
       filter:blur(24px) brightness(.45) saturate(1.1);
@@ -62,7 +63,7 @@
       transform:none;
     }
     .hero:after{pointer-events:none;}
-    .hero-glow{will-change:opacity; backface-visibility:hidden;}
+    .hero-glow{will-change:opacity; backface-visibility:hidden; filter:none !important; opacity:.22;}
     #sparks{contain:strict; will-change:opacity; backface-visibility:hidden;}
     .grain{left:-2vw;top:-2vh;width:104vw;height:104vh; pointer-events:none; backface-visibility:hidden;}
     /* Gold-link connectors: ensure transparent gap never flashes rectangle */
@@ -91,8 +92,8 @@
     }
     /* BULLETPROOF LOADER FALLBACK: pure CSS auto-hide if site.js completely fails.
        Animation starts on page load; site.js normally calls loader.classList.add('done')
-       at ~200ms which overrides this. If JS is broken, CSS still hides it at 5s. */
-    #loader{animation:loaderAutoHide 0.3s ease 5s forwards}
+       at ~200ms which overrides this. If JS is broken, CSS still hides it at 2s. */
+    #loader{animation:loaderAutoHide 0.3s ease 2s forwards}
     @keyframes loaderAutoHide{
       to{opacity:0;visibility:hidden;pointer-events:none}
     }
@@ -123,15 +124,16 @@
       console.warn('[loader] safety watchdog fired');
     }
   };
-  setTimeout(window.__hideLoader, 4000);
-  /* If site.js is still loading, retry once at 8s in case of slow network */
+  /* Never let a failed or delayed enhancement script block the portfolio. */
+  setTimeout(window.__hideLoader, 1500);
+  /* Make a delayed load visibly recover before the final safety timeout. */
   setTimeout(function(){
     var l=document.getElementById('loader');
     if(l && !l.classList.contains('done')){
       var p=document.getElementById('lPct');
       if(p) p.textContent='LOADING…';
     }
-  }, 2000);
+  }, 800);
   </script>
 
   <div class="vignette"></div>
