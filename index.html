@@ -88,6 +88,13 @@
     @media (prefers-reduced-motion:reduce){
       .grain,#sparks,.hero-glow{display:none !important}
     }
+    /* BULLETPROOF LOADER FALLBACK: pure CSS auto-hide if site.js completely fails.
+       Animation starts on page load; site.js normally calls loader.classList.add('done')
+       at ~200ms which overrides this. If JS is broken, CSS still hides it at 5s. */
+    #loader{animation:loaderAutoHide 0.3s ease 5s forwards}
+    @keyframes loaderAutoHide{
+      to{opacity:0;visibility:hidden;pointer-events:none}
+    }
   </style>
 </head>
 <body data-section="0">
