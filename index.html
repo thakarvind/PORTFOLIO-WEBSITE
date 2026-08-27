@@ -15,7 +15,7 @@
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
   <script defer src="assets/site.js?v=16"></script>
   <script defer src="assets/parallax.js?v=6"></script>
-  <link rel="preload" as="image" href="hero.png?v=1"/>
+  <link rel="preload" as="image" href="hero.webp?v=1"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=45">
   <style>
     /* Experience logos — LinkedIn-style 48px rounded squares */
@@ -103,35 +103,16 @@
     #sparks{contain:strict; will-change:opacity; backface-visibility:hidden;}
     .grain{display:none !important;}
     .hero-reference-cards{
-      position:absolute;
-      right:3.5%;
-      bottom:0;
-      z-index:5;
-      display:grid;
-      grid-template-columns:repeat(2,minmax(180px,1fr));
-      width:min(48%,560px);
-      background:rgba(10,11,18,.78);
+      position:absolute;right:3.5%;bottom:0;z-index:5;
+      display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));
+      width:min(48%,560px);background:rgba(10,11,18,.78);
       border:1px solid rgba(255,255,255,.04);
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     }
-    .hero-reference-cards>div{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      padding:20px 26px 22px;
-    }
+    .hero-reference-cards>div{display:flex;flex-direction:column;gap:8px;padding:20px 26px 22px;}
     .hero-reference-cards>div+div{border-left:1px solid rgba(255,255,255,.08);}
-    .hero-reference-cards strong{
-      color:#f2f0ec;
-      font:600 11px/1 var(--mono);
-      letter-spacing:.04em;
-      text-transform:uppercase;
-    }
-    .hero-reference-cards span{
-      color:#aaa7a2;
-      font:400 12px/1.45 var(--disp);
-    }
+    .hero-reference-cards strong{color:#f2f0ec;font:600 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;}
+    .hero-reference-cards span{color:#aaa7a2;font:400 12px/1.45 var(--disp);}
     @media (max-width:860px){
       .hero-reference-cards{right:4%;width:92%;}
       .hero-reference-cards>div{padding:14px 16px 16px;}
@@ -211,7 +192,7 @@
   <div class="cursor-ring"></div>
 
   <div class="site-frame">
-  <div class="hero-backdrop" aria-hidden="true"><img src="hero.png?v=1" alt=""/></div>
+  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt=""/></div>
   <div class="grain" id="grain" aria-hidden="true"></div>
   <script>
   /* film-grain: pre-baked SOFT fractal-style tile - mid-centered values + smoothing to match
@@ -240,7 +221,7 @@
   </nav>
 
   <header class="hero" id="top">
-    <img src="hero.png?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
+    <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
 
