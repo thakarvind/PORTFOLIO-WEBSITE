@@ -66,10 +66,18 @@
         mask-image:linear-gradient(to right, transparent 0%, #000 22%);
       }
     }
-    .hero-backdrop{display:none !important;}
+    .hero-backdrop{
+      position:absolute !important;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      overflow:hidden;
+      background:#000;
+      opacity:.42;
+    }
     .hero-backdrop img{
       width:64%; height:100%; object-fit:cover; object-position:center top;
-      filter:blur(24px) brightness(.45) saturate(1.1);
+      filter:blur(24px) brightness(.7) saturate(1.1);
       -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 28%);
       mask-image:linear-gradient(to right, transparent 0%, #000 28%);
       transform:none;
@@ -647,14 +655,14 @@
     (function(){
       var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
       if(!hero||!sparksCanvas) return;
-      window.__sparksPaused=true;
+      window.__sparksPaused=false;
       var io=new IntersectionObserver(function(entries){
         entries.forEach(function(en){
           if(en.isIntersecting){
             window.__sparksPaused=false;
             if(window.__sparksKick) window.__sparksKick();
           }else{
-            window.__sparksPaused=true;
+            window.__sparksPaused=false;
           }
         });
       },{rootMargin:'200px'});
