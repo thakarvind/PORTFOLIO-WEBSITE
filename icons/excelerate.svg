@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="exGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF4B2E"/>
+      <stop offset="100%" stop-color="#E91E63"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="13" fill="url(#exGrad)"/>
+  <!-- inner white circle like in screenshot -->
+  <circle cx="32" cy="32" r="22" fill="white"/>
+  <!-- subtle inner shadow -->
+  <circle cx="32" cy="32" r="22" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+  <!-- Excelerate wordmark -->
+  <g text-anchor="middle" font-family="Arial, Helvetica, sans-serif">
+    <text x="32" y="30.5" font-size="7.2" font-weight="700" fill="#FF2D2D" letter-spacing="-0.3" font-style="italic">Excelerate</text>
+    <text x="32" y="37.5" font-size="3.1" font-weight="600" fill="#8A8A8A" letter-spacing="0.6">EXCELERATE</text>
+  </g>
+  <!-- small accent -->
+  <circle cx="32" cy="41.5" r="1.2" fill="#FF3B30"/>
+</svg>

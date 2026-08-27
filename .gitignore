@@ -1,0 +1,19 @@
+# Backup files
+*.bak
+*.tmp
+
+# Large media files (not needed in repo)
+*.mp4
+*.mov
+hero-original-1081.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/

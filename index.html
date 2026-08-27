@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="data:,"/>
+  <title>THAK ARAVIND — Portfolio | Data Analyst · Project Manager · Gen AI Researcher</title>
+  <meta name="description" content="THAK ARAVIND — I turn messy numbers into clear, beautiful insight."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Julius+Sans+One&display=swap" rel="stylesheet">
+    <!-- 120Hz buttery smooth scroll: Lenis is an ES module that exports the class.
+       expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
+  <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
+  <script defer src="assets/site.js?v=30"></script>
+  <script defer src="assets/parallax.js?v=5"></script>
+  <link rel="preload" as="image" href="hero.webp?v=1"/>
+  <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=45">
+  <style>
+    /* Experience logos — LinkedIn-style 48px rounded squares */
+    .xp-head{display:flex;align-items:center;gap:14px}
+    .xp-logo{width:52px;height:52px;flex:0 0 52px;border-radius:12px;object-fit:cover;background:#fff;border:1px solid rgba(255,255,255,.09);box-shadow:0 6px 20px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.6);display:block;transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease)}
+    .xp-row:hover .xp-logo{transform:translateY(-2px) scale(1.02);border-color:rgba(255,122,24,.28);box-shadow:0 10px 28px rgba(0,0,0,.45),0 0 0 1px rgba(255,122,24,.12)}
+    /* subtle per-brand tuning */
+    .xp-logo[alt="MEXC"]{background:#EAF4FF}
+    .xp-logo[alt="Excelerate"]{background:#fff}
+    .xp-logo[alt="Microsoft"]{background:#fff}
+    @media (max-width:860px){
+      .xp-head{gap:12px}
+      .xp-logo{width:46px;height:46px;flex:0 0 46px;border-radius:10px}
+    }
+/* Modal logo for experience */
+    #pmLogo{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#fff;border:1px solid rgba(255,255,255,.1)}
+    /* === FIX: background masking / scroll glitch === */
+    /* site-frame: overflow:clip with border-radius causes subpixel seams when GPU layers promote during Lenis scroll.
+       Use overflow:hidden + isolation:isolate + contain:paint to keep rounded clip on its own layer without bleeding. */
+    .site-frame{overflow:hidden !important; isolation:isolate; contain:paint; background:#000;}
+    .hero{isolation:isolate; overflow:hidden;}
+    .hero-bg{
+      will-change:transform;
+      transform:translate3d(var(--px,0px), var(--py,0px), 0);
+      transition:transform .18s cubic-bezier(.22,1,.36,1);
+      /* single fade path — image mask matches hero:after overlay to avoid double-dark band that showed as vertical seam on FUTURE text */
+      -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 22%);
+      mask-image:linear-gradient(to right, transparent 0%, #000 22%);
+      filter:saturate(1.12) contrast(1.05) brightness(.96);
+      backface-visibility:hidden;
+    }
+    @media (max-width:860px){
+      .hero-bg{
+        -webkit-mask-image:linear-gradient(to bottom, #000 58%, transparent 92%);
+        mask-image:linear-gradient(to bottom, #000 58%, transparent 92%);
+      }
+    }
+    .hero-backdrop{position:absolute !important; inset:0; z-index:1; pointer-events:none; overflow:hidden; background:#000;}
+    .hero-backdrop img{
+      width:64%; height:100%; object-fit:cover; object-position:center top;
+      filter:blur(24px) brightness(.45) saturate(1.1);
+      -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 28%);
+      mask-image:linear-gradient(to right, transparent 0%, #000 28%);
+      transform:none;
+    }
+    .hero:after{pointer-events:none;}
+    .hero-glow{will-change:opacity; backface-visibility:hidden;}
+    #sparks{contain:strict; will-change:opacity; backface-visibility:hidden;}
+    .grain{left:-2vw;top:-2vh;width:104vw;height:104vh; pointer-events:none; backface-visibility:hidden;}
+    /* Gold-link connectors: ensure transparent gap never flashes rectangle */
+    .gold-link{isolation:isolate; contain:layout paint; background:transparent !important;}
+    .gold-link.webgl-on{background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; clip-path:none !important;}
+    .gold-link canvas{display:block; backface-visibility:hidden;}
+    /* Frosted panels: keep blur always — the old html.is-scrolling {backdrop-filter:none; background:rgba(...,0.92)} hack
+       switched panels to opaque mid-scroll, causing the visible background-mask flash/tear between sections.
+       NOTE: removed transform:translateZ(0) — it forced every panel onto its own GPU layer, and the
+       backdrop-filter on each layer sampled stale compositor content during Lenis scroll, causing the
+       "background turning colour on every panel" glitch. */
+    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact,.glass-link,.ce-photo-meta,.ref-photo-bar,.elle-dock,.elle-dock-btn{
+      backdrop-filter:blur(7px) saturate(130%);
+      -webkit-backdrop-filter:blur(7px) saturate(130%);
+      isolation:isolate;
+    }
+    /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal */
+    html.is-scrolling .edge-word{will-change:transform}
+    /* FIX: hide grain instantly (no transition) during scroll so its last frame can't
+       bleed through any backdrop-filter panel as the compositor repositions layers. */
+    html.is-scrolling .grain{display:none}
+    html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0; visibility:hidden}
+    html.is-scrolling .gold-link svg{animation-play-state:paused}
+    @media (prefers-reduced-motion:reduce){
+      .grain,#sparks,.hero-glow{display:none !important}
+    }
+  </style>
+</head>
+<body data-section="0">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c3d08"/><stop offset=".25" stop-color="#d4a017"/><stop offset=".5" stop-color="#ffebad"/><stop offset=".75" stop-color="#d4a017"/><stop offset="1" stop-color="#5c3d08"/></linearGradient></defs></svg>
+
+  <div id="wipe" aria-hidden="true"><div class="wipe-circle" id="wipeCircle"></div></div>
+
+  <div id="loader">
+    <div class="l-name">THAK ARAVIND — PORTFOLIO</div>
+    <div class="l-bar"><i id="lbar"></i></div>
+    <div class="l-pct" id="lPct">00%</div>
+  </div>
+  <script>
+  /* SAFETY: if site.js errors out before the loader interval starts, the page would
+     be stuck on the loader forever. This watchdog force-hides the loader after 4s
+     and also exposes a manual hide function for recovery. */
+  window.__hideLoader = function(){
+    var l=document.getElementById('loader');
+    if(l && !l.classList.contains('done')){
+      l.classList.add('done');
+      document.body.classList.add('ready');
+      var p=document.getElementById('lPct'); if(p) p.textContent='100%';
+      var b=document.getElementById('lbar'); if(b) b.style.width='100%';
+      console.warn('[loader] safety watchdog fired');
+    }
+  };
+  setTimeout(window.__hideLoader, 4000);
+  /* If site.js is still loading, retry once at 8s in case of slow network */
+  setTimeout(function(){
+    var l=document.getElementById('loader');
+    if(l && !l.classList.contains('done')){
+      var p=document.getElementById('lPct');
+      if(p) p.textContent='LOADING…';
+    }
+  }, 2000);
+  </script>
+
+  <div class="vignette"></div>
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+
+  <div class="site-frame">
+  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt=""/></div>
+  <div class="grain" id="grain" aria-hidden="true"></div>
+  <script>
+  /* film-grain: pre-baked SOFT fractal-style tile - mid-centered values + smoothing to match
+     the original feTurbulence look. No harsh speckle over the hero, no live filter cost. */
+  (function(){
+    try{
+      function raw(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d'),dd=x.createImageData(w,h),p=dd.data,i,v;for(i=0;i<p.length;i+=4){v=112+Math.random()*36;p[i]=v;p[i+1]=v;p[i+2]=v;p[i+3]=255}x.putImageData(dd,0,0);return c}
+      var fine=raw(80,80),med=raw(28,28),c=document.createElement('canvas');c.width=c.height=160;
+      var x=c.getContext('2d');x.imageSmoothingEnabled=true;
+      x.drawImage(fine,0,0,160,160);
+      x.globalAlpha=.5;x.drawImage(med,0,0,160,160);x.globalAlpha=1;
+      document.getElementById('grain').style.backgroundImage='url('+c.toDataURL('image/png')+')';
+    }catch(e){}
+  })();
+  </script>
+
+  <nav class="top" id="topnav">
+    <a class="nav-logo" href="#top">THAK<em>·</em>ARAVIND<span class="nav-sub">/ PORTFOLIO</span></a>
+    <div class="nav-links">
+      <a href="#top" class="on magnetic">Home</a>
+      <a href="#about" class="magnetic">About</a>
+      <a href="#skills" class="magnetic">Services</a>
+      <a href="#work" class="magnetic">Works</a>
+      <a href="#contact" class="magnetic">Contact</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
+    <div class="hero-glow"></div>
+    <canvas id="sparks" aria-hidden="true"></canvas>
+
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="sub-title" id="subTitle">My</div>
+        <h1 class="main-title" id="mainTitle" data-chars>FU<span class="accent">T</span>URE</h1>
+        <p class="description" id="heroDesc" data-words>
+          I'm Aravind — a business analyst, certified project manager and Gen AI researcher turning messy numbers into clear, beautiful insight.
+        </p>
+        <a href="#about" class="cta-btn magnetic"><span>Let's go</span></a>
+      </div>
+    </div>
+
+    <div class="footer-cards reveal" data-d="2">
+      <div class="info-card connect-card">
+        <div class="social-row">
+          <a class="s-icon magnetic dual-link" href="https://github.com/thakarvind" data-web-href="https://github.com/thakarvind" data-app-href="github://user?username=thakarvind" target="_blank" rel="noopener" aria-label="GitHub — Web &amp; App">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </a>
+          <a class="s-icon magnetic dual-link" href="https://www.linkedin.com/in/arvind-thak" data-web-href="https://www.linkedin.com/in/arvind-thak" data-app-href="linkedin://in/arvind-thak" target="_blank" rel="noopener" aria-label="LinkedIn — Web &amp; App">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+          </a>
+          <a class="s-icon magnetic" href="Thak_Aravind_Resume.pdf" target="_blank" rel="noopener" aria-label="Resume">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.2h8v1.6H8v-1.6z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  </div>
+
+  <div class="scroll-hint"><i></i>SCROLL</div>
+
+  <section class="blk" id="about">
+    <span class="edge-word">ABOUT</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">01 — About</p>
+          <h2>Messy in, <em>beautiful</em> out.</h2>
+        </div>
+        <div class="side">DATA → DECISIONS<br/>INSIGHT → PRODUCT</div>
+      </div>
+      <div class="reveal">
+        <p class="statement">I take <span class="strike">messy numbers</span> and turn them into clear, beautiful insight, then wrap it in products people actually use.</p>
+      </div>
+      <div class="about-grid">
+        <p class="about-copy reveal" data-d="1">
+          Data analyst, <b>project manager</b> and <b>Gen AI researcher</b> based in India. I've cleaned and modeled <b>100k+ rows</b> of real-world data, shipped dashboards that non-analysts can read, and coordinated delivery with <b>Agile &amp; Lean Six Sigma</b> discipline. Certified by Atlassian, Microsoft and AWS — curious by default.
+        </p>
+        <div class="stats reveal" data-d="2">
+          <div class="stat"><b data-count="47" data-prefix="+" data-suffix="%">+47%</b><span>Faster reporting cycles</span></div>
+          <div class="stat"><b data-count="100" data-suffix="k+">100k+</b><span>Rows analyzed</span></div>
+          <div class="stat"><b>4</b><span>Certifications</span></div>
+          <div class="stat"><b data-count="30" data-prefix="~" data-suffix="%">~30%</b><span>Ad spend cut</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+
+  <section class="blk" id="experience">
+    <span class="edge-word">EXPERIENCE</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">02 — Experience</p>
+          <h2>Where I've <em>shipped.</em></h2>
+        </div>
+        <div class="side">2024 — 2025<br/>3 ROLES</div>
+      </div>
+      <div class="xp-list">
+            <div class="xp-row reveal" data-modal data-num="01" data-tag="EXPERIENCE" data-stack="WEB3|MARKET RESEARCH|KOL PARTNERSHIPS" data-points="MARKET &amp; ECOSYSTEM RESEARCH FOR PARTNERSHIPS|ONBOARDED 4 KEY OPINION LEADERS|ENGAGEMENT METRICS TRACKED &amp; REPORTED" data-long="Conducted market and ecosystem research to identify strategic partnership opportunities within the Web3 community at MEXC — engaged and onboarded Key Opinion Leaders, analyzed engagement metrics and coordinated with internal teams to monitor collaboration performance.">
+              <i class="tl-dot"></i>
+              <div class="xp-when">Nov 2024 — Jun 2025</div>
+              <div>
+                <div class="xp-head">
+                  <img class="xp-logo" src="icons/mexc.svg" alt="MEXC" loading="lazy"/>
+                  <div>
+                    <h3 class="xp-role">Business Development — Web3 Ecosystem Partnership</h3>
+                    <div class="xp-org">MEXC (KOL)</div>
+                  </div>
+                </div>
+                <div class="xp-pts">
+                  <span>Conducted market and ecosystem research to identify strategic partnership opportunities within the Web3 community.</span>
+                  <span>Engaged and onboarded 4 Key Opinion Leaders to support community growth and partnership initiatives.</span>
+                  <span>Analyzed engagement metrics and coordinated with internal teams to monitor collaboration performance.</span>
+                </div>
+              </div>
+              <div class="xp-idx">01</div>
+            </div>
+            <div class="xp-row reveal" data-d="1" data-modal data-num="02" data-tag="EXPERIENCE" data-stack="DATA ANALYSIS|AD CAMPAIGNS|COST OPTIMIZATION" data-points="REACH · ENGAGEMENT · CTR · CONVERSION ANALYSIS|COST-EFFECTIVENESS PATTERNS ACROSS CAMPAIGNS|~30% AD SPEND CUT — 2 CAMPAIGNS SUNSET" data-long="Data-driven analysis of multiple Superhero U ad campaigns during the Data Analytics Internship at Excelerate — built visual comparisons across campaign performance, identified cost-effectiveness patterns and recommended discontinuing two underperforming campaigns, resulting in ~30% cost reduction.">
+              <i class="tl-dot"></i>
+              <div class="xp-when">Jan 2025 — Feb 2025</div>
+              <div>
+                <div class="xp-head">
+                  <img class="xp-logo" src="icons/excelerate.svg" alt="Excelerate" loading="lazy"/>
+                  <div>
+                    <h3 class="xp-role">Data Analytics Internship</h3>
+                    <div class="xp-org">EXCELERATE</div>
+                  </div>
+                </div>
+                <div class="xp-pts">
+                  <span>Data-driven analysis of multiple Superhero U ad campaigns — reach, engagement, CTR and conversion.</span>
+                  <span>Built visual comparisons across campaign performance and identified cost-effectiveness patterns.</span>
+                  <span>Recommended discontinuing two underperforming campaigns, resulting in ~30% cost reduction.</span>
+                </div>
+              </div>
+              <div class="xp-idx">02</div>
+            </div>
+            <div class="xp-row reveal" data-d="2" data-modal data-num="03" data-tag="EXPERIENCE" data-stack="AZURE|BOT SERVICE|NLP" data-points="NLP CHATBOT — RESPONSE TIME UP 40%|SERVERLESS STATIC WEB APP — LOAD TIME DOWN 50%|AZURE STORAGE RETRIEVAL &amp; COST OPTIMIZATION" data-long="Architected a cloud-based chatbot using Azure Bot Service and NLP during Microsoft's Future Ready Talent internship — developed a serverless static web app on Azure Static Web Apps and implemented Azure Storage Accounts to optimize retrieval speed and reduce costs.">
+              <i class="tl-dot"></i>
+              <div class="xp-when">May 2024 — Jun 2024</div>
+              <div>
+                <div class="xp-head">
+                  <img class="xp-logo" src="icons/microsoft.svg" alt="Microsoft" loading="lazy"/>
+                  <div>
+                    <h3 class="xp-role">Internship — Future Ready Talent</h3>
+                    <div class="xp-org">MICROSOFT</div>
+                  </div>
+                </div>
+                <div class="xp-pts">
+                  <span>Architected a cloud-based chatbot using Azure Bot Service and NLP, improving response time by 40%.</span>
+                  <span>Developed a serverless static web app on Azure Static Web Apps, reducing load time by 50%.</span>
+                  <span>Implemented Azure Storage Accounts to optimize retrieval speed and reduce costs.</span>
+                </div>
+              </div>
+              <div class="xp-idx">03</div>
+            </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+
+  <section class="blk" id="certifications">
+    <span class="edge-word">CERTIFIED</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">03 — Certifications</p>
+          <h2>Signed &amp; <em>verified.</em></h2>
+        </div>
+        <div class="side">ATLASSIAN · MICROSOFT<br/>CSSC · AWS</div>
+      </div>
+      <div class="certs">
+            <div class="cert reveal" data-modal data-num="01" data-tag="CERTIFICATION" data-stack="AGILE|PROJECT MANAGEMENT|LINKEDIN LEARNING" data-points="AGILE FRAMEWORKS &amp; SCRUM|SPRINT PLANNING &amp; DELIVERY|TEAM CEREMONIES &amp; TRACKING" data-long="Atlassian Agile Project Management Professional Certificate — LinkedIn Learning, 2025. Covers agile frameworks, scrum ceremonies, sprint planning, prioritization and delivery tracking for modern product teams." data-href="https://www.linkedin.com/learning/certificates/ac6f2e5edec8e1aa36c502b578cf84dba5995ed6829aefe714f31300be377466/">
+              <span>2025</span>
+              <b>Atlassian Agile Project Management Professional Certificate — LinkedIn Learning</b>
+              <a class="dual-link" data-web-href="https://www.linkedin.com/learning/certificates/ac6f2e5edec8e1aa36c502b578cf84dba5995ed6829aefe714f31300be377466/" data-app-href="linkedin://www.linkedin.com/learning/certificates/ac6f2e5edec8e1aa36c502b578cf84dba5995ed6829aefe714f31300be377466/" href="https://www.linkedin.com/learning/certificates/ac6f2e5edec8e1aa36c502b578cf84dba5995ed6829aefe714f31300be377466/" target="_blank" rel="noopener">VERIFY ↗</a>
+            </div>
+            <div class="cert reveal" data-d="1" data-modal data-num="02" data-tag="CERTIFICATION" data-stack="BUSINESS ANALYSIS|MICROSOFT|LINKEDIN" data-points="REQUIREMENTS GATHERING|STAKEHOLDER COMMUNICATION|DATA-INFORMED DECISIONS" data-long="Career Essentials in Business Analysis — Microsoft × LinkedIn, 2025. Business analysis fundamentals: requirements gathering, stakeholder communication, process mapping and data-informed decision making." data-href="https://www.linkedin.com/learning/certificates/27b0cbce7ec2b043d408f9ed023c40fdfbcca5004ac3050313facfa78f74fc7d/">
+              <span>2025</span>
+              <b>Career Essentials in Business Analysis — Microsoft × LinkedIn</b>
+              <a class="dual-link" data-web-href="https://www.linkedin.com/learning/certificates/27b0cbce7ec2b043d408f9ed023c40fdfbcca5004ac3050313facfa78f74fc7d/" data-app-href="linkedin://www.linkedin.com/learning/certificates/27b0cbce7ec2b043d408f9ed023c40fdfbcca5004ac3050313facfa78f74fc7d/" href="https://www.linkedin.com/learning/certificates/27b0cbce7ec2b043d408f9ed023c40fdfbcca5004ac3050313facfa78f74fc7d/" target="_blank" rel="noopener">VERIFY ↗</a>
+            </div>
+            <div class="cert reveal" data-d="2" data-modal data-num="03" data-tag="CERTIFICATION" data-stack="LEAN SIX SIGMA|YELLOW BELT|AI" data-points="PROCESS IMPROVEMENT FUNDAMENTALS|WASTE REDUCTION METHODS|AI-ASSISTED QUALITY" data-long="Lean Six Sigma AI Yellow Belt — Sparen &amp; Gewinn (Council for Six Sigma Certification), 2024. Process improvement fundamentals, DMAIC workflow and AI-assisted quality methods.">
+              <span>2024</span>
+              <b>Lean Six Sigma AI Yellow Belt — Sparen &amp; Gewinn (CSSC)</b>
+              <span class="c-empty"></span>
+            </div>
+            <div class="cert reveal" data-d="3" data-modal data-num="04" data-tag="CERTIFICATION" data-stack="GENERATIVE AI|AWS|FOUNDATIONS" data-points="GEN AI &amp; LLM FOUNDATIONS|RESPONSIBLE AI USAGE|AWS AI SERVICES" data-long="Introduction to Generative AI — AWS, 2024. Foundations of generative AI, large language models, practical use cases and responsible AI usage on AWS." data-href="https://www.aws.training/">
+              <span>2024</span>
+              <b>Introduction to Generative AI — AWS</b>
+              <a href="https://www.aws.training/" target="_blank" rel="noopener">VERIFY ↗</a>
+            </div>
+          </div>
+    </div>
+  </section>
+
+  <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+
+  <section class="blk" id="work">
+    <span class="edge-word">PROJECTS</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">04 — Projects</p>
+          <h2>Proof, not <em>promises.</em></h2>
+        </div>
+        <div class="side">5 CASE STUDIES<br/>LIVE ON GITHUB</div>
+      </div>
+      <div class="mosaic reveal">
+        <a data-web-href="https://github.com/thakarvind/UBER-NCR-data-analysis" data-app-href="github://thakarvind/UBER-NCR-data-analysis" class="dual-link m-box wide" href="https://github.com/thakarvind/UBER-NCR-data-analysis" target="_blank" rel="noopener"
+           data-stack="SQL|POWER BI|EXCEL"
+           data-points="100K+ ROWS CLEANED & MODELED|15+ SQL QUERIES FOR DEMAND PATTERNS|DECISION-READY INTERACTIVE DASHBOARD"
+           data-long="Exploratory analysis of Uber pickups across the NCR region — from raw ride records to a dashboard stakeholders can navigate without hand-holding. Covers peak-hour demand, zone heat patterns and revenue-relevant segments.">
+          <div class="m-top"><span class="m-num">01</span><img class="m-logo" src="icons/uber.svg" alt="Uber"/></div>
+          <h3 class="m-title">Uber Pickup Data Analysis — NCR Region</h3>
+          <p class="m-desc">End-to-end EDA and interactive dashboard for 100k+ NCR ride bookings — cleaning, 15+ queries, decision-ready charts.</p>
+          <span class="m-meta">EDA · Dashboard — View ↗</span>
+        </a>
+        <a data-web-href="https://github.com/thakarvind/spotify-analysis-dashboard-" data-app-href="github://thakarvind/spotify-analysis-dashboard-" class="dual-link m-box wide" href="https://github.com/thakarvind/spotify-analysis-dashboard-" target="_blank" rel="noopener"
+           data-stack="POWER BI|PYTHON"
+           data-points="LISTENING-HISTORY PIPELINE|TOP ARTISTS · MOOD · PEAKS|CUSTOM VISUAL SYSTEM"
+           data-long="A listening-history explorer that turns raw streams into stories — top artists over time, mood swings by season and the exact hours the headphones go on.">
+          <div class="m-top"><span class="m-num">02</span><img class="m-logo" src="icons/spotify.svg" alt="Spotify"/></div>
+          <h3 class="m-title">Spotify Listening Dashboard</h3>
+          <p class="m-desc">Listening-history explorer surfacing top artists, mood swings and listening peaks through custom viz.</p>
+          <span class="m-meta">Viz · Analytics — View ↗</span>
+        </a>
+        <a data-web-href="https://github.com/thakarvind/Sovereign-Patch-Agent" data-app-href="github://thakarvind/Sovereign-Patch-Agent" class="dual-link m-box small" href="https://github.com/thakarvind/Sovereign-Patch-Agent" target="_blank" rel="noopener"
+           data-stack="ADK 2.2|MCP|SECURITY|AGENT SWARM"
+           data-points="MULTI-AGENT ORCHESTRATION — SECURITY GATE + SCANNER + PATCHER|SANDBOX COMPILER TESTS + CVE DB AUTO-UPGRADE|SECURE PR STAGING + HUMAN-IN-THE-LOOP + AUDIT TRAIL"
+           data-long="Sovereign Patch Agent — autonomous multi-agent swarm on Google ADK 2.2 + MCP that scans codebases for vulnerabilities, auto-patches breaking API changes via sandbox compiler tests, and stages secure Pull Requests with audit logs and human-in-the-loop approval.">
+          <div class="m-top"><span class="m-num">03</span><img class="m-logo" src="icons/shield.svg" alt="Sovereign"/></div>
+          <h3 class="m-title">Sovereign Patch Agent</h3>
+          <p class="m-desc">Autonomous swarm for vuln remediation — scans, auto-patches &amp; stages secure PRs via ADK 2.2 + MCP sandbox.</p>
+          <span class="m-meta">Agent Swarm · Security — View ↗</span>
+        </a>
+        <a data-web-href="https://github.com/thakarvind/wireshark-network-traffic-analysis" data-app-href="github://thakarvind/wireshark-network-traffic-analysis" class="dual-link m-box small" href="https://github.com/thakarvind/wireshark-network-traffic-analysis" target="_blank" rel="noopener"
+           data-stack="WIRESHARK|TCP/IP|DNS|TLS"
+           data-points="LIVE CAPTURE ANALYSIS|DNS · TCP/IP · TLS · QUIC|PROTOCOL BEHAVIOR BREAKDOWNS"
+           data-long="Packet-level investigation of everyday network chatter — DNS resolution chains, handshake timings and what QUIC changes under the hood, documented with annotated captures.">
+          <div class="m-top"><span class="m-num">04</span><img class="m-logo" src="icons/shield.svg" alt="Wireshark"/></div>
+          <h3 class="m-title">Network Traffic Analysis — Wireshark</h3>
+          <p class="m-desc">Live capture analysis of DNS, TCP/IP, TLS and QUIC behavior.</p>
+          <span class="m-meta">Security · Networks — View ↗</span>
+        </a>
+        <a data-web-href="https://github.com/thakarvind?tab=repositories" data-app-href="github://thakarvind?tab=repositories" class="dual-link m-box small" href="https://github.com/thakarvind?tab=repositories" target="_blank" rel="noopener"
+           data-stack="EVERYTHING ELSE"
+           data-points="10+ PUBLIC REPOSITORIES|DASHBOARDS · AGENTS · EXPERIMENTS|ALWAYS SOMETHING NEW"
+           data-long="The wider lab — dashboards, prompt-engineering experiments, automation scripts and whatever curiosity cooked up most recently.">
+          <div class="m-top"><span class="m-num">05</span></div>
+          <h3 class="m-title">More on GitHub</h3>
+          <p class="m-desc">10+ public repositories — dashboards, agents and experiments beyond the featured four.</p>
+          <span class="m-meta">All Repositories ↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+    <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+  <section class="blk" id="achievements">
+    <span class="edge-word">ACHIEVED</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">05 — Achieved</p>
+          <h2>Receipts, <em>on record.</em></h2>
+        </div>
+        <div class="side">GOOGLE &#215; KAGGLE<br/>EXCELERATE &#183; STAR PERFORMER</div>
+      </div>
+      <div class="amosaic reveal">
+        <a class="a-box wide dual-link" href="https://www.linkedin.com/in/arvind-thak/details/certifications/" data-web-href="https://www.linkedin.com/in/arvind-thak/details/certifications/" data-app-href="linkedin://in/arvind-thak/details/certifications" target="_blank" rel="noopener">
+          <span class="a-num">01</span>
+          <h3 class="a-title">5-Day AI Agents: Intensive Vibe Coding Course &#8212; Google &#215; Kaggle</h3>
+          <p class="a-desc">Selected into Google &amp; Kaggle&#8217;s flagship agents intensive &#8212; vibe-coding workflows, 10x-agent patterns, memory &amp; tool use, and a deployed capstone agent.</p>
+          <span class="a-meta"><span>HACKATHON &#183; JUN 2026</span><em>VIEW &#8599;</em></span>
+        </a>
+        <a class="a-box wide dual-link" href="https://www.linkedin.com/in/arvind-thak" data-web-href="https://www.linkedin.com/in/arvind-thak" data-app-href="linkedin://in/arvind-thak" target="_blank" rel="noopener">
+          <span class="a-num">02</span>
+          <h3 class="a-title">Excelerate &#8212; Data Analytics Virtual Internship (Star Performer)</h3>
+          <p class="a-desc">Analyzed 100k+ Superhero-U campaign rows, built comparison visuals and flagged two underperforming ad sets &#8212; ~30% spend cut, completed as a star performer.</p>
+          <span class="a-meta"><span>INTERNSHIP &#183; JAN&#8211;FEB 2025</span><em>VIEW &#8599;</em></span>
+        </a>
+      </div>
+    </div>
+  </section>
+<div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+
+  <section class="blk" id="skills">
+    <span class="edge-word">STACK</span>
+    <div class="wrap">
+      <div class="blk-head reveal">
+        <div>
+          <p class="label">06 — Toolbox &amp; Services</p>
+          <h2>The stack I <em>reach for.</em></h2>
+        </div>
+        <div class="side">DATA · PM · GEN AI</div>
+      </div>
+      <div class="tools reveal">
+        <span class="tool">SQL</span>
+        <span class="tool">POWER BI</span>
+        <span class="tool">EXCEL</span>
+        <span class="tool">PYTHON</span>
+        <span class="tool">JAVASCRIPT</span>
+        <span class="tool">CHATGPT</span>
+        <span class="tool">GEMINI</span>
+        <span class="tool">JIRA</span>
+      </div>
+      <div class="svc-grid">
+        <div class="svc reveal">
+          <i>01 — BUSINESS ANALYTICS</i>
+          <h3>Business Analytics</h3>
+          <p>Turn raw data into clear business decisions — EDA, custom Jupyter/Python pipelines, KPI insight reports and stakeholder walkthroughs that feed straight into planning and delivery.</p>
+        </div>
+        <div class="svc reveal" data-d="1">
+          <i>02 — DELIVERY</i>
+          <h3>Project Management</h3>
+          <p>Planning, coordination and delivery tracking for work that needs structure — roadmaps, task prioritization, timeline tracking and team coordination.</p>
+        </div>
+        <div class="svc reveal" data-d="2">
+          <i>03 — GEN AI</i>
+          <h3>Prompt Engineering</h3>
+          <p>Prompts and Gen AI workflows that produce sharper, more reliable outputs — ChatGPT &amp; Gemini workflows, prompt evaluation, automation and summarization.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
+
+  <section class="blk contact elle-contact" id="contact">
+    <span class="edge-word">CONTACT</span>
+    <div class="wrap elle-wrap">
+      <div class="reveal"><p class="label">07 — Contact</p></div>
+
+      <div class="elle-grid">
+
+        <!-- LEFT : sage L-frame + dark card -->
+        <div class="elle-left reveal" data-d="1">
+          <div class="elle-sage-tab">this portfolio is by <b>Thak Aravind</b></div>
+          <div class="elle-card">
+            <span class="elle-x" aria-hidden="true">&#215;</span>
+
+            <div class="elle-avatar-row">
+              <img class="elle-avatar" src="assets/aravind-contact.jpg" alt="Thak Aravind" onerror="this.src='hero.webp?v=1'"/>
+              <div class="elle-bubble">hi! let&#8217;s build<br/>something great.</div>
+            </div>
+            <span class="elle-note">DROP A MESSAGE</span>
+
+            <div class="elle-loc">
+              <span class="elle-kicker">CURRENT LOCATION</span>
+              <h3>Hyderabad<br/><em>Telangana, India</em></h3>
+            </div>
+
+            <p class="elle-desc">a few months ago I was knee-deep in messy spreadsheets &#8212; now I ship dashboards that stakeholders read without hand-holding.</p>
+            <p class="elle-desc elle-muted">business analyst &#183; project manager &#183; gen AI researcher. certified by Atlassian, Microsoft &amp; AWS &#8212; curious by default.</p>
+
+            <div class="elle-links">
+              <a href="mailto:thakarvind@gmail.com">thakarvind@gmail.com &#8599;</a>
+              <a href="tel:+919381047356">+91 93810 47356</a>
+              <a href="Thak_Aravind_Resume.pdf" target="_blank" rel="noopener">resume.pdf &#8599;</a>
+            </div>
+          </div>
+          <div class="elle-dock reveal" data-d="2" aria-label="Quick links">
+            <span class="elle-dock-dot" aria-hidden="true"></span>
+            <div class="elle-dock-stack">
+              <a class="elle-dock-btn dual-link magnetic" href="https://github.com/thakarvind" data-web-href="https://github.com/thakarvind" data-app-href="github://user?username=thakarvind" target="_blank" rel="noopener" aria-label="GitHub — Web / App">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+              <a class="elle-dock-btn dual-link magnetic" href="https://www.linkedin.com/in/arvind-thak" data-web-href="https://www.linkedin.com/in/arvind-thak" data-app-href="linkedin://in/arvind-thak" target="_blank" rel="noopener" aria-label="LinkedIn — Web / App">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+              </a>
+              <a class="elle-dock-btn magnetic" href="Thak_Aravind_Resume.pdf" target="_blank" rel="noopener" aria-label="Resume">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.6H8V12zm0 3.2h8v1.6H8v-1.6z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT : tall photo card -->
+        <div class="elle-right reveal" data-d="2">
+          <div class="elle-photo">
+            <img class="elle-photo-img" src="assets/aravind-contact.jpg" alt="Thak Aravind portrait" onerror="this.src='hero.webp?v=1'"/>
+            <div class="elle-photo-shade" aria-hidden="true"></div>
+                        <div class="elle-photo-overlay">
+              <span class="elle-brand">THAK ARAVIND</span>
+              <div class="elle-photo-meta">
+                <span>available for work</span>
+                <span>hyderabad, india</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 THAK ARAVIND — PORTFOLIO</span>
+    <span class="f-status"><i class="f-pulse"></i>AVAILABLE FOR WORK · <b id="istClock">--:--:--</b>&nbsp;IST</span>
+    <span>BUILT WITH LENIS · VANILLA JS</span>
+    <span>DATA → DECISIONS → PRODUCTS</span>
+  </footer>
+
+  <div id="pmodal" aria-hidden="true">
+    <div class="pm-back" id="pmBack"></div>
+    <div class="pm-panel" role="dialog" aria-modal="true">
+      <button class="pm-close magnetic" id="pmClose">CLOSE ×</button>
+      <div class="pm-top">
+        <span class="pm-num" id="pmNum">01</span>
+        <img class="pm-logo" id="pmLogo" src="icons/shield.svg" alt=""/>
+        <span class="pm-tag"></span>
+      </div>
+      <h3 class="pm-title" id="pmTitle"></h3>
+      <p class="pm-long" id="pmLong"></p>
+      <div class="pm-chips" id="pmChips"></div>
+      <div class="pm-metrics" id="pmMetrics"></div>
+      <a class="pm-link pill solid magnetic" id="pmLink" href="https://github.com/thakarvind" target="_blank" rel="noopener">OPEN ON GITHUB ↗</a>
+    </div>
+  </div>
+
+  <script defer src="assets/three.min.js"></script>
+  <script defer src="assets/connectors.js?v=6"></script>
+  <script>
+  // sync IST clock to both footer and contact panel
+  (function(){
+    const el = document.getElementById('istClock');
+    const clones = document.querySelectorAll('.istClockSync');
+    if(!el || !clones.length) return;
+    const obs = new MutationObserver(()=>{ clones.forEach(c=>c.textContent = el.textContent); });
+    obs.observe(el, {childList:true, characterData:true, subtree:true});
+    // initial
+    clones.forEach(c=>c.textContent = el.textContent);
+  })();
+   </script>
+   <script>
+   // ultra-smooth scroll — is-scrolling toggle + perf
+   (function(){
+    var html=document.documentElement, lastMove=0, ticking=false;
+    function check(now){
+      if(now - lastMove > 180){
+        html.classList.remove('is-scrolling');
+        ticking=false;
+      } else {
+        requestAnimationFrame(check);
+      }
+    }
+    function onMove(){
+      lastMove=performance.now();
+      if(!html.classList.contains('is-scrolling')){
+        html.classList.add('is-scrolling');
+      }
+      if(!ticking){
+        ticking=true;
+        requestAnimationFrame(check);
+      }
+    }
+    // use passive listeners for wheel/touch/scroll - 120Hz permanent, no timer thrash
+    window.addEventListener('scroll', onMove, {passive:true});
+    window.addEventListener('wheel', onMove, {passive:true});
+    window.addEventListener('touchmove', onMove, {passive:true});
+    // also hook Lenis if exposed later
+    var tries=0; (function hookLenis(){
+      var L = window.__LenisL || window.Lenis;
+      // site.js stores instance locally as `d`, not global — fallback to scroll event is enough
+      if(tries++>40) return;
+      if(!L) return setTimeout(hookLenis, 400);
+    })();
+    // reduce parallax work when tab hidden
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden){
+        html.classList.remove('is-scrolling');
+      }
+    });
+    // anchor clicks: site.js (Lenis) already handles these — a second smooth-scroll
+    // handler here raced against it and made nav clicks jerky. Removed.
+    /* PERF: pause sparks canvas rAF loop when hero is offscreen -> stops 70-particle
+       gradient redraws from burning frames during the whole scroll session */
+    (function(){
+      var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
+      if(!hero||!sparksCanvas) return;
+      window.__sparksPaused=true;
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            window.__sparksPaused=false;
+            if(window.__sparksKick) window.__sparksKick();
+          }else{
+            window.__sparksPaused=true;
+          }
+        });
+      },{rootMargin:'200px'});
+      io.observe(hero);
+    })();
+  })();
+  </script>
+</body>
+</html>
