@@ -35,7 +35,16 @@
     /* === FIX: background masking / scroll glitch === */
     /* site-frame: overflow:clip with border-radius causes subpixel seams when GPU layers promote during Lenis scroll.
        Use overflow:hidden + isolation:isolate + contain:paint to keep rounded clip on its own layer without bleeding. */
-    .site-frame{margin:0 !important; border-radius:0 !important; overflow:hidden !important; isolation:isolate; contain:paint; background:#000; box-shadow:none !important; border:0 !important;}
+    .site-frame{
+      margin:clamp(10px,2.2vw,26px) !important;
+      border-radius:clamp(14px,2.2vw,28px) !important;
+      overflow:hidden !important;
+      isolation:isolate;
+      contain:paint;
+      background:#000;
+      border:1px solid rgba(255,255,255,.08) !important;
+      box-shadow:0 30px 90px rgba(0,0,0,.7) !important;
+    }
     .hero{isolation:isolate; overflow:hidden;}
     .hero-bg{
       transform:none !important;
@@ -43,14 +52,18 @@
       /* single fade path — image mask matches hero:after overlay to avoid double-dark band that showed as vertical seam on FUTURE text */
       -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 22%);
       mask-image:linear-gradient(to right, transparent 0%, #000 22%);
-      filter:saturate(1.12) contrast(1.05) brightness(.96);
+      filter:none !important;
       backface-visibility:hidden;
       opacity:1 !important;
     }
     @media (max-width:860px){
       .hero-bg{
-        -webkit-mask-image:linear-gradient(to bottom, #000 58%, transparent 92%);
-        mask-image:linear-gradient(to bottom, #000 58%, transparent 92%);
+        width:auto !important;
+        height:100% !important;
+        object-fit:cover !important;
+        object-position:right center !important;
+        -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 22%);
+        mask-image:linear-gradient(to right, transparent 0%, #000 22%);
       }
     }
     .hero-backdrop{display:none !important;}
@@ -61,7 +74,12 @@
       mask-image:linear-gradient(to right, transparent 0%, #000 28%);
       transform:none;
     }
-    .hero:after{pointer-events:none;}
+    .hero:after{
+      pointer-events:none;
+      width:58% !important;
+      background:linear-gradient(90deg,#000 0%,#000 40%,rgba(0,0,0,.75) 62%,rgba(0,0,0,0) 100%) !important;
+    }
+    .vignette{display:none !important;}
     .hero-glow{will-change:opacity; backface-visibility:hidden; filter:none !important; opacity:.22;}
     #sparks{contain:strict; will-change:opacity; backface-visibility:hidden;}
     .grain{left:-2vw;top:-2vh;width:104vw;height:104vh; pointer-events:none; backface-visibility:hidden;}
