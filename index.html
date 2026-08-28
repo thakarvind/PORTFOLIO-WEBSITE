@@ -196,18 +196,23 @@
       border-radius:999px !important;
       transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease, transform .38s var(--ease), opacity .28s ease !important;
       will-change:background, backdrop-filter, transform, opacity !important;
-      transform:translateX(-50%) translateZ(0) !important;
+      transform:translateX(calc(-50% - 64px)) translateZ(0) !important;
       backface-visibility:hidden !important;
     }
     nav.top.nav-hidden{
-      transform:translateX(-50%) translateY(-150%) translateZ(0) !important;
+      transform:translateX(calc(-50% - 64px)) translateY(-150%) translateZ(0) !important;
       opacity:0 !important;
       pointer-events:none !important;
     }
     nav.top.nav-visible{
-      transform:translateX(-50%) translateZ(0) !important;
+      transform:translateX(calc(-50% - 64px)) translateZ(0) !important;
       opacity:1 !important;
       pointer-events:auto !important;
+    }
+    @media (max-width:860px){
+      nav.top{ transform:translateX(-50%) translateZ(0) !important; }
+      nav.top.nav-hidden{ transform:translateX(-50%) translateY(-150%) translateZ(0) !important; }
+      nav.top.nav-visible{ transform:translateX(-50%) translateZ(0) !important; }
     }
     nav.top.scrolled{
       background:rgba(10,10,14,.58) !important;
