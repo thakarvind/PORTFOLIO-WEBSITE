@@ -94,9 +94,14 @@
     var s = Math.sin(t * 0.8);
     items.forEach(function (it) {
       if (!it.visible) return;
-      it.mesh.rotation.y = t * 0.25;
-      it.rx += ((my * 0.18) - it.rx) * (1 - Math.pow(0.96, DS));
+      /* Cursor-reactive: yaw follows mouse X, pitch follows mouse Y (eased),
+         and the key light glints toward the pointer. Rides the existing loop
+         (which only runs while a gold-link is on screen) — zero added cost. */
+      it.mesh.rotation.y = t * 0.25 + mx * 0.42;
+      it.rx += ((my * 0.22) - it.rx) * (1 - Math.pow(0.96, DS));
       it.mesh.rotation.x = it.rx;
+      it.key.position.x = 4 + mx * 2.5;
+      it.key.position.y = 6 - my * 2.5;
       it.key.intensity = 40 + s * 6;
       it.renderer.render(it.scene, it.camera);
     });
