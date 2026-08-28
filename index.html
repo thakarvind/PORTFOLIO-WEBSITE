@@ -203,6 +203,23 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
     }
+    /* every word in nav bar — separate pill-shaped glossy frosted */
+    .nav-links a{
+      padding:8px 16px !important;
+      border-radius:999px !important;
+      background:rgba(16,18,26,0.58) !important;
+      backdrop-filter:blur(12px) saturate(150%) !important;
+      -webkit-backdrop-filter:blur(12px) saturate(150%) !important;
+      border:1px solid rgba(255,255,255,0.08) !important;
+      box-shadow:0 4px 16px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    }
+    .nav-links a:after{ display:none !important; }
+    .nav-links a:hover, .nav-links a.on{
+      background:rgba(255,122,24,0.14) !important;
+      border-color:rgba(255,122,24,0.22) !important;
+      color:var(--ink) !important;
+      transform:translateY(-1px);
+    }
     /* === EVERY SECTION from About to Contact — separate pill-shaped glossy frosted === */
     .wrap, .m-box, .a-box, .elle-card, .elle-more, .elle-stats, .elle-ach, .wrap--contact{
       border-radius:28px !important;
