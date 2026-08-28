@@ -189,10 +189,20 @@
       -webkit-backdrop-filter:none !important;
       border-bottom:1px solid transparent !important;
       border-radius:clamp(14px,2.2vw,28px) clamp(14px,2.2vw,28px) 0 0 !important;
-      transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease !important;
-      will-change:background, backdrop-filter !important;
+      transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease, transform .38s var(--ease), opacity .28s ease !important;
+      will-change:background, backdrop-filter, transform, opacity !important;
       transform:translateZ(0) !important;
       backface-visibility:hidden !important;
+    }
+    nav.top.nav-hidden{
+      transform:translateY(-130%) translateZ(0) !important;
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
+    nav.top.nav-visible{
+      transform:translateZ(0) !important;
+      opacity:1 !important;
+      pointer-events:auto !important;
     }
     nav.top.scrolled{
       background:rgba(10,10,14,.58) !important;
@@ -816,6 +826,46 @@
     var polls=0;
     var poll=setInterval(function(){ update(); if(++polls>20) clearInterval(poll); },100);
     window.__heroNavUpdate=update;
+    // === AUTO-HIDE: hide after 1s idle at any section, show only when cursor at top ===
+    var hideTimer=null;
+    function showNav(){
+      nav.classList.remove('nav-hidden');
+      nav.classList.add('nav-visible');
+    }
+    function hideNav(){
+      nav.classList.add('nav-hidden');
+      nav.classList.remove('nav-visible');
+    }
+    function scheduleHide(){
+      clearTimeout(hideTimer);
+      hideTimer=setTimeout(hideNav, 1000);
+    }
+    function keepVisibleThenHide(){
+      showNav();
+      scheduleHide();
+    }
+    // start visible, then hide 1s after idle
+    nav.classList.add('nav-visible');
+    scheduleHide();
+    // show on any scroll interaction, then hide 1s after stopping
+    window.addEventListener('scroll', keepVisibleThenHide, {passive:true});
+    window.addEventListener('wheel', keepVisibleThenHide, {passive:true});
+    window.addEventListener('touchmove', keepVisibleThenHide, {passive:true});
+    window.addEventListener('touchstart', keepVisibleThenHide, {passive:true});
+    // show only when cursor goes to top zone
+    var TOP_ZONE=110;
+    window.addEventListener('mousemove', function(e){
+      if(e.clientY < TOP_ZONE){
+        showNav();
+        clearTimeout(hideTimer);
+      } else {
+        // left top zone -> hide after 1s (if not already hidden)
+        if(!nav.classList.contains('nav-hidden')) scheduleHide();
+      }
+    }, {passive:true});
+    nav.addEventListener('mouseenter', function(){ showNav(); clearTimeout(hideTimer); });
+    nav.addEventListener('mouseleave', function(){ scheduleHide(); });
+    nav.addEventListener('focusin', keepVisibleThenHide);
   })();
   </script>
 </body>
