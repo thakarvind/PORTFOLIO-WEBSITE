@@ -180,20 +180,20 @@
     nav.top{
       position:absolute !important;
       top:clamp(10px,2.2vw,20px) !important;
-      left:clamp(10px,2.2vw,20px) !important;
+      left:50% !important;
       right:auto !important;
       z-index:5 !important;
       width:fit-content !important;
       max-width:calc(100% - clamp(20px,5vw,40px)) !important;
       gap:clamp(6px,1.2vw,10px) !important;
       padding:8px clamp(12px,1.6vw,16px) !important;
-      justify-content:flex-start !important;
+      justify-content:center !important;
       background:transparent !important;
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
       border-radius:999px !important;
-      transform:translateZ(0) !important;
+      transform:translateX(-50%) translateZ(0) !important;
       backface-visibility:hidden !important;
     }
     /* hero nav stays transparent - no dark scrolled bar in hero */
@@ -203,6 +203,20 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
     }
+    .hero-brand{
+      position:absolute !important;
+      top:clamp(14px,2.2vw,22px) !important;
+      left:clamp(14px,2.2vw,22px) !important;
+      z-index:6 !important;
+      font-weight:700;
+      font-size:.95rem;
+      letter-spacing:.28em;
+      color:var(--ink);
+      text-transform:uppercase;
+      line-height:1;
+      pointer-events:auto;
+    }
+    .hero-brand em{ color:var(--tint); font-style:normal; }
     /* every word in nav bar — separate pill-shaped glossy frosted, red, short gap */
     .nav-links a{
       padding:6px 12px !important;
@@ -294,8 +308,8 @@
   })();
   </script>
 
+  <a class="hero-brand" href="#top">THAK<em>·</em>ARAVIND</a>
   <nav class="top" id="topnav">
-    <a class="nav-logo" href="#top">THAK<em>·</em>ARAVIND</a>
     <div class="nav-links">
       <a href="#top" class="on magnetic">Home</a>
       <a href="#about" class="magnetic">About</a>
