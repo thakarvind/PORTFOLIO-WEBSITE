@@ -205,21 +205,33 @@
     }
     .hero-brand{
       position:absolute !important;
-      top:clamp(14px,2.2vw,22px) !important;
-      left:clamp(14px,2.2vw,22px) !important;
+      left:46% !important;
+      top:50% !important;
       z-index:6 !important;
       font-weight:700;
-      font-size:.95rem;
-      letter-spacing:.28em;
+      font-size:.88rem;
+      letter-spacing:.32em;
       color:#0d0e13 !important;
       background:#ff7a18 !important;
-      padding:4px 8px !important;
+      padding:6px 10px !important;
       border-radius:4px !important;
       text-transform:uppercase;
       line-height:1;
       pointer-events:auto;
+      transform:translate(-50%,-50%) rotate(-90deg) translateZ(0) !important;
+      transform-origin:center center !important;
+      white-space:nowrap !important;
+      box-shadow:0 4px 16px rgba(0,0,0,0.35) !important;
     }
     .hero-brand em{ color:#0d0e13 !important; font-style:normal; }
+    @media (max-width:860px){
+      .hero-brand{
+        left:50% !important;
+        top:58% !important;
+        transform:translate(-50%,-50%) rotate(0deg) translateZ(0) !important;
+        font-size:.82rem !important;
+      }
+    }
     /* every word in nav bar — separate pill-shaped glossy frosted, red, short gap */
     .nav-links a{
       padding:6px 12px !important;
