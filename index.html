@@ -180,20 +180,20 @@
     nav.top{
       position:absolute !important;
       top:clamp(10px,2.2vw,20px) !important;
-      left:50% !important;
+      left:clamp(150px,18vw,190px) !important;
       right:auto !important;
       z-index:5 !important;
       width:fit-content !important;
-      max-width:calc(100% - clamp(20px,5vw,40px)) !important;
-      gap:clamp(6px,1.2vw,10px) !important;
-      padding:8px clamp(12px,1.6vw,16px) !important;
-      justify-content:center !important;
+      max-width:calc(100% - clamp(170px,22vw,230px)) !important;
+      gap:clamp(14px,1.6vw,20px) !important;
+      padding:0 !important;
+      justify-content:flex-start !important;
       background:transparent !important;
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
-      border:1px solid transparent !important;
-      border-radius:999px !important;
-      transform:translateX(-50%) translateZ(0) !important;
+      border:none !important;
+      border-radius:0 !important;
+      transform:translateZ(0) !important;
       backface-visibility:hidden !important;
     }
     /* hero nav stays transparent - no dark scrolled bar in hero */
@@ -211,12 +211,15 @@
       font-weight:700;
       font-size:.95rem;
       letter-spacing:.28em;
-      color:var(--ink);
+      color:#0d0e13 !important;
+      background:#ff7a18 !important;
+      padding:4px 8px !important;
+      border-radius:4px !important;
       text-transform:uppercase;
       line-height:1;
       pointer-events:auto;
     }
-    .hero-brand em{ color:var(--tint); font-style:normal; }
+    .hero-brand em{ color:#0d0e13 !important; font-style:normal; }
     /* every word in nav bar — separate pill-shaped glossy frosted, red, short gap */
     .nav-links a{
       padding:6px 12px !important;
