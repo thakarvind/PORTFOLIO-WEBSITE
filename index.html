@@ -129,9 +129,20 @@
        NOTE: removed transform:translateZ(0) — it forced every panel onto its own GPU layer, and the
        backdrop-filter on each layer sampled stale compositor content during Lenis scroll, causing the
        "background turning colour on every panel" glitch. */
-    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact,.glass-link,.ce-photo-meta,.ref-photo-bar,.elle-dock,.elle-dock-btn{
-      backdrop-filter:blur(5px) saturate(130%);
-      -webkit-backdrop-filter:blur(5px) saturate(130%);
+    /* PERF: GPU/CPU split — zero visual redesign.
+       LARGE panels (.wrap,.m-box,.a-box,.elle-card...) sit over flat near-black backgrounds:
+       their frost was visually indistinguishable, yet each forced the GPU to re-blur a
+       full-width surface EVERY frame during scroll = texture-memory climb + eviction (the
+       "smooth 10-20s, then increasing jitter" pattern). They keep their translucent glass
+       backgrounds with no blur.
+       SMALL floats (.glass-link,.ce-photo-meta,.ref-photo-bar,.elle-dock-btn) genuinely show
+       frost over imagery, so they are NOT listed here — their exact original blur values from
+       the stylesheet apply, unchanged. Tiny surfaces = negligible GPU cost.
+       Everything animated moves via transform/opacity (GPU compositor's job); the scroll
+       engine, canvas embers and JS logic run on CPU. Each side does what it's best at. */
+    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact,nav.top.scrolled{
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
       isolation:isolate;
     }
     /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal */
