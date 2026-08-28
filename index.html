@@ -794,7 +794,6 @@
     var nav=document.getElementById('topnav');
     var hero=document.getElementById('top');
     if(!nav||!hero) return;
-    // Move nav out of .site-frame so its fixed layer isn't clipped by contain:paint / overflow:hidden
     try{
       var frame=document.querySelector('.site-frame');
       if(frame && nav.parentElement===frame){
@@ -802,6 +801,25 @@
       }
     }catch(e){}
     var tick=0, lastScrolled=null;
+    var hideTimer=null;
+    function showNav(){
+      nav.classList.remove('nav-hidden');
+      nav.classList.add('nav-visible');
+    }
+    function hideNav(){
+      if(lastScrolled!==true) return;
+      nav.classList.add('nav-hidden');
+      nav.classList.remove('nav-visible');
+    }
+    function scheduleHide(){
+      clearTimeout(hideTimer);
+      if(lastScrolled!==true) return;
+      hideTimer=setTimeout(hideNav, 500);
+    }
+    function keepVisibleThenHide(){
+      showNav();
+      scheduleHide();
+    }
     function heroIsBehindNav(){
       var hb=hero.getBoundingClientRect().bottom;
       var nh=nav.offsetHeight||64;
@@ -814,67 +832,49 @@
     function update(){
       tick=0;
       var should=heroIsBehindNav();
+      var prev=lastScrolled;
       if(should!==lastScrolled){
         lastScrolled=should;
         nav.classList.toggle('scrolled', should);
       } else if(nav.classList.contains('scrolled')!==should){
         nav.classList.toggle('scrolled', should);
       }
+      if(!should){
+        showNav(); clearTimeout(hideTimer);
+      } else if(should && prev!==true){
+        showNav(); scheduleHide();
+      }
     }
     function schedule(){ if(!tick){ tick=1; requestAnimationFrame(update);} }
-    window.addEventListener('scroll', schedule, {passive:true});
-    window.addEventListener('wheel', schedule, {passive:true});
-    window.addEventListener('touchmove', schedule, {passive:true});
+    window.addEventListener('scroll', function(){ schedule(); keepVisibleThenHide(); }, {passive:true});
+    window.addEventListener('wheel', keepVisibleThenHide, {passive:true});
+    window.addEventListener('touchmove', keepVisibleThenHide, {passive:true});
+    window.addEventListener('touchstart', keepVisibleThenHide, {passive:true});
     window.addEventListener('resize', function(){ lastScrolled=null; schedule(); }, {passive:true});
     try{
       var io2=new IntersectionObserver(schedule, {threshold:[0,0.01,0.25,0.5,1], rootMargin:'-'+(nav.offsetHeight||64)+'px 0px 0px 0px'});
       io2.observe(hero);
     }catch(e){}
     update();
+    nav.classList.add('nav-visible');
+    if(lastScrolled===true) scheduleHide();
     setTimeout(update,100);
     setTimeout(update,600);
     var polls=0;
     var poll=setInterval(function(){ update(); if(++polls>20) clearInterval(poll); },100);
     window.__heroNavUpdate=update;
-    // === AUTO-HIDE: hide after 1s idle at any section, show only when cursor at top ===
-    var hideTimer=null;
-    function showNav(){
-      nav.classList.remove('nav-hidden');
-      nav.classList.add('nav-visible');
-    }
-    function hideNav(){
-      nav.classList.add('nav-hidden');
-      nav.classList.remove('nav-visible');
-    }
-    function scheduleHide(){
-      clearTimeout(hideTimer);
-      hideTimer=setTimeout(hideNav, 500);
-    }
-    function keepVisibleThenHide(){
-      showNav();
-      scheduleHide();
-    }
-    // start visible, then hide 1s after idle
-    nav.classList.add('nav-visible');
-    scheduleHide();
-    // show on any scroll interaction, then hide 1s after stopping
-    window.addEventListener('scroll', keepVisibleThenHide, {passive:true});
-    window.addEventListener('wheel', keepVisibleThenHide, {passive:true});
-    window.addEventListener('touchmove', keepVisibleThenHide, {passive:true});
-    window.addEventListener('touchstart', keepVisibleThenHide, {passive:true});
-    // show only when cursor goes to top zone
     var TOP_ZONE=110;
     window.addEventListener('mousemove', function(e){
+      if(lastScrolled!==true){ showNav(); clearTimeout(hideTimer); return; }
       if(e.clientY < TOP_ZONE){
         showNav();
         clearTimeout(hideTimer);
       } else {
-        // left top zone -> hide after 1s (if not already hidden)
         if(!nav.classList.contains('nav-hidden')) scheduleHide();
       }
     }, {passive:true});
     nav.addEventListener('mouseenter', function(){ showNav(); clearTimeout(hideTimer); });
-    nav.addEventListener('mouseleave', function(){ scheduleHide(); });
+    nav.addEventListener('mouseleave', function(){ if(lastScrolled===true) scheduleHide(); });
     nav.addEventListener('focusin', keepVisibleThenHide);
   })();
   </script>
