@@ -176,28 +176,25 @@
       mix-blend-mode:screen;opacity:.55;
       -webkit-mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);
       mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%)}
-    /* === HERO NAV — stick to hero only, small pill, never shows while scrolling other sections === */
+    /* === HERO NAV — stick to hero only, small pill at starting left position === */
     nav.top{
       position:absolute !important;
       top:clamp(10px,2.2vw,20px) !important;
-      left:50% !important;
+      left:clamp(10px,2.2vw,20px) !important;
       right:auto !important;
       z-index:5 !important;
       width:fit-content !important;
       max-width:calc(100% - clamp(20px,5vw,40px)) !important;
       gap:clamp(18px,2.5vw,32px) !important;
       padding:10px clamp(16px,2.2vw,22px) !important;
-      justify-content:center !important;
+      justify-content:flex-start !important;
       background:transparent !important;
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
       border-radius:999px !important;
-      transform:translateX(calc(-50% - 64px)) translateZ(0) !important;
+      transform:translateZ(0) !important;
       backface-visibility:hidden !important;
-    }
-    @media (max-width:860px){
-      nav.top{ transform:translateX(-50%) translateZ(0) !important; }
     }
     /* hero nav stays transparent - no dark scrolled bar in hero */
     nav.top.scrolled{
@@ -206,6 +203,17 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
     }
+    /* === EVERY SECTION from About to Contact — separate pill-shaped glossy frosted === */
+    .wrap, .m-box, .a-box, .elle-card, .elle-more, .elle-stats, .elle-ach, .wrap--contact{
+      border-radius:28px !important;
+      background:rgba(16,18,26,0.62) !important;
+      backdrop-filter:blur(18px) saturate(150%) !important;
+      -webkit-backdrop-filter:blur(18px) saturate(150%) !important;
+      border:1px solid rgba(255,255,255,0.08) !important;
+      box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    }
+    .m-box, .a-box{ border-radius:24px !important; }
+    .elle-card{ border-radius:32px !important; }
   </style>
 </head>
 <body data-section="0">
