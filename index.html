@@ -254,7 +254,7 @@
       transform:translateY(-1px);
     }
     /* === EVERY SECTION from About to Contact — separate pill-shaped glossy frosted === */
-    .wrap, .m-box, .a-box, .elle-card, .elle-more, .elle-stats, .elle-ach, .wrap--contact{
+    .wrap, .m-box, .a-box, .elle-more, .elle-stats, .elle-ach{
       border-radius:28px !important;
       background:rgba(16,18,26,0.62) !important;
       backdrop-filter:blur(18px) saturate(150%) !important;
@@ -263,7 +263,15 @@
       box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06) !important;
     }
     .m-box, .a-box{ border-radius:24px !important; }
-    .elle-card{ border-radius:32px !important; }
+    /* contact: no outer background — keep original transparent wrap, only inner card glossy */
+    .elle-wrap, .wrap--contact{
+      background:transparent !important;
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      border:none !important;
+      box-shadow:none !important;
+    }
+    .elle-card{ border-radius:32px !important; background:rgba(16,18,26,0.62) !important; backdrop-filter:blur(18px) saturate(150%) !important; -webkit-backdrop-filter:blur(18px) saturate(150%) !important; border:1px solid rgba(255,255,255,0.08) !important; }
   </style>
 </head>
 <body data-section="0">
