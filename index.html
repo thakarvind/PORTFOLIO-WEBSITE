@@ -180,27 +180,32 @@
     /* nav is reparented to <body> via JS so .site-frame's contain:paint/overflow no longer clips its fixed layer */
     nav.top{
       position:fixed !important;
-      top:clamp(10px,2.2vw,26px) !important;
-      left:clamp(10px,2.2vw,26px) !important;
-      right:clamp(10px,2.2vw,26px) !important;
+      top:clamp(10px,2.2vw,20px) !important;
+      left:50% !important;
+      right:auto !important;
       z-index:50 !important;
+      width:fit-content !important;
+      max-width:calc(100vw - clamp(20px,5vw,40px)) !important;
+      gap:clamp(18px,2.5vw,32px) !important;
+      padding:10px clamp(16px,2.2vw,22px) !important;
+      justify-content:center !important;
       background:transparent !important;
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
-      border-bottom:1px solid transparent !important;
-      border-radius:clamp(14px,2.2vw,28px) clamp(14px,2.2vw,28px) 0 0 !important;
+      border:1px solid transparent !important;
+      border-radius:999px !important;
       transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease, transform .38s var(--ease), opacity .28s ease !important;
       will-change:background, backdrop-filter, transform, opacity !important;
-      transform:translateZ(0) !important;
+      transform:translateX(-50%) translateZ(0) !important;
       backface-visibility:hidden !important;
     }
     nav.top.nav-hidden{
-      transform:translateY(-130%) translateZ(0) !important;
+      transform:translateX(-50%) translateY(-150%) translateZ(0) !important;
       opacity:0 !important;
       pointer-events:none !important;
     }
     nav.top.nav-visible{
-      transform:translateZ(0) !important;
+      transform:translateX(-50%) translateZ(0) !important;
       opacity:1 !important;
       pointer-events:auto !important;
     }
@@ -208,7 +213,7 @@
       background:rgba(10,10,14,.58) !important;
       backdrop-filter:blur(14px) saturate(140%) !important;
       -webkit-backdrop-filter:blur(14px) saturate(140%) !important;
-      border-bottom:1px solid rgba(255,255,255,.07) !important;
+      border:1px solid rgba(255,255,255,.08) !important;
       isolation:isolate !important;
     }
     /* while actively scrolling (Lenis momentum) keep bar lighter — prevents solid black flash */
