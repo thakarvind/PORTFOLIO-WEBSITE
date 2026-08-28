@@ -176,16 +176,15 @@
       mix-blend-mode:screen;opacity:.55;
       -webkit-mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);
       mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%)}
-    /* === HERO NAV FIX — black shade on scroll-up (nav only, no other sections touched) === */
-    /* nav is reparented to <body> via JS so .site-frame's contain:paint/overflow no longer clips its fixed layer */
+    /* === HERO NAV — stick to hero only, small pill, never shows while scrolling other sections === */
     nav.top{
-      position:fixed !important;
+      position:absolute !important;
       top:clamp(10px,2.2vw,20px) !important;
       left:50% !important;
       right:auto !important;
-      z-index:50 !important;
+      z-index:5 !important;
       width:fit-content !important;
-      max-width:calc(100vw - clamp(20px,5vw,40px)) !important;
+      max-width:calc(100% - clamp(20px,5vw,40px)) !important;
       gap:clamp(18px,2.5vw,32px) !important;
       padding:10px clamp(16px,2.2vw,22px) !important;
       justify-content:center !important;
@@ -194,38 +193,18 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
       border-radius:999px !important;
-      transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease, transform .38s var(--ease), opacity .28s ease !important;
-      will-change:background, backdrop-filter, transform, opacity !important;
       transform:translateX(calc(-50% - 64px)) translateZ(0) !important;
       backface-visibility:hidden !important;
     }
-    nav.top.nav-hidden{
-      transform:translateX(calc(-50% - 64px)) translateY(-150%) translateZ(0) !important;
-      opacity:0 !important;
-      pointer-events:none !important;
-    }
-    nav.top.nav-visible{
-      transform:translateX(calc(-50% - 64px)) translateZ(0) !important;
-      opacity:1 !important;
-      pointer-events:auto !important;
-    }
     @media (max-width:860px){
       nav.top{ transform:translateX(-50%) translateZ(0) !important; }
-      nav.top.nav-hidden{ transform:translateX(-50%) translateY(-150%) translateZ(0) !important; }
-      nav.top.nav-visible{ transform:translateX(-50%) translateZ(0) !important; }
     }
+    /* hero nav stays transparent - no dark scrolled bar in hero */
     nav.top.scrolled{
-      background:rgba(10,10,14,.58) !important;
-      backdrop-filter:blur(14px) saturate(140%) !important;
-      -webkit-backdrop-filter:blur(14px) saturate(140%) !important;
-      border:1px solid rgba(255,255,255,.08) !important;
-      isolation:isolate !important;
-    }
-    /* while actively scrolling (Lenis momentum) keep bar lighter — prevents solid black flash */
-    html.is-scrolling nav.top.scrolled{
-      background:rgba(10,10,14,.36) !important;
-      backdrop-filter:blur(10px) saturate(130%) !important;
-      -webkit-backdrop-filter:blur(10px) saturate(130%) !important;
+      background:transparent !important;
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      border:1px solid transparent !important;
     }
   </style>
 </head>
@@ -786,96 +765,28 @@
   })();
   </script>
   <script>
-  // HERO NAV FIX — hero-aware scrolled toggle (only nav, no other sections touched)
-  // Prevents black shade appearing while still inside hero on scroll-up.
-  // site.js toggles at scrollY>40 which darkens nav deep inside hero; we override to
-  // darken only after hero bottom passes nav.
+  // HERO NAV — default in hero only, sticks to hero, never shows while scrolling other sections
   (function(){
     var nav=document.getElementById('topnav');
     var hero=document.getElementById('top');
-    if(!nav||!hero) return;
+    var frame=document.querySelector('.site-frame');
+    if(!nav||!hero||!frame) return;
     try{
-      var frame=document.querySelector('.site-frame');
-      if(frame && nav.parentElement===frame){
-        document.body.insertBefore(nav, frame);
+      // move nav back inside hero frame so it scrolls away with hero (hero-sticky, not fixed)
+      if(nav.parentElement!==frame){
+        frame.insertBefore(nav, frame.firstChild);
       }
+      frame.style.position='relative';
     }catch(e){}
-    var tick=0, lastScrolled=null;
-    var hideTimer=null;
-    function showNav(){
-      nav.classList.remove('nav-hidden');
-      nav.classList.add('nav-visible');
-    }
-    function hideNav(){
-      if(lastScrolled!==true) return;
-      nav.classList.add('nav-hidden');
-      nav.classList.remove('nav-visible');
-    }
-    function scheduleHide(){
-      clearTimeout(hideTimer);
-      if(lastScrolled!==true) return;
-      hideTimer=setTimeout(hideNav, 500);
-    }
-    function keepVisibleThenHide(){
-      showNav();
-      scheduleHide();
-    }
-    function heroIsBehindNav(){
-      var hb=hero.getBoundingClientRect().bottom;
-      var nh=nav.offsetHeight||64;
-      if(lastScrolled){
-        return hb <= nh + 16;
-      } else {
-        return hb <= nh + 8;
-      }
-    }
-    function update(){
-      tick=0;
-      var should=heroIsBehindNav();
-      var prev=lastScrolled;
-      if(should!==lastScrolled){
-        lastScrolled=should;
-        nav.classList.toggle('scrolled', should);
-      } else if(nav.classList.contains('scrolled')!==should){
-        nav.classList.toggle('scrolled', should);
-      }
-      if(!should){
-        showNav(); clearTimeout(hideTimer);
-      } else if(should && prev!==true){
-        showNav(); scheduleHide();
-      }
-    }
-    function schedule(){ if(!tick){ tick=1; requestAnimationFrame(update);} }
-    window.addEventListener('scroll', function(){ schedule(); keepVisibleThenHide(); }, {passive:true});
-    window.addEventListener('wheel', keepVisibleThenHide, {passive:true});
-    window.addEventListener('touchmove', keepVisibleThenHide, {passive:true});
-    window.addEventListener('touchstart', keepVisibleThenHide, {passive:true});
-    window.addEventListener('resize', function(){ lastScrolled=null; schedule(); }, {passive:true});
-    try{
-      var io2=new IntersectionObserver(schedule, {threshold:[0,0.01,0.25,0.5,1], rootMargin:'-'+(nav.offsetHeight||64)+'px 0px 0px 0px'});
-      io2.observe(hero);
-    }catch(e){}
-    update();
-    nav.classList.add('nav-visible');
-    if(lastScrolled===true) scheduleHide();
-    setTimeout(update,100);
-    setTimeout(update,600);
-    var polls=0;
-    var poll=setInterval(function(){ update(); if(++polls>20) clearInterval(poll); },100);
-    window.__heroNavUpdate=update;
-    var TOP_ZONE=110;
-    window.addEventListener('mousemove', function(e){
-      if(lastScrolled!==true){ showNav(); clearTimeout(hideTimer); return; }
-      if(e.clientY < TOP_ZONE){
-        showNav();
-        clearTimeout(hideTimer);
-      } else {
-        if(!nav.classList.contains('nav-hidden')) scheduleHide();
-      }
-    }, {passive:true});
-    nav.addEventListener('mouseenter', function(){ showNav(); clearTimeout(hideTimer); });
-    nav.addEventListener('mouseleave', function(){ if(lastScrolled===true) scheduleHide(); });
-    nav.addEventListener('focusin', keepVisibleThenHide);
+    nav.classList.remove('scrolled','nav-hidden','nav-visible');
+    // prevent site.js (scrollY>40) from darkening hero nav — hero nav stays transparent default
+    var mo=new MutationObserver(function(){
+      if(nav.classList.contains('scrolled')) nav.classList.remove('scrolled');
+      if(nav.classList.contains('nav-hidden')) nav.classList.remove('nav-hidden');
+    });
+    mo.observe(nav, {attributes:true, attributeFilter:['class']});
+    window.addEventListener('scroll', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
+    window.addEventListener('wheel', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
   })();
   </script>
 </body>
