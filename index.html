@@ -16,6 +16,7 @@
   <script defer src="assets/site.js?v=16"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
+  <script defer src="assets/silk.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=45">
   <style>
@@ -177,7 +178,7 @@
       animation:silkDrift 26s ease-in-out infinite alternate;will-change:transform}
     @keyframes silkDrift{from{transform:translate3d(-1.5%,0,0) scale(1.04)}to{transform:translate3d(1.5%,-2%,0) scale(1.08)}}
     @media (prefers-reduced-motion:reduce){.silk-hero{animation:none}}
-    .silk-ribbon{height:110px;margin:6px 0;pointer-events:none;
+    .silk-ribbon{height:110px;margin:6px 0;pointer-events:none;will-change:transform;
       background:url("assets/silk.jpg?v=1") center 40%/cover no-repeat;
       filter:hue-rotate(25deg) saturate(1.2) brightness(.9);
       mix-blend-mode:screen;opacity:.5;
