@@ -154,6 +154,12 @@
     html.is-scrolling .grain{display:none}
     html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0; visibility:hidden}
     html.is-scrolling .gold-link svg{animation-play-state:paused}
+    /* FIX: "black shadow flicker while scrolling up into hero" — nav.top.scrolled
+       (blur 18px) and .hero-reference-cards (blur 8px) sample stale compositor frames
+       during Lenis momentum scroll (same glitch class documented above). Drop the blur
+       while actively scrolling; the dark tint remains so nothing visually pops. */
+    html.is-scrolling nav.top.scrolled{backdrop-filter:none;-webkit-backdrop-filter:none}
+    html.is-scrolling .hero-reference-cards{backdrop-filter:none;-webkit-backdrop-filter:none}
     @media (prefers-reduced-motion:reduce){
       .grain,#sparks,.hero-glow{display:none !important}
     }
