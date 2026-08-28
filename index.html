@@ -16,7 +16,6 @@
   <script defer src="assets/site.js?v=16"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
-  <script defer src="assets/silk.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=45">
   <style>
@@ -114,7 +113,6 @@
       display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));
       width:min(48%,560px);background:rgba(10,11,18,.78);
       border:1px solid rgba(255,255,255,.04);
-      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     }
     .hero-reference-cards>div{display:flex;flex-direction:column;gap:8px;padding:20px 26px 22px;}
     .hero-reference-cards>div+div{border-left:1px solid rgba(255,255,255,.08);}
@@ -172,24 +170,6 @@
     @keyframes loaderAutoHide{
       to{opacity:0;visibility:hidden;pointer-events:none}
     }
-    /* ===== Silk streak layers (assets/silk.jpg) =====
-       Brand-matched: red -> orange via hue-rotate(25deg). Screen blend on black = pure
-       additive light (the image's black areas vanish). All motion is a slow compositor
-       transform — no JS loops, no repaints, zero render cost. If the image file is
-       missing, the layers simply stay invisible (graceful fallback). */
-    .silk-hero{position:absolute;top:-12%;left:-6%;width:112%;height:118%;z-index:0;pointer-events:none;
-      background:url("assets/silk.jpg?v=1") center 35%/cover no-repeat;
-      /* FIX (black block over portrait while scrolling up): the full-hero blurred+blended
-         silk layer caused GPU texture eviction of the portrait during Lenis momentum.
-         Hide it while actively scrolling (invisible at speed anyway) + lighter blur. */
-      filter:hue-rotate(25deg) saturate(1.25) brightness(.95) blur(7px);
-      mix-blend-mode:screen;opacity:.38;transition:opacity .25s ease;
-      -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 72%,transparent 100%);
-      mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 72%,transparent 100%);
-      animation:silkDrift 26s ease-in-out infinite alternate}
-    html.is-scrolling .silk-hero{opacity:0 !important}
-    @keyframes silkDrift{from{transform:translate3d(-1.5%,0,0) scale(1.04)}to{transform:translate3d(1.5%,-2%,0) scale(1.08)}}
-    @media (prefers-reduced-motion:reduce){.silk-hero{animation:none}}
     /* Silk glow behind the right-edge section letters (ABOUT / EXPERIENCE / PROJECTS /
        CONTACT). The streak image sits BEHIND the outlined letters: blurred, orange-tinted,
        screen-blended so only light shows. isolation keeps z-index:-1 inside the word. */
@@ -273,7 +253,6 @@
   </nav>
 
   <header class="hero" id="top">
-    <div class="silk-hero" aria-hidden="true"></div>
     <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
