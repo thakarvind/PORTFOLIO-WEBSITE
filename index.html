@@ -178,12 +178,16 @@
       animation:silkDrift 26s ease-in-out infinite alternate;will-change:transform}
     @keyframes silkDrift{from{transform:translate3d(-1.5%,0,0) scale(1.04)}to{transform:translate3d(1.5%,-2%,0) scale(1.08)}}
     @media (prefers-reduced-motion:reduce){.silk-hero{animation:none}}
-    .silk-ribbon{height:110px;margin:6px 0;pointer-events:none;will-change:transform;
-      background:url("assets/silk.jpg?v=1") center 40%/cover no-repeat;
-      filter:hue-rotate(25deg) saturate(1.2) brightness(.9);
-      mix-blend-mode:screen;opacity:.5;
-      -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 45%,transparent 100%);
-      mask-image:linear-gradient(to bottom,transparent 0%,#000 45%,transparent 100%)}
+    /* Silk glow behind the right-edge section letters (ABOUT / EXPERIENCE / PROJECTS /
+       CONTACT). The streak image sits BEHIND the outlined letters: blurred, orange-tinted,
+       screen-blended so only light shows. isolation keeps z-index:-1 inside the word. */
+    .edge-word{isolation:isolate}
+    .edge-word:before{content:"";position:absolute;inset:-15px;z-index:-1;pointer-events:none;
+      background:url("assets/silk.jpg?v=1") center/cover no-repeat;
+      filter:hue-rotate(25deg) saturate(1.25) brightness(.9) blur(14px);
+      mix-blend-mode:screen;opacity:.55;
+      -webkit-mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);
+      mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%)}
   </style>
 </head>
 <body data-section="0">
@@ -444,8 +448,6 @@
 
   <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
 
-  <div class="silk-ribbon" aria-hidden="true"></div>
-
   <section class="blk" id="work">
     <span class="edge-word">PROJECTS</span>
     <div class="wrap">
@@ -576,8 +578,6 @@
   </section>
 
   <div class="gold-link glass-link" aria-hidden="true"><svg viewBox="0 0 160 240" aria-hidden="true"><path d="M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/></svg></div>
-
-  <div class="silk-ribbon" aria-hidden="true"></div>
 
   <section class="blk contact elle-contact" id="contact">
     <span class="edge-word">CONTACT</span>
