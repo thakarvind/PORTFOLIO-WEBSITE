@@ -58,7 +58,9 @@
       height:100% !important;
       object-fit:cover !important;
       object-position:right center !important;
-      transform:none !important;
+      /* pin the portrait to its own persistent GPU layer — prevents mid-scroll
+         texture eviction (the black block over the portrait in the recording) */
+      transform:translateZ(0) !important;
       transition:none !important;
       /* FIX (visible left seam): width:auto + object-position:right puts the img's hard
          left EDGE inside the hero. Mask must reach FULLY transparent at that edge (0%),
@@ -177,11 +179,15 @@
        missing, the layers simply stay invisible (graceful fallback). */
     .silk-hero{position:absolute;top:-12%;left:-6%;width:112%;height:118%;z-index:0;pointer-events:none;
       background:url("assets/silk.jpg?v=1") center 35%/cover no-repeat;
-      filter:hue-rotate(25deg) saturate(1.25) brightness(.95) blur(10px);
-      mix-blend-mode:screen;opacity:.38;
+      /* FIX (black block over portrait while scrolling up): the full-hero blurred+blended
+         silk layer caused GPU texture eviction of the portrait during Lenis momentum.
+         Hide it while actively scrolling (invisible at speed anyway) + lighter blur. */
+      filter:hue-rotate(25deg) saturate(1.25) brightness(.95) blur(7px);
+      mix-blend-mode:screen;opacity:.38;transition:opacity .25s ease;
       -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 72%,transparent 100%);
       mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 72%,transparent 100%);
-      animation:silkDrift 26s ease-in-out infinite alternate;will-change:transform}
+      animation:silkDrift 26s ease-in-out infinite alternate}
+    html.is-scrolling .silk-hero{opacity:0 !important}
     @keyframes silkDrift{from{transform:translate3d(-1.5%,0,0) scale(1.04)}to{transform:translate3d(1.5%,-2%,0) scale(1.08)}}
     @media (prefers-reduced-motion:reduce){.silk-hero{animation:none}}
     /* Silk glow behind the right-edge section letters (ABOUT / EXPERIENCE / PROJECTS /
