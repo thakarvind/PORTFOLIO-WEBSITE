@@ -185,8 +185,8 @@
       z-index:5 !important;
       width:fit-content !important;
       max-width:calc(100% - clamp(20px,5vw,40px)) !important;
-      gap:clamp(18px,2.5vw,32px) !important;
-      padding:10px clamp(16px,2.2vw,22px) !important;
+      gap:clamp(6px,1.2vw,10px) !important;
+      padding:8px clamp(12px,1.6vw,16px) !important;
       justify-content:flex-start !important;
       background:transparent !important;
       backdrop-filter:none !important;
@@ -203,21 +203,23 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
     }
-    /* every word in nav bar — separate pill-shaped glossy frosted */
+    /* every word in nav bar — separate pill-shaped glossy frosted, red, short gap */
     .nav-links a{
-      padding:8px 16px !important;
+      padding:6px 12px !important;
       border-radius:999px !important;
-      background:rgba(16,18,26,0.58) !important;
-      backdrop-filter:blur(12px) saturate(150%) !important;
-      -webkit-backdrop-filter:blur(12px) saturate(150%) !important;
-      border:1px solid rgba(255,255,255,0.08) !important;
-      box-shadow:0 4px 16px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+      background:linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06)) !important;
+      backdrop-filter:blur(16px) saturate(180%) !important;
+      -webkit-backdrop-filter:blur(16px) saturate(180%) !important;
+      border:1px solid rgba(255,255,255,0.14) !important;
+      box-shadow:0 8px 24px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(255,255,255,0.06) !important;
+      color:#ff1e1e !important;
+      letter-spacing:.18em !important;
     }
     .nav-links a:after{ display:none !important; }
     .nav-links a:hover, .nav-links a.on{
-      background:rgba(255,122,24,0.14) !important;
-      border-color:rgba(255,122,24,0.22) !important;
-      color:var(--ink) !important;
+      background:linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.09)) !important;
+      border-color:rgba(255,255,255,0.18) !important;
+      color:#ff1e1e !important;
       transform:translateY(-1px);
     }
     /* === EVERY SECTION from About to Contact — separate pill-shaped glossy frosted === */
@@ -293,7 +295,7 @@
   </script>
 
   <nav class="top" id="topnav">
-    <a class="nav-logo" href="#top">THAK<em>·</em>ARAVIND<span class="nav-sub">/ PORTFOLIO</span></a>
+    <a class="nav-logo" href="#top">THAK<em>·</em>ARAVIND</a>
     <div class="nav-links">
       <a href="#top" class="on magnetic">Home</a>
       <a href="#about" class="magnetic">About</a>
