@@ -142,7 +142,7 @@
        the stylesheet apply, unchanged. Tiny surfaces = negligible GPU cost.
        Everything animated moves via transform/opacity (GPU compositor's job); the scroll
        engine, canvas embers and JS logic run on CPU. Each side does what it's best at. */
-    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact,nav.top.scrolled{
+    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact{
       backdrop-filter:none;
       -webkit-backdrop-filter:none;
       isolation:isolate;
@@ -154,12 +154,8 @@
     html.is-scrolling .grain{display:none}
     html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0; visibility:hidden}
     html.is-scrolling .gold-link svg{animation-play-state:paused}
-    /* FIX: "black shadow flicker while scrolling up into hero" — nav.top.scrolled
-       (blur 18px) and .hero-reference-cards (blur 8px) sample stale compositor frames
-       during Lenis momentum scroll (same glitch class documented above). Drop the blur
-       while actively scrolling; the dark tint remains so nothing visually pops. */
-    html.is-scrolling nav.top.scrolled{backdrop-filter:none;-webkit-backdrop-filter:none}
-    html.is-scrolling .hero-reference-cards{backdrop-filter:none;-webkit-backdrop-filter:none}
+     /* hero-reference-cards blur can sample stale frames during Lenis; drop while scrolling */
+     html.is-scrolling .hero-reference-cards{backdrop-filter:none;-webkit-backdrop-filter:none}
     @media (prefers-reduced-motion:reduce){
       .grain,#sparks,.hero-glow{display:none !important}
     }
@@ -180,6 +176,37 @@
       mix-blend-mode:screen;opacity:.55;
       -webkit-mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);
       mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%)}
+    /* === HERO NAV FIX — black shade on scroll-up (nav only, no other sections touched) === */
+    /* nav is reparented to <body> via JS so .site-frame's contain:paint/overflow no longer clips its fixed layer */
+    nav.top{
+      position:fixed !important;
+      top:clamp(10px,2.2vw,26px) !important;
+      left:clamp(10px,2.2vw,26px) !important;
+      right:clamp(10px,2.2vw,26px) !important;
+      z-index:50 !important;
+      background:transparent !important;
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      border-bottom:1px solid transparent !important;
+      border-radius:clamp(14px,2.2vw,28px) clamp(14px,2.2vw,28px) 0 0 !important;
+      transition:background .42s var(--ease), border-color .42s var(--ease), backdrop-filter .42s ease !important;
+      will-change:background, backdrop-filter !important;
+      transform:translateZ(0) !important;
+      backface-visibility:hidden !important;
+    }
+    nav.top.scrolled{
+      background:rgba(10,10,14,.58) !important;
+      backdrop-filter:blur(14px) saturate(140%) !important;
+      -webkit-backdrop-filter:blur(14px) saturate(140%) !important;
+      border-bottom:1px solid rgba(255,255,255,.07) !important;
+      isolation:isolate !important;
+    }
+    /* while actively scrolling (Lenis momentum) keep bar lighter — prevents solid black flash */
+    html.is-scrolling nav.top.scrolled{
+      background:rgba(10,10,14,.36) !important;
+      backdrop-filter:blur(10px) saturate(130%) !important;
+      -webkit-backdrop-filter:blur(10px) saturate(130%) !important;
+    }
   </style>
 </head>
 <body data-section="0">
@@ -736,6 +763,59 @@
       },{rootMargin:'200px'});
       io.observe(hero);
     })();
+  })();
+  </script>
+  <script>
+  // HERO NAV FIX — hero-aware scrolled toggle (only nav, no other sections touched)
+  // Prevents black shade appearing while still inside hero on scroll-up.
+  // site.js toggles at scrollY>40 which darkens nav deep inside hero; we override to
+  // darken only after hero bottom passes nav.
+  (function(){
+    var nav=document.getElementById('topnav');
+    var hero=document.getElementById('top');
+    if(!nav||!hero) return;
+    // Move nav out of .site-frame so its fixed layer isn't clipped by contain:paint / overflow:hidden
+    try{
+      var frame=document.querySelector('.site-frame');
+      if(frame && nav.parentElement===frame){
+        document.body.insertBefore(nav, frame);
+      }
+    }catch(e){}
+    var tick=0, lastScrolled=null;
+    function heroIsBehindNav(){
+      var hb=hero.getBoundingClientRect().bottom;
+      var nh=nav.offsetHeight||64;
+      if(lastScrolled){
+        return hb <= nh + 16;
+      } else {
+        return hb <= nh + 8;
+      }
+    }
+    function update(){
+      tick=0;
+      var should=heroIsBehindNav();
+      if(should!==lastScrolled){
+        lastScrolled=should;
+        nav.classList.toggle('scrolled', should);
+      } else if(nav.classList.contains('scrolled')!==should){
+        nav.classList.toggle('scrolled', should);
+      }
+    }
+    function schedule(){ if(!tick){ tick=1; requestAnimationFrame(update);} }
+    window.addEventListener('scroll', schedule, {passive:true});
+    window.addEventListener('wheel', schedule, {passive:true});
+    window.addEventListener('touchmove', schedule, {passive:true});
+    window.addEventListener('resize', function(){ lastScrolled=null; schedule(); }, {passive:true});
+    try{
+      var io2=new IntersectionObserver(schedule, {threshold:[0,0.01,0.25,0.5,1], rootMargin:'-'+(nav.offsetHeight||64)+'px 0px 0px 0px'});
+      io2.observe(hero);
+    }catch(e){}
+    update();
+    setTimeout(update,100);
+    setTimeout(update,600);
+    var polls=0;
+    var poll=setInterval(function(){ update(); if(++polls>20) clearInterval(poll); },100);
+    window.__heroNavUpdate=update;
   })();
   </script>
 </body>
