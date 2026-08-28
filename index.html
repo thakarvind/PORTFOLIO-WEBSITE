@@ -283,46 +283,6 @@
       transform:translateY(-1px);
     }
     /* reverted: every section frosted undone - keep only My Vision/Mission (hero-reference-cards) frosted */
-    /* premium hero image swap looping — top notch */
-    .hero-bg-alt{
-      position:absolute !important;
-      top:0 !important;
-      right:0 !important;
-      width:58% !important;
-      height:100% !important;
-      object-fit:cover !important;
-      object-position:center 22% !important;
-      opacity:0 !important;
-      transform:translateZ(0) scale(1) !important;
-      transition:opacity 1.4s cubic-bezier(.76,0,.24,1), transform 1.8s cubic-bezier(.19,1,.22,1) !important;
-      will-change:opacity, transform !important;
-      -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.4) 12%, rgba(0,0,0,.78) 30%, rgba(0,0,0,.94) 48%, #000 62%) !important;
-      mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.4) 12%, rgba(0,0,0,.78) 30%, rgba(0,0,0,.94) 48%, #000 62%) !important;
-      backface-visibility:hidden !important;
-      pointer-events:none !important;
-    }
-    .hero-bg-alt.is-active{ opacity:1 !important; transform:translateZ(0) scale(1) !important; }
-    .hero-bg{ transition:opacity 1.4s cubic-bezier(.76,0,.24,1), transform 1.8s cubic-bezier(.19,1,.22,1) !important; }
-    .hero-bg.is-fade{ opacity:0 !important; transform:translateZ(0) scale(1.02) !important; filter:blur(1px) !important; }
-    .hero-backdrop-alt{
-      position:absolute !important;
-      inset:0 !important;
-      width:100% !important;
-      height:100% !important;
-      object-fit:cover !important;
-      object-position:right center !important;
-      opacity:0 !important;
-      transform:scale(1.04) !important;
-      filter:blur(18px) brightness(.42) saturate(1.15) !important;
-      transition:opacity 1.4s cubic-bezier(.76,0,.24,1) !important;
-      -webkit-mask-image:linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,.22) 48%, #000 68%) !important;
-      mask-image:linear-gradient(to right, transparent 0%, transparent 30%, rgba(0,0,0,.22) 48%, #000 68%) !important;
-      pointer-events:none !important;
-    }
-    .hero-backdrop-alt.is-active{ opacity:.9 !important; }
-    @media (max-width:860px){
-      .hero-bg-alt{ width:100% !important; height:100% !important; object-position:center top !important; }
-    }
   </style>
 </head>
 <body data-section="0">
@@ -367,7 +327,7 @@
   <div class="cursor-ring"></div>
 
   <div class="site-frame">
-  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt="" id="heroBackdropImg"/><img src="assets/aravind-alt.jpg" alt="" id="heroBackdropAlt" class="hero-backdrop-alt"/></div>
+  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt=""/></div>
   <div class="grain" id="grain" aria-hidden="true"></div>
   <script>
   /* film-grain: pre-baked SOFT fractal-style tile - mid-centered values + smoothing to match
@@ -397,7 +357,6 @@
 
   <header class="hero" id="top">
     <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
-    <img src="assets/aravind-alt.jpg" alt="Thak Aravind — portrait" class="hero-bg hero-bg-alt" id="heroImgAlt"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
 
@@ -888,52 +847,6 @@
     mo.observe(nav, {attributes:true, attributeFilter:['class']});
     window.addEventListener('scroll', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
     window.addEventListener('wheel', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
-  })();
-  </script>
-  <script>
-  // premium hero image swap looping — top notch
-  (function(){
-    var a=document.getElementById('heroImg');
-    var b=document.getElementById('heroImgAlt');
-    var ba=document.getElementById('heroBackdropImg');
-    var bb=document.getElementById('heroBackdropAlt');
-    if(!a||!b) return;
-    var showAlt=false;
-    function swap(){
-      showAlt=!showAlt;
-      if(showAlt){
-        b.classList.add('is-active');
-        if(bb) bb.classList.add('is-active');
-        a.classList.add('is-fade');
-        if(ba) ba.style.opacity='0';
-      }else{
-        b.classList.remove('is-active');
-        if(bb) bb.classList.remove('is-active');
-        a.classList.remove('is-fade');
-        if(ba) ba.style.opacity='.9';
-      }
-    }
-    var pre=new Image();
-    pre.src=b.src;
-    var started=false;
-    function start(){
-      if(started) return;
-      started=true;
-      window.__heroSwapInt=setInterval(swap, 4200);
-    }
-    pre.onload=start;
-    pre.onerror=start;
-    if(pre.complete) setTimeout(start, 400);
-    // also pause when hero offscreen to save GPU
-    try{
-      var hero=document.getElementById('top');
-      var io=new IntersectionObserver(function(ents){
-        ents.forEach(function(en){
-          if(!en.isIntersecting) clearInterval(window.__heroSwapInt);
-        });
-      },{rootMargin:'100px'});
-      io.observe(hero);
-    }catch(e){}
   })();
   </script>
 </body>
