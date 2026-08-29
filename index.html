@@ -235,12 +235,12 @@
     }
     .hero-brand em{ color:var(--tint) !important; font-style:normal; letter-spacing:.62em !important; }
     /* glow for Achieved (a-box), Tool Box (.tool) and Services (.svc) on hover - like STACK Image 5 */
-    .a-box, .svc, .tool{
+    .a-box, .svc, .tool, .xp-row, .cert{
       position:relative !important;
       overflow:hidden !important;
       isolation:isolate !important;
     }
-    .a-box::before, .svc::before, .tool::before{
+    .a-box::before, .svc::before, .tool::before, .xp-row::before, .cert::before{
       content:"";
       position:absolute;
       inset:-18%;
@@ -251,8 +251,31 @@
       z-index:0;
       filter:blur(6px);
     }
-    .a-box:hover::before, .svc:hover::before, .tool:hover::before{ opacity:1; }
-    .a-box > *, .svc > *{ position:relative; z-index:1; }
+    .a-box:hover::before, .svc:hover::before, .tool:hover::before, .xp-row:hover::before, .cert:hover::before{ opacity:1; }
+    .a-box > *, .svc > *, .xp-row > *, .cert > *{ position:relative; z-index:1; }
+    /* === Blurred streak backdrop for Experience & Certifications — matching Achieved/Toolbox vibe === */
+    /* Uses same silk.jpg (identical to your 37f0f10c... jpg) as soft red light streak behind content */
+    #experience, #certifications{
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+    }
+    #experience::before, #certifications::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:url("assets/silk.jpg?v=1") center 38% / cover no-repeat;
+      filter:blur(24px) brightness(.38) saturate(1.35) hue-rotate(4deg);
+      opacity:.34;
+      pointer-events:none;
+      z-index:0;
+      /* fade to black at edges so streak stays centered and doesn't create hard rectangle */
+      -webkit-mask-image:radial-gradient(78% 68% at 50% 32%, #000 22%, rgba(0,0,0,.55) 48%, transparent 78%);
+      mask-image:radial-gradient(78% 68% at 50% 32%, #000 22%, rgba(0,0,0,.55) 48%, transparent 78%);
+    }
+    #experience > *, #certifications > *{ position:relative; z-index:1; }
+    /* keep edge-word above backdrop but keep its existing silk glow */
+    #experience .edge-word, #certifications .edge-word{ z-index:1; }
     @media (max-width:860px){
       .hero-brand{
         left:50% !important;
