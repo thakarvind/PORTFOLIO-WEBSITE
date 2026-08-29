@@ -255,10 +255,12 @@
     .a-box > *, .svc > *, .xp-row > *, .cert > *{ position:relative; z-index:1; }
     /* === Blurred streak backdrop for Experience & Certifications — matching Achieved/Toolbox vibe === */
     /* Uses same silk.jpg (identical to your 37f0f10c... jpg) as soft red light streak behind content */
+    /* FIX: previous #experience > * + overflow:hidden broke edge-word (forced position:relative + clipped right:-.04em overflow) -> huge blank + left-sided "IFIED" */
     #experience, #certifications{
       position:relative;
-      overflow:hidden;
       isolation:isolate;
+      /* keep overflow visible so vertical edge-word at right:-.04em is not clipped by the backdrop */
+      overflow:visible;
     }
     #experience::before, #certifications::before{
       content:"";
@@ -273,9 +275,22 @@
       -webkit-mask-image:radial-gradient(78% 68% at 50% 32%, #000 22%, rgba(0,0,0,.55) 48%, transparent 78%);
       mask-image:radial-gradient(78% 68% at 50% 32%, #000 22%, rgba(0,0,0,.55) 48%, transparent 78%);
     }
-    #experience > *, #certifications > *{ position:relative; z-index:1; }
-    /* keep edge-word above backdrop but keep its existing silk glow */
-    #experience .edge-word, #certifications .edge-word{ z-index:1; }
+    /* only the content wrapper goes above the backdrop — NOT the edge-word (which must stay absolute on the right) */
+    #experience > .wrap, #certifications > .wrap{ position:relative; z-index:2; }
+    /* restore edge-word to original right-aligned vertical style broken by previous generic selector */
+    #experience .edge-word, #certifications .edge-word{
+      position:absolute !important;
+      right:-.04em !important;
+      left:auto !important;
+      top:50% !important;
+      bottom:auto !important;
+      writing-mode:vertical-rl !important;
+      /* let JS drive transform (parallax drift) — don't lock with !important */
+      transform:translateY(-50%);
+      z-index:1 !important;
+      overflow:clip;
+      overflow-clip-margin:15px;
+    }
     @media (max-width:860px){
       .hero-brand{
         left:50% !important;
