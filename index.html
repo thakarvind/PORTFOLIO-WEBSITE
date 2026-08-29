@@ -13,7 +13,7 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=24"></script>
+  <script defer src="assets/site.js?v=25"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
@@ -167,6 +167,9 @@
     html.is-scrolling .gold-link svg{animation-play-state:paused}
      /* hero-reference-cards frosted - keep lighter blur while scrolling to avoid sampling stale frames */
      html.is-scrolling .hero-reference-cards{background:rgba(16,18,26,0.42) !important; backdrop-filter:blur(10px) saturate(130%) !important; -webkit-backdrop-filter:blur(10px) saturate(130%) !important}
+     html.is-scrolling #experience::before, html.is-scrolling #certifications::before{filter:blur(12px) brightness(.38) saturate(1.15) hue-rotate(4deg) !important; opacity:.22 !important}
+     html.is-scrolling .edge-word:before{filter:hue-rotate(25deg) saturate(1.15) brightness(.9) blur(7px) !important; opacity:.32 !important}
+     html.is-scrolling .glass-link{backdrop-filter:blur(10px) saturate(120%) !important; -webkit-backdrop-filter:blur(10px) saturate(120%) !important}
     @media (prefers-reduced-motion:reduce){
       .grain,#sparks,.hero-glow{display:none !important}
     }
