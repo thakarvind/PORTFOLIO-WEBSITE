@@ -307,9 +307,9 @@
       opacity:0;
       filter: blur(18px) brightness(.18) saturate(.9);
     }
-    .hero.is-faded .hero-glow, .hero.is-faded #sparks{ opacity:0; transition: opacity .6s var(--ease); }
-    /* left side portfolio (hero-inner + reference-cards) stays visible — only backside image fades per user request */
-    .hero-inner, .hero-reference-cards{ transition: opacity .65s var(--ease), transform .65s var(--ease); }
+    /* DONT TOUCH left side / dark side / sparkles — per user: only backside image fades to totally dark */
+    .hero-inner, .hero-reference-cards, .hero-glow, #sparks{ transition: opacity .65s var(--ease), transform .65s var(--ease); }
+    /* keep sparkles + glow visible over dark — no fade */
     .hero-glass-reveal{
       position:absolute;
       right: clamp(14px, 3.2vw, 44px);
@@ -319,7 +319,8 @@
       z-index:4;
       opacity:0;
       pointer-events:none;
-      transition: opacity .85s var(--ease) .12s, transform .85s var(--ease) .12s;
+      /* sequential: image fades 0.85s to totally dark first, THEN panel fades in */
+      transition: opacity .88s var(--ease) .82s, transform .88s var(--ease) .82s;
       will-change: opacity, transform;
     }
     .hero.is-faded .hero-glass-reveal{
@@ -1098,14 +1099,14 @@
       if(faded){
         hero.setAttribute('data-lenis-prevent',''); // keep blocked during animation
         if(lenis && lenis.stop) try{ lenis.stop(); }catch(e){}
-        // hero is pinned visually during animation — keep page at top
+        // hero is pinned visually during animation — keep page at top (do not move hero section)
         window.scrollTo(0,0);
         if(lenis) lenis.scrollTo(0, {immediate:true});
         setTimeout(function(){
           hero.removeAttribute('data-lenis-prevent');
           if(lenis && lenis.start) try{ lenis.start(); }catch(e){}
           animating = false;
-        }, 980);
+        }, 1780);
       } else {
         hero.setAttribute('data-lenis-prevent','');
         if(lenis && lenis.stop) try{ lenis.stop(); }catch(e){}
@@ -1114,7 +1115,7 @@
           if(lenis && lenis.start) try{ lenis.start(); }catch(e){}
           // keep prevent so first down again is hijacked
           animating = false;
-        }, 980);
+        }, 1780);
         // ensure scroll still at top when unfading
         window.scrollTo(0,0);
         if(lenis) lenis.scrollTo(0, {immediate:true});
