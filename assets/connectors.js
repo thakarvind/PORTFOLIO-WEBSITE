@@ -79,7 +79,8 @@
   function frame() {
     if (document.hidden || !visCount) { running = false; return; }
     var now = performance.now();
-    if (now - lastF < 32) { requestAnimationFrame(frame); return; }
+    var __ival2 = (window.__prefer120? 8 : 16);
+    if (now - lastF < __ival2) { requestAnimationFrame(frame); return; }
     running = true;
     requestAnimationFrame(frame);
     var pn = now;
