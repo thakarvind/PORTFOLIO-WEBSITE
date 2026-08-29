@@ -13,7 +13,7 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=29"></script>
+  <script defer src="assets/site.js?v=30"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
@@ -107,7 +107,7 @@
     }
     .vignette{display:none !important;}
     .hero-glow{display:none !important;}
-    #sparks{contain:strict; will-change:opacity; backface-visibility:hidden;}
+    #sparks{contain:strict; backface-visibility:hidden;}
     .grain{display:none !important;}
     .hero-reference-cards{
       position:absolute;right:0;bottom:0;z-index:5;
@@ -158,6 +158,7 @@
       -webkit-backdrop-filter:none;
       isolation:isolate;
     }
+     .nav-links a,.elle-dock-btn,.hpreview{backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:rgba(255,255,255,0.10) !important; border-color:rgba(255,255,255,0.14) !important}
     /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal */
     html.is-scrolling .edge-word{will-change:transform}
     /* FIX: hide grain instantly (no transition) during scroll so its last frame can't
@@ -327,7 +328,7 @@
      .gold-link{contain:layout paint}
      .elle-photo{contain:paint}
      #sparks{will-change:opacity; contain:strict}
-     .edge-word{will-change:transform; contain:layout paint}
+     .edge-word{contain:layout paint}
      .hero-bg,.hero-backdrop img{will-change:auto}
      /* throttle grain jitter when tab hidden or reduced-motion */
      @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
@@ -832,31 +833,32 @@
   })();
    </script>
    <script>
-   // ultra-smooth scroll — is-scrolling toggle + perf
-   (function(){
-    var html=document.documentElement, lastMove=0, ticking=false;
-    function check(now){
-      if(now - lastMove > 180){
-        html.classList.remove('is-scrolling');
-        ticking=false;
-      } else {
-        requestAnimationFrame(check);
-      }
-    }
-    function onMove(){
-      lastMove=performance.now();
-      if(!html.classList.contains('is-scrolling')){
-        html.classList.add('is-scrolling');
-      }
-      if(!ticking){
-        ticking=true;
-        requestAnimationFrame(check);
-      }
-    }
-    // use passive listeners for wheel/touch/scroll - 120Hz permanent, no timer thrash
-    window.addEventListener('scroll', onMove, {passive:true});
-    window.addEventListener('wheel', onMove, {passive:true});
-    window.addEventListener('touchmove', onMove, {passive:true});
+   // ultra-smooth scroll - direct grain/cursor toggle (no html.is-scrolling class)
+    (function(){
+     var grain=document.getElementById('grain'), cursorDot=document.querySelector('.cursor-dot'), cursorRing=document.querySelector('.cursor-ring'), lastMove=0, ticking=false;
+     function check(now){
+       if(now - lastMove > 180){
+         if(grain) grain.style.display='';
+         if(cursorDot) cursorDot.style.opacity='';
+         if(cursorRing) cursorRing.style.opacity='';
+         ticking=false;
+       } else {
+         requestAnimationFrame(check);
+       }
+     }
+     function onMove(){
+       lastMove=performance.now();
+       if(grain && grain.style.display!=='none') grain.style.display='none';
+       if(cursorDot) cursorDot.style.opacity='0';
+       if(cursorRing) cursorRing.style.opacity='0';
+       if(!ticking){
+         ticking=true;
+         requestAnimationFrame(check);
+       }
+     }
+     window.addEventListener('scroll', onMove, {passive:true});
+     window.addEventListener('wheel', onMove, {passive:true});
+     window.addEventListener('touchmove', onMove, {passive:true});
     // also hook Lenis if exposed later
     var tries=0; (function hookLenis(){
       var L = window.__LenisL || window.Lenis;
