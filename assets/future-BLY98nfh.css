@@ -394,6 +394,7 @@ body{overflow-x:clip}
 body.tab-hidden .grain{animation-play-state:paused!important}
 body.tab-hidden .glass-link svg{animation-play-state:paused!important}
 
-/* restore experience date (month/year) to the top-right timeline position */
-.xp-row>.xp-when{position:absolute;top:22px;right:20px;text-align:right}
-@media (max-width:860px){.xp-row>.xp-when{position:static;text-align:left;margin-bottom:6px}}
+/* FIX: Experience dates back to middle-left grid column (was mistakenly absolute right) */
+.xp-row{grid-template-columns:180px 1fr auto !important;align-items:center !important}
+.xp-row>.xp-when{position:static !important;top:auto !important;right:auto !important;text-align:left !important;align-self:center !important;display:flex !important;align-items:center !important;min-height:0 !important}
+@media (max-width:860px){.xp-row{grid-template-columns:1fr !important;align-items:start !important}.xp-row>.xp-when{position:static !important;text-align:left !important;margin-bottom:6px !important;align-self:start !important}}
