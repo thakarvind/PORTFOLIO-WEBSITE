@@ -1092,16 +1092,32 @@
       faded = next;
       hero.classList.toggle('is-faded', faded);
       glass.setAttribute('aria-hidden', faded ? 'false' : 'true');
-      // toggle Lenis prevent to actually block smooth scroll on first swipe (hero has data-lenis-prevent when not faded)
+      // lock Lenis smooth scroll during the fade so hero does NOT move (page stays pinned)
+      var lenis = window.__lenisInstance || window.__lenis || window.lenis;
+      // toggle Lenis prevent attr + lenis stop/start
       if(faded){
-        // keep blocked during animation, then unlock so NEXT scroll scrolls page
+        hero.setAttribute('data-lenis-prevent',''); // keep blocked during animation
+        if(lenis && lenis.stop) try{ lenis.stop(); }catch(e){}
+        // hero is pinned visually during animation — keep page at top
+        window.scrollTo(0,0);
+        if(lenis) lenis.scrollTo(0, {immediate:true});
         setTimeout(function(){
           hero.removeAttribute('data-lenis-prevent');
+          if(lenis && lenis.start) try{ lenis.start(); }catch(e){}
           animating = false;
         }, 980);
       } else {
         hero.setAttribute('data-lenis-prevent','');
-        setTimeout(function(){ animating = false; }, 980);
+        if(lenis && lenis.stop) try{ lenis.stop(); }catch(e){}
+        setTimeout(function(){
+          // stay blocked when unfaded (back to initial pinned state)
+          if(lenis && lenis.start) try{ lenis.start(); }catch(e){}
+          // keep prevent so first down again is hijacked
+          animating = false;
+        }, 980);
+        // ensure scroll still at top when unfading
+        window.scrollTo(0,0);
+        if(lenis) lenis.scrollTo(0, {immediate:true});
       }
     }
     function isAtTop(){
