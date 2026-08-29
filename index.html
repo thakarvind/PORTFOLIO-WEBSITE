@@ -13,10 +13,11 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=16"></script>
+  <script defer src="assets/site.js?v=17"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
-  <link rel="preload" as="image" href="hero.webp?v=1"/>
+  <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
+  <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=45">
   <style>
     /* Experience logos — LinkedIn-style 48px rounded squares */
@@ -320,7 +321,16 @@
       color:#ff1e1e !important;
       transform:translateY(-1px);
     }
-    /* reverted: every section frosted undone - keep only My Vision/Mission (hero-reference-cards) frosted */
+     /* reverted: every section frosted undone - keep only My Vision/Mission (hero-reference-cards) frosted */
+     /* === PERF (no visual change): containment + compositor hints to reduce repaint cost during scroll/record === */
+     .blk{contain:layout paint style}
+     .gold-link{contain:layout paint}
+     .elle-photo{contain:paint}
+     #sparks{will-change:opacity; contain:strict}
+     .edge-word{will-change:transform; contain:layout paint}
+     .hero-bg,.hero-backdrop img{will-change:auto}
+     /* throttle grain jitter when tab hidden or reduced-motion */
+     @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
   </style>
 </head>
 <body data-section="0">
@@ -365,7 +375,7 @@
   <div class="cursor-ring"></div>
 
   <div class="site-frame">
-  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt=""/></div>
+  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt="" decoding="async" fetchpriority="low"/></div>
   <div class="grain" id="grain" aria-hidden="true"></div>
   <script>
   /* film-grain: pre-baked SOFT fractal-style tile - mid-centered values + smoothing to match
@@ -394,7 +404,7 @@
   </nav>
 
   <header class="hero" id="top">
-    <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
+    <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg" decoding="async" fetchpriority="high"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
 
@@ -710,7 +720,7 @@
             <span class="elle-x" aria-hidden="true">&#215;</span>
 
             <div class="elle-avatar-row">
-              <img class="elle-avatar" src="assets/aravind-contact.jpg" alt="Thak Aravind" onerror="this.src='hero.webp?v=1'"/>
+              <img class="elle-avatar" src="assets/aravind-contact.webp" data-fallback="assets/aravind-contact.jpg" alt="Thak Aravind" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src='hero.webp?v=1'"/>
               <div class="elle-bubble">hi! let&#8217;s build<br/>something great.</div>
             </div>
             <span class="elle-note">DROP A MESSAGE</span>
@@ -748,7 +758,7 @@
         <!-- RIGHT : tall photo card -->
         <div class="elle-right reveal" data-d="2">
           <div class="elle-photo">
-            <img class="elle-photo-img" src="assets/aravind-contact.jpg" alt="Thak Aravind portrait" onerror="this.src='hero.webp?v=1'"/>
+            <img class="elle-photo-img" src="assets/aravind-contact.webp" data-fallback="assets/aravind-contact.jpg" alt="Thak Aravind portrait" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src='hero.webp?v=1'"/>
             <div class="elle-photo-shade" aria-hidden="true"></div>
                         <div class="elle-photo-overlay">
               <span class="elle-brand">THAK ARAVIND</span>
@@ -789,8 +799,27 @@
     </div>
   </div>
 
-  <script defer src="assets/three.min.js"></script>
-  <script defer src="assets/connectors.js?v=6"></script>
+  <!-- PERF: defer Three.js (603KB) until gold-link near viewport; avoids startup jank during recording -->
+  <script>
+  (function(){
+    var loaded=false;
+    function load(){
+      if(loaded) return; loaded=true;
+      var s1=document.createElement('script'); s1.src='assets/three.min.js'; s1.defer=true;
+      s1.onload=function(){ var s2=document.createElement('script'); s2.src='assets/connectors.js?v=7'; s2.defer=true; document.body.appendChild(s2); };
+      document.body.appendChild(s1);
+    }
+    try{
+      var links=document.querySelectorAll('.gold-link');
+      if(!links.length) return load();
+      var io=new IntersectionObserver(function(ents){ for(var i=0;i<ents.length;i++) if(ents[i].isIntersecting){ io.disconnect(); load(); break; } }, {rootMargin:'800px'});
+      links.forEach(function(el){ io.observe(el); });
+      // fallback: load after idle or 4s
+      if('requestIdleCallback' in window) requestIdleCallback(function(){ if(!loaded) load(); }, {timeout:4000}); else setTimeout(load, 3500);
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden && !loaded) load(); });
+    }catch(e){ load(); }
+  })();
+  </script>
   <script>
   // sync IST clock to both footer and contact panel
   (function(){
@@ -846,22 +875,26 @@
     // handler here raced against it and made nav clicks jerky. Removed.
     /* PERF: pause sparks canvas rAF loop when hero is offscreen -> stops 70-particle
        gradient redraws from burning frames during the whole scroll session */
-    (function(){
-      var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
-      if(!hero||!sparksCanvas) return;
-      window.__sparksPaused=false;
-      var io=new IntersectionObserver(function(entries){
-        entries.forEach(function(en){
-          if(en.isIntersecting){
-            window.__sparksPaused=false;
-            if(window.__sparksKick) window.__sparksKick();
-          }else{
-            window.__sparksPaused=false;
-          }
-        });
-      },{rootMargin:'200px'});
-      io.observe(hero);
-    })();
+     (function(){
+       var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
+       if(!hero||!sparksCanvas) return;
+       window.__sparksPaused=false;
+       var io=new IntersectionObserver(function(entries){
+         entries.forEach(function(en){
+           if(en.isIntersecting){
+             window.__sparksPaused=false;
+             if(window.__sparksKick) window.__sparksKick();
+           }else{
+             window.__sparksPaused=true;
+           }
+         });
+       },{rootMargin:'200px'});
+       io.observe(hero);
+       document.addEventListener('visibilitychange', function(){
+         if(document.hidden) window.__sparksPaused=true;
+         else if(hero.getBoundingClientRect().bottom>0) { window.__sparksPaused=false; if(window.__sparksKick) window.__sparksKick(); }
+       });
+     })();
   })();
   </script>
   <script>
