@@ -77,7 +77,7 @@
   var lastF = 0;
     var running = false;
   function frame() {
-    if (document.hidden || !visCount) { running = false; return; }
+    if (document.hidden || !visCount || document.documentElement.classList.contains("is-scrolling")) { running = false; if(!document.hidden && visCount && document.documentElement.classList.contains("is-scrolling")) setTimeout(function(){ if(!document.hidden && visCount && !document.documentElement.classList.contains("is-scrolling")) kickFrame(); }, 220); return; }
     var now = performance.now();
     var __ival2 = (window.__isRecord?8:6);
     if (now - lastF < __ival2) { requestAnimationFrame(frame); return; }
