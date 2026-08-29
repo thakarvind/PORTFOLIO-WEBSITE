@@ -16,7 +16,7 @@
   <script defer src="assets/site.js?v=31"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
-  <script defer src="assets/governor.js?v=2"></script>
+  <script defer src="assets/governor.js?v=3"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -165,7 +165,7 @@
     html.is-scrolling .edge-word{will-change:transform}
     /* FIX: hide grain instantly (no transition) during scroll so its last frame can't
        bleed through any backdrop-filter panel as the compositor repositions layers. */
-    html.is-scrolling .grain{display:none}
+    html.is-scrolling .grain{opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s}
     html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0; visibility:hidden}
     html.is-scrolling .gold-link svg{animation-play-state:paused}
      /* hero-reference-cards frosted - keep lighter blur while scrolling to avoid sampling stale frames */
@@ -340,6 +340,10 @@
      html.perf-1 .hero-glow{animation-play-state:paused}
      html.perf-1 .edge-word{animation-play-state:paused}
      html.perf-2 .grain{animation-play-state:paused}
+     /* PERF: the fixed nav (blur 18px) and footer cards (blur 30px) re-blur moving
+        content EVERY frame while scrolling — the main remaining scroll-jank source.
+        Drop the frost only while actively scrolling; it returns when scroll settles. */
+     html.is-scrolling nav.top.scrolled,html.is-scrolling .footer-cards{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
      /* throttle grain jitter when tab hidden or reduced-motion */
      @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
      /* === HERO SOCIAL DOCK — exact left side of My Mission tab, vertical (marked location) === */
@@ -939,19 +943,20 @@
        var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
        if(!hero||!sparksCanvas) return;
        window.__sparksPaused=false;
+       window.__sparksHeroVisible=true;
+       window.__sparksTabHidden=false;
        var io=new IntersectionObserver(function(entries){
          entries.forEach(function(en){
-           if(en.isIntersecting){
-             window.__sparksPaused=false;
-             if(window.__sparksKick) window.__sparksKick();
-           }else{
-             window.__sparksPaused=true;
-           }
+           window.__sparksHeroVisible=en.isIntersecting;
+           if(window.__sparksSync) window.__sparksSync();
+           else { window.__sparksPaused=!en.isIntersecting; if(en.isIntersecting && window.__sparksKick) window.__sparksKick(); }
          });
        },{rootMargin:'200px'});
        io.observe(hero);
        document.addEventListener('visibilitychange', function(){
-         if(document.hidden) window.__sparksPaused=true;
+         window.__sparksTabHidden=document.hidden;
+         if(window.__sparksSync) window.__sparksSync();
+         else if(document.hidden) window.__sparksPaused=true;
          else if(hero.getBoundingClientRect().bottom>0) { window.__sparksPaused=false; if(window.__sparksKick) window.__sparksKick(); }
        });
      })();

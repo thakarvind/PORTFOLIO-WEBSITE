@@ -1,4 +1,4 @@
-/* PERF GOVERNOR v2 — targets the display's NATIVE refresh rate permanently.
+/* PERF GOVERNOR v3 — native-refresh targeting + scroll-aware spark control.
    1) Auto-detects the display refresh (60/120/144Hz+) and derives thresholds
       from it: stage escalation begins the moment average frame times drop
       meaningfully below native, so the compositor can hit native fps.
@@ -7,11 +7,15 @@
       frames are sustained again. Nothing else is ever touched.
    3) Builds the Three.js engine during idle instead of mid-scroll, so
       reaching the projects section never stutters (603KB parse moved off
-      the critical path). */
+      the critical path).
+   4) Sparks are controlled from ONE decision point: hero visible + tab
+      visible + not mid-scroll + no stage-2 hold. Scrolling up into the hero
+      no longer resumes the 70-particle canvas mid-scroll (arrival burst);
+      it starts the instant scrolling settles. */
 (function () {
   try {
-    if (window.__perfGovernorV2) return;
-    window.__perfGovernorV2 = true;
+    if (window.__perfGovernorV3) return;
+    window.__perfGovernorV3 = true;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var html = document.documentElement;
@@ -30,17 +34,21 @@
       JANK_MS = refresh * 1.32;   /* 60Hz -> ~22ms (45fps),  144Hz -> ~9.1ms (110fps) */
     }
 
+    /* ---- single spark decision point (hero/tab/scroll/governor) ---- */
+    window.__sparksSync = function () {
+      var pause = window.__sparksTabHidden === true
+                || window.__sparksHeroVisible === false
+                || html.classList.contains('is-scrolling')
+                || window.__perfSparkHold === true;
+      if (pause === window.__sparksPaused) return;
+      window.__sparksPaused = pause;
+      if (!pause && window.__sparksKick) window.__sparksKick();
+    };
+
     function apply() {
       html.classList.toggle('perf-1', stage >= 1);
       html.classList.toggle('perf-2', stage >= 2);
-      if (stage >= 2) {
-        if (!window.__perfSparkHold) { window.__perfSparkHold = true; window.__sparksPaused = true; }
-        else if (window.__sparksPaused === false) { window.__sparksPaused = true; }
-      } else if (window.__perfSparkHold) {
-        window.__perfSparkHold = false;
-        window.__sparksPaused = false;
-        if (window.__sparksKick) window.__sparksKick();  /* resume embers */
-      }
+      if (window.__sparksSync) window.__sparksSync();
     }
 
     /* ---- idle Three.js preload: kills the mid-scroll parse stutter ---- */
@@ -74,6 +82,13 @@
       else if (good >= GOOD_WINDOWS && stage > 0) { stage--; good = 0; bad = 0; soft = 0; apply(); }
       if (stage >= 2) apply();
     }
+
+    /* ---- instant response to is-scrolling toggles (class set by site.js) ---- */
+    try {
+      var mo = new MutationObserver(function () { if (window.__sparksSync) window.__sparksSync(); });
+      mo.observe(html, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {}
+
     requestAnimationFrame(tick);
   } catch (err) { /* never break the site over the governor */ }
 })();
