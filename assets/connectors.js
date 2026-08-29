@@ -7,7 +7,7 @@
   /* PERF: small decorative canvases don't need full-res backing stores.
      Cap at 1.5x and skip MSAA on high-DPI screens (visually identical, ~50% GPU) */
   var RAW_DPR = window.devicePixelRatio || 1;
-  var DPR = Math.min(RAW_DPR, 1.25);
+  var DPR = Math.min(RAW_DPR, 1.1);
   var USE_AA = RAW_DPR < 1.5;
 
   var HEIGHT = 6.4, MAX_R = 2.6;
@@ -79,7 +79,7 @@
   function frame() {
     if (document.hidden || !visCount) { running = false; return; }
     var now = performance.now();
-    var __ival2 = 6;
+    var __ival2 = 7;
     if (now - lastF < __ival2) { requestAnimationFrame(frame); return; }
     running = true;
     requestAnimationFrame(frame);
