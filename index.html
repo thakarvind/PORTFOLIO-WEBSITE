@@ -16,6 +16,7 @@
   <script defer src="assets/site.js?v=31"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
+  <script defer src="assets/governor.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -331,6 +332,14 @@
      #sparks{contain:strict}
      .edge-word{contain:layout paint}
      .hero-bg,.hero-backdrop img{will-change:auto}
+     /* PERF GOVERNOR stages — engaged ONLY while real frame-time jank is measured,
+        auto-revert when the machine holds healthy frames again (see governor.js).
+        Stage 1: slow the grain jitter, freeze glow pulse + edge-letter drift.
+        Stage 2: freeze grain fully; governor.js also freezes the sparks canvas. */
+     html.perf-1 .grain{animation-duration:2.6s}
+     html.perf-1 .hero-glow{animation-play-state:paused}
+     html.perf-1 .edge-word{animation-play-state:paused}
+     html.perf-2 .grain{animation-play-state:paused}
      /* throttle grain jitter when tab hidden or reduced-motion */
      @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
      /* === HERO SOCIAL DOCK — exact left side of My Mission tab, vertical (marked location) === */
