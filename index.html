@@ -355,18 +355,18 @@
        .hero-social-btn{width:42px;height:42px;border-radius:12px}
        .hero-social-btn svg{width:18px;height:18px}
      }
-     /* === FIX: Experience dates back to middle-left grid column (was mistakenly absolute right) === */
-     .xp-row{grid-template-columns:180px 1fr auto !important;align-items:center !important}
-     .xp-row > .xp-when{
-       position:static !important;top:auto !important;right:auto !important;
-       text-align:left !important;align-self:center !important;
-       display:flex !important;align-items:center !important;min-height:0 !important;
-       font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--dim2);text-transform:uppercase;
-     }
-     @media (max-width:860px){
-       .xp-row{grid-template-columns:1fr !important;align-items:start !important}
-       .xp-row > .xp-when{position:static !important;text-align:left !important;margin-bottom:6px !important;align-self:start !important}
-     }
+      /* === FIX: Experience dates - left side middle of empty space (only #experience) === */
+      #experience .xp-row{grid-template-columns:180px 1fr auto !important;align-items:center !important}
+      #experience .xp-row > .xp-when{
+        position:static !important;top:auto !important;right:auto !important;
+        text-align:center !important;align-self:center !important;justify-content:center !important;
+        display:flex !important;align-items:center !important;min-height:0 !important;
+        font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--dim2);text-transform:uppercase;
+      }
+      @media (max-width:860px){
+        #experience .xp-row{grid-template-columns:1fr !important;align-items:start !important}
+        #experience .xp-row > .xp-when{position:static !important;text-align:left !important;justify-content:flex-start !important;margin-bottom:6px !important;align-self:start !important}
+      }
    </style>
 </head>
 <body data-section="0">
