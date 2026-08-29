@@ -389,3 +389,7 @@ body{overflow-x:clip}
 /* ===== CONTACT FOOT — stats now single full-width panel ===== */
 .elle-foot{grid-template-columns:1fr;margin-top:-30px}
 .elle-stats{border-radius:26px 26px 10px 10px}
+
+/* PERF: pause decorative CSS animations while the tab is hidden — zero visual change when visible */
+body.tab-hidden .grain{animation-play-state:paused!important}
+body.tab-hidden .glass-link svg{animation-play-state:paused!important}
