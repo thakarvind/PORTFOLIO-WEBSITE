@@ -79,7 +79,7 @@
   function frame() {
     if (document.hidden || !visCount) { running = false; return; }
     var now = performance.now();
-    var __ival2 = (window.__prefer120? 5 : 11);
+    var __ival2 = 6;
     if (now - lastF < __ival2) { requestAnimationFrame(frame); return; }
     running = true;
     requestAnimationFrame(frame);

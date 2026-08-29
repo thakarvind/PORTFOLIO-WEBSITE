@@ -13,7 +13,7 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=19"></script>
+  <script defer src="assets/site.js?v=20"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
@@ -806,7 +806,7 @@
     function load(){
       if(loaded) return; loaded=true;
       var s1=document.createElement('script'); s1.src='assets/three.min.js'; s1.defer=true;
-      s1.onload=function(){ var s2=document.createElement('script'); s2.src='assets/connectors.js?v=9'; s2.defer=true; document.body.appendChild(s2); };
+      s1.onload=function(){ var s2=document.createElement('script'); s2.src='assets/connectors.js?v=10'; s2.defer=true; document.body.appendChild(s2); };
       document.body.appendChild(s1);
     }
     try{
