@@ -5,6 +5,7 @@
 (function () {
   try {
     if (!matchMedia("(pointer:fine)").matches) return;
+    if (window.__prefer120) return; // buttery 144: disable tilt rAF
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     var MAX = 5; /* max tilt in degrees — subtle, premium feel */
 
