@@ -332,9 +332,9 @@
      .hero-bg,.hero-backdrop img{will-change:auto}
      /* throttle grain jitter when tab hidden or reduced-motion */
      @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
-     /* === HERO SOCIAL DOCK — at marked left-side location (vertical GitHub / LinkedIn / Resume) === */
+     /* === HERO SOCIAL DOCK — exact left side of My Mission tab, vertical (marked location) === */
      .hero-social-dock{
-       position:absolute;left:clamp(14px,2.4vw,28px);bottom:calc(126px + 18px);z-index:6;
+       position:absolute;right:calc(min(52%,620px) + 16px);bottom:14px;z-index:6;
        display:flex;flex-direction:column;align-items:center;gap:11px;pointer-events:auto;
      }
      .hero-social-dock .dock-line{width:1px;height:18px;background:rgba(255,255,255,.14);opacity:.9}
@@ -349,7 +349,7 @@
      .hero-social-btn:hover{transform:translateY(-3px);border-color:rgba(255,122,24,.45);background:rgba(255,122,24,.08);color:var(--tint)}
      .hero-social-btn:focus-visible{outline:1px solid rgba(255,122,24,.6);outline-offset:2px}
      @media (max-width:860px){
-       .hero-social-dock{left:10px;bottom:calc(118px + 14px);top:auto;transform:none;gap:9px}
+       .hero-social-dock{left:10px;right:auto;bottom:calc(118px + 14px);top:auto;transform:none;gap:9px}
        .hero-social-dock .dock-line{height:12px}
        .hero-social-btn{width:42px;height:42px;border-radius:12px}
        .hero-social-btn svg{width:18px;height:18px}
