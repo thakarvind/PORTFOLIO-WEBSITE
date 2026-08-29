@@ -393,3 +393,7 @@ body{overflow-x:clip}
 /* PERF: pause decorative CSS animations while the tab is hidden — zero visual change when visible */
 body.tab-hidden .grain{animation-play-state:paused!important}
 body.tab-hidden .glass-link svg{animation-play-state:paused!important}
+
+/* restore experience date (month/year) to the top-right timeline position */
+.xp-row>.xp-when{position:absolute;top:22px;right:20px;text-align:right}
+@media (max-width:860px){.xp-row>.xp-when{position:static;text-align:left;margin-bottom:6px}}
