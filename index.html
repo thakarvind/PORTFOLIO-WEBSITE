@@ -308,10 +308,8 @@
       filter: blur(18px) brightness(.18) saturate(.9);
     }
     .hero.is-faded .hero-glow, .hero.is-faded #sparks{ opacity:0; transition: opacity .6s var(--ease); }
-    .hero.is-faded .hero-inner{ opacity:0; transform: translateY(8px); transition: opacity .65s var(--ease), transform .65s var(--ease); pointer-events:none; }
-    .hero-inner{ transition: opacity .65s var(--ease), transform .65s var(--ease); }
-    .hero.is-faded .hero-reference-cards{ opacity:0; transform: translateY(10px); transition: opacity .65s var(--ease), transform .65s var(--ease); pointer-events:none; }
-    .hero-reference-cards{ transition: opacity .65s var(--ease), transform .65s var(--ease); }
+    /* left side portfolio (hero-inner + reference-cards) stays visible — only backside image fades per user request */
+    .hero-inner, .hero-reference-cards{ transition: opacity .65s var(--ease), transform .65s var(--ease); }
     .hero-glass-reveal{
       position:absolute;
       right: clamp(14px, 3.2vw, 44px);
@@ -536,7 +534,7 @@
     </div>
   </nav>
 
-  <header class="hero" id="top">
+  <header class="hero" id="top" data-lenis-prevent>
     <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
@@ -1081,53 +1079,108 @@
   })();
   </script>
   <script>
-  // HERO GLASS REVEAL — image fades to dark on scroll, ethereum-style glossy card fades in (minimal, no other sections touched)
+  // HERO GLASS REVEAL — backside image fades to dark on FIRST scroll, glass card appears, THEN page scrolls (left portfolio stays)
   (function(){
     var hero = document.getElementById('top');
     var glass = document.getElementById('heroGlass');
     if(!hero || !glass) return;
-    var ticking = false;
-    var lastFade = false;
-    function update(){
-      // fade after 70px scroll; also supports Lenis smooth scroll (window.scrollY still reflects)
-      var y = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-      var shouldFade = y > 70;
-      // also auto-fade if hero is mostly out of view (Intersection fallback)
-      if(!shouldFade){
-        var r = hero.getBoundingClientRect();
-        // if hero top is above -30% of its height, treat as scrolled
-        if(r.bottom < window.innerHeight * 0.72) shouldFade = true;
-      }
-      if(shouldFade !== lastFade){
-        lastFade = shouldFade;
-        hero.classList.toggle('is-faded', shouldFade);
-        glass.setAttribute('aria-hidden', shouldFade ? 'false' : 'true');
-      }
-      ticking = false;
-    }
-    function onScroll(){
-      if(!ticking){
-        ticking = true;
-        requestAnimationFrame(update);
+    var faded = false;
+    var animating = false;
+    function setFaded(next){
+      if(next === faded || animating) return;
+      animating = true;
+      faded = next;
+      hero.classList.toggle('is-faded', faded);
+      glass.setAttribute('aria-hidden', faded ? 'false' : 'true');
+      // toggle Lenis prevent to actually block smooth scroll on first swipe (hero has data-lenis-prevent when not faded)
+      if(faded){
+        // keep blocked during animation, then unlock so NEXT scroll scrolls page
+        setTimeout(function(){
+          hero.removeAttribute('data-lenis-prevent');
+          animating = false;
+        }, 980);
+      } else {
+        hero.setAttribute('data-lenis-prevent','');
+        setTimeout(function(){ animating = false; }, 980);
       }
     }
-    window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('wheel', onScroll, {passive:true});
-    window.addEventListener('touchmove', onScroll, {passive:true});
-    // Lenis hook if available
-    var tries=0; (function hook(){
-      var L = window.__LenisL || window.Lenis;
-      if(tries++>50) return;
-      if(!L) return setTimeout(hook, 300);
-      try{
-        // if site.js exposes lenis instance via scroll event, already handled
-        window.addEventListener('scroll', onScroll, {passive:true});
-      }catch(e){}
-    })();
-    // initial check after loader
-    setTimeout(update, 900);
-    window.addEventListener('load', function(){ setTimeout(update, 400); });
-    // click-through: card links remain clickable even when hero fades
+    function isAtTop(){
+      return (window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0) < 8;
+    }
+    function heroInView(){
+      var r = hero.getBoundingClientRect();
+      return r.top >= -2 && r.bottom > 120;
+    }
+    // WHEEL: first scroll down at top = fade image only (block page scroll), second scroll = normal page scroll
+    window.addEventListener('wheel', function(e){
+      if(!heroInView()) return;
+      var atTop = isAtTop();
+      if(!faded && !animating && atTop && e.deltaY > 0){
+        e.preventDefault();
+        setFaded(true);
+        return;
+      }
+      if(faded && !animating && atTop && e.deltaY < 0){
+        e.preventDefault();
+        setFaded(false);
+        return;
+      }
+    }, {passive:false});
+    // TOUCH: swipe up at top = fade, swipe down at top when faded = unfade
+    var touchStartY = 0;
+    window.addEventListener('touchstart', function(e){
+      if(e.touches && e.touches[0]) touchStartY = e.touches[0].clientY;
+    }, {passive:true});
+    window.addEventListener('touchmove', function(e){
+      if(!e.touches || !e.touches[0]) return;
+      if(!heroInView()) return;
+      var deltaY = touchStartY - e.touches[0].clientY; // >0 = swipe up (scroll down)
+      var atTop = isAtTop();
+      if(!faded && !animating && atTop && deltaY > 14){
+        e.preventDefault();
+        setFaded(true);
+      } else if(faded && !animating && atTop && deltaY < -14){
+        e.preventDefault();
+        setFaded(false);
+      }
+    }, {passive:false});
+    // KEYBOARD: ArrowDown/Space at top = fade, ArrowUp at top when faded = unfade
+    window.addEventListener('keydown', function(e){
+      if(!heroInView()) return;
+      var atTop = isAtTop();
+      var isDown = e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ' || e.key === 'End';
+      var isUp = e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home';
+      if(!faded && !animating && atTop && isDown){
+        e.preventDefault();
+        setFaded(true);
+      } else if(faded && !animating && atTop && isUp){
+        e.preventDefault();
+        setFaded(false);
+      }
+    });
+    // SCROLLBAR DRAG FALLBACK: if user drags scrollbar past hero without wheel, just sync without hijack
+    var ticking=false;
+    function onScrollSync(){
+      if(animating){ ticking=false; return; }
+      var y = window.scrollY || 0;
+      if(!faded && y > 40 && !heroInView()){
+        // user already scrolled past hero via scrollbar — reflect faded state without hijack animation lock
+        faded = true;
+        hero.classList.add('is-faded');
+        hero.removeAttribute('data-lenis-prevent');
+        glass.setAttribute('aria-hidden','false');
+      } else if(faded && y < 4 && heroInView()){
+        // keep faded at top until explicit up-scroll hijack — do not auto-unfade on tiny bounce
+      }
+      ticking=false;
+    }
+    window.addEventListener('scroll', function(){
+      if(!ticking){ ticking=true; requestAnimationFrame(onScrollSync); }
+    }, {passive:true});
+    // initial: not faded, ensure left portfolio visible (only backside image will fade) + block Lenis on hero
+    hero.classList.remove('is-faded');
+    hero.setAttribute('data-lenis-prevent','');
+    glass.setAttribute('aria-hidden','true');
   })();
   </script>
 </body>
