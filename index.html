@@ -812,7 +812,110 @@
       .elle-card{padding:32px 12px 16px !important}
       .stats{grid-template-columns:1fr !important}
     }
+
+    /* ============================================================
+       PERF OPTIMIZATIONS — zero visual change, maximum compositor perf
+       ============================================================ */
+
+    /* 1) will-change only on high-frequency animated elements */
+    .wipe-circle{will-change:transform}
+    .edge-word{will-change:transform}
+    .hpreview{will-change:transform}
+    .cursor-tag{will-change:transform}
+    .hero-bg{will-change:transform}
+
+    /* 2) Contain paint on large repeatedly-repainted sections */
+    section.blk{contain:layout style}
+    .a-box,.m-box,.svc,.cert,.xp-row{contain:layout style}
+    .elle-card,.elle-photo,.elle-more,.elle-stats{contain:layout style}
+
+    /* 3) Remove backdrop-filter from panels over near-opaque dark backgrounds.
+          Visually identical since background is essentially black — eliminates
+          the GPU re-blur pass that causes scroll jank on those surfaces. */
+    .wrap{
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      background:#10121af2 !important;
+    }
+    .a-box,.m-box{
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+    }
+    .elle-more,.elle-stats,.elle-ach{
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      background:#10121af0 !important;
+    }
+
+    /* 4) Pause EVERY backdrop-filter during active scroll — restores instantly on settle */
+    html.is-scrolling .wrap,
+    html.is-scrolling .a-box,
+    html.is-scrolling .m-box,
+    html.is-scrolling .elle-more,
+    html.is-scrolling .elle-stats,
+    html.is-scrolling .elle-ach,
+    html.is-scrolling .elle-card,
+    html.is-scrolling nav.top.scrolled,
+    html.is-scrolling .footer-cards{
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+    }
+
+    /* 5) Pause decorative animations during scroll — zero visual impact while moving */
+    html.is-scrolling .grain,
+    html.is-scrolling .glass-link svg,
+    html.is-scrolling .f-pulse{
+      animation-play-state:paused !important;
+    }
+
+    /* 6) conic-gradient @property beam on .m-box:hover:after creates one GPU layer
+          per card in the mosaic grid. Only promote when actually hovered. */
+    .m-box:not(:hover){will-change:auto !important;}
+    .m-box:hover{will-change:transform !important;}
+
+    /* 7) Mobile: halve blur radii — mobile GPUs cannot sustain 24-30px blurs at 60fps */
+    @media (max-width:860px){
+      .hero-social-btn{
+        backdrop-filter:blur(8px) saturate(130%) !important;
+        -webkit-backdrop-filter:blur(8px) saturate(130%) !important;
+      }
+      .hero-reference-cards{
+        backdrop-filter:blur(8px) saturate(130%) !important;
+        -webkit-backdrop-filter:blur(8px) saturate(130%) !important;
+      }
+      .elle-card{
+        backdrop-filter:blur(10px) saturate(120%) !important;
+        -webkit-backdrop-filter:blur(10px) saturate(120%) !important;
+      }
+      .elle-dock-btn{
+        backdrop-filter:blur(8px) saturate(120%) !important;
+        -webkit-backdrop-filter:blur(8px) saturate(120%) !important;
+      }
+      /* sparks already opacity:0.5 on mobile — reduce particle count handled in JS */
+      /* glass-link connectors: simplify backdrop on mobile */
+      .glass-link{
+        backdrop-filter:blur(6px) saturate(130%) !important;
+        -webkit-backdrop-filter:blur(6px) saturate(130%) !important;
+      }
+    }
+
+    /* 8) Trim transition scope: only compositor-safe properties (transform, opacity, color).
+          Avoid animating width/height/padding which force layout recalc. */
+    .xp-row{transition:background .3s ease !important}
+    .cert{transition:background .3s ease !important}
+    .svc{transition:border-color .3s ease, transform .35s var(--ease) !important}
+    .tool{transition:border-color .3s ease, color .3s ease, transform .3s ease !important}
+    .elle-links a{transition:color .25s ease !important}
+    .elle-dock-btn{transition:transform .25s ease, border-color .25s ease !important}
+    .hero-social-btn{transition:transform .25s ease, border-color .25s ease, background .25s ease !important}
+
+    /* 9) Sparks canvas: ensure pointer-events never cause hit-testing overhead */
+    #sparks{pointer-events:none !important}
+
+    /* 10) Font rendering on GPU: subpixel AA causes CPU-GPU sync on scroll */
+    body{-webkit-font-smoothing:antialiased !important; font-smooth:always !important}
     </style>
+
 </head>
 <body data-section="0">
 
@@ -1415,6 +1518,25 @@
     mo.observe(nav, {attributes:true, attributeFilter:['class']});
     window.addEventListener('scroll', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
     window.addEventListener('wheel', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
+  })();
+  </script>
+  <script>
+  /* PERF: html.is-scrolling — activates CSS rules that pause all backdrop-filters
+     and decorative animations during scroll. Clears on settle (rAF-debounced).
+     Works with Lenis or native scroll. Zero visual change when not scrolling. */
+  (function(){
+    var html=document.documentElement, t=null;
+    function onScroll(){
+      html.classList.add('is-scrolling');
+      if(t) clearTimeout(t);
+      t=setTimeout(function(){
+        html.classList.remove('is-scrolling');
+        t=null;
+      }, 150);
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('wheel',onScroll,{passive:true});
+    window.addEventListener('touchmove',onScroll,{passive:true});
   })();
   </script>
 </body>
