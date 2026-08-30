@@ -451,167 +451,151 @@
       .nav-links{gap:6px !important}
     }
 
-    /* ---- HERO MOBILE: mixed with background (not separate box), image down so nav not over bright ---- */
+    /* ---- HERO MOBILE: completely reflowed using flexbox, no absolute positions ---- */
     @media (max-width:860px){
       .hero{
         height:auto !important;
-        min-height:auto !important;
-        padding:0 0 12px !important;
+        min-height:100dvh !important;
+        padding: 90px 16px 20px !important;
         display:flex !important;
         flex-direction:column !important;
-        justify-content:flex-start !important;
+        justify-content:flex-end !important;
         background:#000 !important;
+        gap: 20px !important;
+        position: relative;
+        z-index: 1;
       }
-      /* image mixes with background — full-bleed behind, blended via masks (no separate card), moved down */
       .hero-bg{
         position:absolute !important;
         inset:0 !important;
         width:100% !important;
         height:100% !important;
-        left:0 !important; right:0 !important; top:0 !important;
-        margin:0 !important;
         object-fit:cover !important;
-        object-position:66% 24% !important; /* down so nav (HOME..CONTACT) sits over dark top, not tube/face */
-        border-radius:0 !important;
-        -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.38) 26%, rgba(0,0,0,.76) 42%, #000 58%) !important;
-        mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.38) 26%, rgba(0,0,0,.76) 42%, #000 58%) !important;
-        opacity:.72 !important;
-        transform:none !important;
-        filter:saturate(1.06) contrast(1.04) brightness(.96) !important;
-        z-index:1 !important;
+        object-position:center top !important;
+        opacity:.5 !important;
+        z-index:-2 !important;
+        -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.6) 40%, rgba(0,0,0,0) 90%) !important;
+        mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,.6) 40%, rgba(0,0,0,0) 90%) !important;
       }
       .hero-backdrop img{
-        object-position:66% 24% !important;
-        -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.42) 30%, #000 62%) !important;
-        mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.42) 30%, #000 62%) !important;
-        opacity:.34 !important;
+        display:none !important;
       }
       .hero:after{
         display:block !important;
         inset:0 !important;
-        width:100% !important; left:0 !important; right:0 !important;
-        /* top dark for nav + left-dark for text + bottom-dark for missions — image mixes behind */
-        background:
-          linear-gradient(180deg, #000 0%, #000 54px, rgba(0,0,0,.92) 72px, rgba(0,0,0,.45) 96px, transparent 132px),
-          linear-gradient(90deg, rgba(0,0,0,.94) 0%, rgba(0,0,0,.88) 42%, rgba(0,0,0,.56) 60%, transparent 82%),
-          linear-gradient(180deg, transparent 0%, transparent 48%, rgba(0,0,0,.52) 68%, rgba(0,0,0,.86) 88%, #000 100%) !important;
+        width:100% !important;
+        background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 30%, #000 80%) !important;
+        z-index:-1 !important;
       }
       .hero:before{display:none !important}
       .hero-glow{display:none !important}
-      #sparks{inset:0 !important; top:0 !important; left:0 !important; right:0 !important; bottom:0 !important; border-radius:0 !important}
-      /* ALL info in downside dark zone but image still mixes behind (top dark protects nav) */
+      #sparks{inset:0 !important; z-index:0 !important}
+
+      .hero-brand{
+        position:relative !important;
+        left:auto !important;
+        top:auto !important;
+        transform:none !important;
+        font-size:.68rem !important;
+        letter-spacing:.28em !important;
+        white-space:normal !important;
+        text-align:center !important;
+        margin:0 auto 10px auto !important;
+        display:inline-block !important;
+        background:rgba(255,255,255,.05) !important;
+        padding:8px 16px !important;
+        border-radius:999px !important;
+        z-index:6 !important;
+      }
+
       .hero-inner{
-        padding:142px 16px 8px !important;
-        margin-top:0 !important;
+        padding:0 !important;
+        margin:0 !important;
         min-height:auto !important;
         display:flex !important;
         flex-direction:column !important;
-        justify-content:flex-start !important;
-        flex:0 0 auto !important;
-        background:transparent !important;
-        position:relative !important; z-index:5 !important;
+        align-items:flex-start !important;
+        flex:1 0 auto !important;
+        position:relative !important; 
+        z-index:5 !important;
+        justify-content:center !important;
       }
+      
       .hero-content{
         max-width:100% !important;
-        overflow:visible !important;
         display:flex !important;
         flex-direction:column !important;
         align-items:flex-start !important;
-        gap:0 !important;
+        gap: 12px !important;
       }
+      
       .sub-title{
-        font-size:.60rem !important;
-        letter-spacing:.42em !important;
-        margin-bottom:6px !important;
-        line-height:1.2 !important;
-        opacity:.92 !important;
+        font-size:.7rem !important;
+        letter-spacing:.3em !important;
+        margin-bottom:0 !important;
       }
+      
       .main-title{
-        font-size:clamp(2.05rem, 10.2vw, 2.85rem) !important;
-        letter-spacing:.04em !important;
-        line-height:.92 !important;
-        margin:0 0 10px -1px !important;
-        padding-right:4px !important;
-        overflow:visible !important;
-        max-width:100% !important;
-        white-space:nowrap;
+        font-size:clamp(2.5rem, 12vw, 3.5rem) !important;
+        letter-spacing:0 !important;
+        line-height:1 !important;
+        margin:0 !important;
+        white-space:normal !important;
+        word-break:break-word !important;
       }
-      .main-title .char{overflow:hidden !important}
-      /* info under MY PORTFOLIO — more horizontal (wider, fewer breaks) */
+      
       .description{
-        font-size:.78rem !important;
-        line-height:1.62 !important;
-        max-width:92% !important;
-        width:100% !important;
-        margin-top:6px !important;
-        border-left:1px solid rgba(255,255,255,.09);
-        padding-left:12px !important;
-        color:rgba(168,165,160,.96) !important;
+        font-size:.85rem !important;
+        line-height:1.6 !important;
+        max-width:100% !important;
+        margin-top:0 !important;
+        border-left:2px solid rgba(255,255,255,.2);
+        padding-left:14px !important;
+        color:rgba(255,255,255,.8) !important;
       }
+      
       .cta-btn{
-        margin-top:14px !important;
-        padding:12px 20px !important;
-        font-size:.58rem !important;
-        min-height:42px;
-        letter-spacing:.14em !important;
+        margin-top:8px !important;
+        padding:14px 24px !important;
+        font-size:.65rem !important;
+        width:auto !important;
       }
-      .hero-brand{
-        left:50% !important;
-        top:12px !important;
-        transform:translateX(-50%) !important;
-        font-size:.68rem !important;
-        letter-spacing:.28em !important;
-        white-space:nowrap !important;
-        background:rgba(0,0,0,.34) !important;
-        backdrop-filter:blur(10px) saturate(130%) !important;
-        -webkit-backdrop-filter:blur(10px) saturate(130%) !important;
-        padding:7px 12px !important;
-        border-radius:999px !important;
-        border:1px solid rgba(255,255,255,.10) !important;
-        z-index:6 !important;
-      }
-      .hero-brand em{letter-spacing:.28em !important}
-      /* downside dark zone — dock + mission/vision flow below description, not over photo */
+
       .hero-social-dock{
         position:relative !important;
         left:auto !important; right:auto !important; bottom:auto !important; top:auto !important;
         flex-direction:row !important;
         justify-content:flex-start !important;
         align-items:center !important;
-        gap:10px !important;
-        margin:14px 16px 0 16px !important;
-        width:calc(100% - 32px) !important;
+        gap:12px !important;
+        margin:0 !important;
+        width:100% !important;
         z-index:5 !important;
       }
-      .hero-social-dock .dock-line{width:22px !important; height:1px !important; flex:0 0 22px !important}
-      .hero-social-dot{width:6px !important; height:6px !important}
-      .hero-social-btn{width:40px !important; height:40px !important; border-radius:11px !important}
+      
+      .hero-social-dock .dock-line{display:none !important;}
+      .hero-social-dot{display:none !important;}
+      .hero-social-btn{width:44px !important; height:44px !important; border-radius:12px !important;}
+      
       .hero-reference-cards{
         position:relative !important;
         left:auto !important; right:auto !important; bottom:auto !important; top:auto !important;
-        width:calc(100% - 32px) !important;
-        margin:12px 16px 8px 16px !important;
-        grid-template-columns:1fr 1fr !important;
+        width:100% !important;
+        margin:0 !important;
+        grid-template-columns:1fr !important;
         min-height:0 !important;
-        border-radius:14px !important;
-        border:1px solid rgba(255,255,255,.08) !important;
-        backdrop-filter:blur(14px) saturate(145%) !important;
-        -webkit-backdrop-filter:blur(14px) saturate(145%) !important;
-        overflow:hidden !important;
+        border-radius:16px !important;
+        background:rgba(20,20,20,.8) !important;
         z-index:5 !important;
       }
-      .hero-reference-cards>div{padding:13px 13px 14px !important; gap:6px !important}
-      .hero-reference-cards strong{font-size:.56rem !important; letter-spacing:.10em !important}
-      .hero-reference-cards span{font-size:.66rem !important; line-height:1.48 !important}
+      
+      .hero-reference-cards>div{padding:16px !important; gap:8px !important}
+      .hero-reference-cards>div+div{border-left:none !important; border-top:1px solid rgba(255,255,255,.08) !important;}
+      .hero-reference-cards strong{font-size:.6rem !important; letter-spacing:.1em !important}
+      .hero-reference-cards span{font-size:.75rem !important; line-height:1.5 !important}
     }
     @media (max-width:380px){
-      .hero-bg{height:100% !important; min-height:0 !important; margin:0 !important}
-      #sparks{height:100% !important; min-height:0 !important; top:0 !important}
-      .hero-inner{padding-left:14px !important; padding-right:14px !important; padding-top:128px !important}
-      .main-title{font-size:clamp(1.95rem, 9.8vw, 2.5rem) !important; letter-spacing:.03em !important}
-      .hero-social-dock{margin:12px 14px 0 14px !important; width:calc(100% - 28px) !important}
-      .hero-reference-cards{width:calc(100% - 28px) !important; margin:10px 14px 8px 14px !important; grid-template-columns:1fr !important}
-      .hero-reference-cards>div+div{border-left:none !important; border-top:1px solid rgba(255,255,255,.08)}
+      .main-title{font-size:clamp(2rem, 10vw, 2.8rem) !important;}
     }
 
     /* ---- SECTIONS: padding, type scale, edge-word, grids ---- */
@@ -673,42 +657,108 @@
       .edge-word{display:none !important}
     }
 
-    /* ---- CONTACT / ELLE: stack + stylish border (Image 2) — keep 3-icon dock centered as in Image 1 ---- */
+    /* ---- CONTACT / ELLE: stack + responsive reflow without forced constraints ---- */
     @media (max-width:980px){
-      /* allow outline offset to show — override .blk overflow:clip */
       #contact.blk, #contact.elle-contact, .elle-wrap, .elle-right{overflow:visible !important}
-      .elle-grid{grid-template-columns:1fr !important; gap:14px !important}
-      .elle-left{order:1}
-      .elle-right{order:2; padding:10px 8px 10px !important; overflow:visible !important}
-      .elle-card{margin:18px 0 0 0 !important; padding:38px 16px 20px !important; border-radius:22px !important}
-      .elle-sage-tab{border-radius:18px 10px 0 0 !important; padding:11px 12px !important; font-size:.58rem !important}
+      .elle-grid{
+        display:flex !important;
+        flex-direction:column-reverse !important;
+        gap:24px !important;
+      }
+      .elle-left{
+        width:100% !important;
+      }
+      .elle-right{
+        width:100% !important;
+        padding:0 !important;
+        display:flex !important;
+        justify-content:center !important;
+      }
+      .elle-card{
+        margin:0 !important;
+        padding:32px 20px 24px !important;
+        border-radius:24px !important;
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+      }
+      .elle-sage-tab{
+        border-radius:18px 18px 0 0 !important;
+        padding:14px 16px !important;
+        font-size:.6rem !important;
+        text-align:center !important;
+        display:block !important;
+      }
       .elle-sage-tab:after{display:none !important}
-      .elle-avatar{width:62px !important; height:62px !important; flex:0 0 62px !important; border-width:3px !important}
-      .elle-bubble{font-size:.50rem !important; padding:9px 10px !important; max-width:148px !important}
-      .elle-loc{margin-top:18px !important}
-      .elle-loc h3{font-size:1.55rem !important}
-      .elle-loc h3 em{font-size:1.15rem !important}
-      .elle-desc{font-size:.72rem !important; line-height:1.68 !important; margin-top:12px !important}
-      .elle-links{gap:8px 14px !important; margin-top:14px !important}
-      /* stylish border — same asymmetric radius as desktop Image 2, scaled for phone + outline offset */
+      
+      .elle-avatar-row{
+        display:flex !important;
+        align-items:center !important;
+        gap:16px !important;
+      }
+      .elle-avatar{width:72px !important; height:72px !important; flex:0 0 72px !important; border-width:3px !important}
+      .elle-bubble{
+        position:relative !important;
+        left:auto !important; top:auto !important;
+        transform:none !important;
+        font-size:.55rem !important;
+        padding:12px 14px !important;
+        max-width:200px !important;
+      }
+      
+      .elle-loc{margin-top:24px !important}
+      .elle-loc h3{font-size:1.8rem !important; line-height:1.2 !important}
+      .elle-loc h3 em{font-size:1.3rem !important}
+      .elle-desc{font-size:.8rem !important; line-height:1.6 !important; margin-top:16px !important}
+      
+      .elle-links{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        gap:12px !important;
+        margin-top:24px !important;
+        width:100% !important;
+      }
+      
       .elle-photo{
-        max-width:calc(100% - 18px) !important;
-        margin:9px auto !important;
-        aspect-ratio:4/5.05 !important;
-        border-radius:36px 36px 44px 96px !important;
+        width:100% !important;
+        max-width:400px !important;
+        margin:0 auto !important;
+        aspect-ratio:4/5 !important;
+        border-radius:32px !important;
         outline:1px solid rgba(255,255,255,.32) !important;
         outline-offset:8px !important;
         contain:none !important;
         overflow:hidden !important;
       }
-      .elle-photo-overlay{left:12px !important; right:12px !important; bottom:12px !important; gap:7px !important}
-      .elle-brand{font-size:1.2rem !important; letter-spacing:.24em !important}
-      .elle-photo-meta{padding:9px 10px !important; gap:8px !important}
-      /* keep 3 dock icons centered below card + above portrait (as in Image 1), not vertical side */
-      .elle-dock{position:static !important; transform:none !important; right:auto !important; top:auto !important; flex-direction:row !important; justify-content:center !important; align-items:center !important; gap:10px !important; margin:14px auto 0 !important; width:fit-content !important}
+      .elle-photo-overlay{left:16px !important; right:16px !important; bottom:16px !important; gap:8px !important}
+      .elle-brand{font-size:1.4rem !important; letter-spacing:.2em !important}
+      .elle-photo-meta{
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        padding:12px !important;
+        gap:8px !important;
+      }
+      
+      .elle-dock{
+        position:relative !important;
+        transform:none !important;
+        right:auto !important;
+        top:auto !important;
+        flex-direction:row !important;
+        justify-content:flex-start !important;
+        align-items:center !important;
+        gap:12px !important;
+        margin:24px 0 0 0 !important;
+        width:100% !important;
+      }
       .elle-dock-dot{display:none !important}
-      .elle-dock-stack{flex-direction:row !important; gap:10px !important}
-      .elle-dock-btn{width:42px !important; height:42px !important; border-radius:11px !important}
+      .elle-dock-stack{
+        display:flex !important;
+        flex-direction:row !important;
+        gap:12px !important;
+      }
+      .elle-dock-btn{width:48px !important; height:48px !important; border-radius:14px !important}
     }
     @media (max-width:560px){
       .elle-right{padding:8px 6px 8px !important}
