@@ -376,11 +376,359 @@
         display:flex !important;align-items:center !important;justify-content:center !important;height:100% !important;min-height:100% !important;
         font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--dim2);text-transform:uppercase;
       }
-      @media (max-width:860px){
-        #experience .xp-row{grid-template-columns:1fr !important;align-items:start !important}
-        #experience .xp-row > .xp-when{position:static !important;text-align:left !important;justify-content:flex-start !important;margin-bottom:6px !important;align-self:start !important}
+       @media (max-width:860px){
+         #experience .xp-row{grid-template-columns:1fr !important;align-items:start !important}
+         #experience .xp-row > .xp-when{position:static !important;text-align:left !important;justify-content:flex-start !important;margin-bottom:6px !important;align-self:start !important}
+       }
+
+    /* ===========================================================
+       MOBILE FRIENDLY — comprehensive visual fixes (860px & below)
+       Fixes: nav hidden at 1100px, hero masked image invisible/wrong,
+       horizontal overflow, edge-word clipping, contact dock overflow,
+       grid collapse, touch targets, iOS vh.
+       =========================================================== */
+
+    /* global overflow + image safety */
+    html{scrollbar-gutter:stable; overflow-x:clip}
+    body{overflow-x:clip; max-width:100vw}
+    img, svg, canvas, video{max-width:100%}
+    *{min-width:0}
+
+    @media (max-width:640px){
+      .site-frame{margin:8px !important; border-radius:16px !important}
+    }
+
+    /* ---- NAV: restore hidden links + make swipeable pills ---- */
+    @media (max-width:1100px){
+      .nav-links{
+        display:flex !important;
+        gap:8px !important;
+        flex-wrap:nowrap !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+        max-width:100%;
+        padding-bottom:2px;
+        align-items:center;
       }
-   </style>
+      .nav-links::-webkit-scrollbar{display:none}
+      nav.top{
+        left:8px !important;
+        right:8px !important;
+        max-width:calc(100% - 16px) !important;
+        gap:0 !important;
+        justify-content:flex-start !important;
+        padding-left:0 !important;
+        padding-right:0 !important;
+      }
+      .nav-links a{
+        flex:0 0 auto;
+        font-size:.58rem !important;
+        letter-spacing:.14em !important;
+        padding:7px 13px !important;
+        min-height:32px;
+        display:inline-flex !important;
+        align-items:center;
+        justify-content:center;
+        white-space:nowrap;
+      }
+    }
+    /* phone: brand centered top, nav pills below brand — no overlap (fixes Image1 missing nav) */
+    @media (max-width:860px){
+      nav.top{
+        top:44px !important;
+        left:12px !important;
+        right:12px !important;
+        max-width:calc(100% - 24px) !important;
+        justify-content:center !important;
+      }
+      .nav-links{justify-content:center !important; gap:6px !important}
+      .nav-links a{padding:6px 11px !important; font-size:.54rem !important}
+    }
+    @media (max-width:400px){
+      .nav-links a{font-size:.52rem !important; padding:6px 10px !important; letter-spacing:.10em !important}
+      .nav-links{gap:6px !important}
+    }
+
+    /* ---- HERO: phone-precise — matches Image2 desktop but stacked; fixes Image1 cutoff/overlap ---- */
+    @media (max-width:860px){
+      .hero{
+        height:auto !important;
+        min-height:calc(100svh - 16px) !important;
+        min-height:calc(100dvh - 16px) !important;
+        min-height:calc(100vh - 16px) !important;
+        padding-bottom:max(10px, env(safe-area-inset-bottom, 0px)) !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:flex-start !important;
+        background:#000 !important;
+      }
+      .hero-bg{
+        width:100% !important;
+        height:100% !important;
+        left:0 !important;
+        right:0 !important;
+        top:0 !important;
+        object-fit:cover !important;
+        object-position:center top !important;
+        -webkit-mask-image:linear-gradient(to bottom, #000 56%, rgba(0,0,0,.60) 74%, transparent 96%) !important;
+        mask-image:linear-gradient(to bottom, #000 56%, rgba(0,0,0,.60) 74%, transparent 96%) !important;
+        opacity:.66 !important;
+        transform:none !important;
+        filter:saturate(1.08) contrast(1.05) brightness(.98) !important;
+      }
+      .hero-backdrop img{
+        width:100% !important; height:100% !important;
+        object-position:center top !important;
+        -webkit-mask-image:linear-gradient(to bottom, #000 50%, transparent 92%) !important;
+        mask-image:linear-gradient(to bottom, #000 50%, transparent 92%) !important;
+        opacity:.42 !important;
+      }
+      .hero:after{
+        width:100% !important; left:0 !important; right:0 !important;
+        background:linear-gradient(180deg, rgba(0,0,0,.12) 0%, rgba(0,0,0,.30) 38%, rgba(0,0,0,.58) 62%, rgba(0,0,0,.86) 84%, #000 100%) !important;
+      }
+      /* inner no longer centered — starts below brand/nav, keeps P visible */
+      .hero-inner{
+        padding:0 16px !important;
+        padding-top:64px !important;
+        padding-bottom:10px !important;
+        min-height:auto !important;
+        display:flex !important;
+        flex-direction:column !important;
+        justify-content:flex-start !important;
+        flex:0 0 auto !important;
+      }
+      .hero-content{
+        max-width:100% !important;
+        overflow:visible !important;
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        gap:0 !important;
+      }
+      .sub-title{
+        font-size:.60rem !important;
+        letter-spacing:.42em !important;
+        margin-bottom:6px !important;
+        line-height:1.2 !important;
+        opacity:.92 !important;
+      }
+      /* prevent P clipping seen in Image1: smaller clamp, tighter spacing, overflow visible */
+      .main-title{
+        font-size:clamp(2.05rem, 10.2vw, 2.85rem) !important;
+        letter-spacing:.04em !important;
+        line-height:.92 !important;
+        margin:0 0 10px -1px !important;
+        padding-right:4px !important;
+        overflow:visible !important;
+        max-width:100% !important;
+        white-space:nowrap;
+      }
+      .main-title .char{overflow:hidden !important}
+      .description{
+        font-size:.78rem !important;
+        line-height:1.62 !important;
+        max-width:33ch !important;
+        margin-top:6px !important;
+        border-left:1px solid rgba(255,255,255,.09);
+        padding-left:12px !important;
+        color:rgba(168,165,160,.96) !important;
+      }
+      .cta-btn{
+        margin-top:14px !important;
+        padding:12px 20px !important;
+        font-size:.58rem !important;
+        min-height:42px;
+        letter-spacing:.14em !important;
+      }
+      .hero-brand{
+        left:50% !important;
+        top:12px !important;
+        transform:translateX(-50%) !important;
+        font-size:.68rem !important;
+        letter-spacing:.28em !important;
+        white-space:nowrap !important;
+        background:rgba(0,0,0,.34) !important;
+        backdrop-filter:blur(10px) saturate(130%) !important;
+        -webkit-backdrop-filter:blur(10px) saturate(130%) !important;
+        padding:7px 12px !important;
+        border-radius:999px !important;
+        border:1px solid rgba(255,255,255,.10) !important;
+        z-index:6 !important;
+      }
+      .hero-brand em{letter-spacing:.28em !important}
+      /* dock + cards flow below content, never over description (fixes Image1 GitHub overlap) */
+      .hero-social-dock{
+        position:relative !important;
+        left:auto !important; right:auto !important; bottom:auto !important; top:auto !important;
+        flex-direction:row !important;
+        justify-content:flex-start !important;
+        align-items:center !important;
+        gap:10px !important;
+        margin:14px 16px 0 16px !important;
+        width:calc(100% - 32px) !important;
+        z-index:5 !important;
+      }
+      .hero-social-dock .dock-line{width:22px !important; height:1px !important; flex:0 0 22px !important}
+      .hero-social-dot{width:6px !important; height:6px !important}
+      .hero-social-btn{width:40px !important; height:40px !important; border-radius:11px !important}
+      .hero-reference-cards{
+        position:relative !important;
+        left:auto !important; right:auto !important; bottom:auto !important; top:auto !important;
+        width:calc(100% - 32px) !important;
+        margin:12px 16px 10px 16px !important;
+        grid-template-columns:1fr 1fr !important;
+        min-height:0 !important;
+        border-radius:14px !important;
+        border:1px solid rgba(255,255,255,.08) !important;
+        backdrop-filter:blur(14px) saturate(145%) !important;
+        -webkit-backdrop-filter:blur(14px) saturate(145%) !important;
+        overflow:hidden !important;
+        z-index:5 !important;
+      }
+      .hero-reference-cards>div{padding:13px 13px 14px !important; gap:6px !important}
+      .hero-reference-cards strong{font-size:.56rem !important; letter-spacing:.10em !important}
+      .hero-reference-cards span{font-size:.66rem !important; line-height:1.48 !important}
+    }
+    @media (max-width:380px){
+      .hero-inner{padding-left:14px !important; padding-right:14px !important; padding-top:60px !important}
+      .main-title{font-size:clamp(1.95rem, 9.8vw, 2.5rem) !important; letter-spacing:.03em !important}
+      .hero-social-dock{margin:12px 14px 0 14px !important; width:calc(100% - 28px) !important}
+      .hero-reference-cards{width:calc(100% - 28px) !important; margin:10px 14px 8px 14px !important; grid-template-columns:1fr !important}
+      .hero-reference-cards>div+div{border-left:none !important; border-top:1px solid rgba(255,255,255,.08)}
+    }
+
+    /* ---- SECTIONS: padding, type scale, edge-word, grids ---- */
+    @media (max-width:860px){
+      .blk{padding:32px 14px !important; overflow:clip !important}
+      .wrap{padding:18px 14px !important; border-radius:12px !important}
+      .blk-head{flex-direction:column !important; align-items:flex-start !important; gap:10px !important; margin-bottom:16px !important}
+      .blk-head h2{font-size:clamp(1.55rem, 7vw, 2rem) !important; line-height:.96 !important}
+      .label{font-size:.54rem !important; letter-spacing:.18em !important}
+      .side{font-size:.50rem !important; text-align:left !important; align-self:flex-start !important; line-height:1.5 !important}
+      .statement{font-size:1.18rem !important; line-height:1.34 !important}
+      .about-copy{font-size:.80rem !important; line-height:1.68 !important}
+      .stats{grid-template-columns:1fr 1fr !important}
+      .stat{padding:16px 12px !important}
+      .stat b{font-size:1.15rem !important}
+      .stat span{font-size:.56rem !important}
+      /* xp + certs */
+      .xp-head{flex-wrap:wrap !important}
+      .xp-role{font-size:.88rem !important; line-height:1.32 !important}
+      .xp-org{font-size:.54rem !important}
+      .xp-pts span{font-size:.64rem !important; line-height:1.58 !important}
+      .cert{padding:14px 12px !important}
+      .cert b{font-size:.74rem !important; line-height:1.42 !important}
+      /* projects mosaic */
+      .mosaic{grid-template-columns:1fr !important}
+      .m-box.wide,.m-box.small{grid-column:span 1 !important}
+      .m-box{padding:18px 14px !important; min-height:0 !important}
+      .m-title{font-size:.92rem !important; line-height:1.34 !important}
+      .m-desc{font-size:.72rem !important; line-height:1.6 !important}
+      .m-top{gap:10px !important}
+      .m-logo{width:34px !important; height:34px !important}
+      /* achievements */
+      .amosaic{grid-template-columns:1fr !important}
+      .a-box.wide,.a-box.small{grid-column:span 1 !important}
+      .a-box{padding:18px 14px !important; min-height:0 !important}
+      .a-title{font-size:.92rem !important}
+      .a-desc{font-size:.72rem !important}
+      /* toolbox */
+      .tools{gap:8px !important}
+      .tool{padding:10px 13px !important; font-size:.54rem !important; letter-spacing:.11em !important}
+      .svc-grid{grid-template-columns:1fr !important; gap:10px !important; margin-top:22px !important}
+      .svc{padding:18px 14px !important}
+      .svc h3{font-size:.96rem !important}
+      .svc p{font-size:.74rem !important; line-height:1.65 !important}
+      /* connector */
+      .gold-link{width:116px !important; height:168px !important; margin:-22px auto !important}
+      .gold-link svg{opacity:.9}
+    }
+    @media (max-width:860px){
+      .edge-word{
+        font-size:clamp(2.6rem, 16vw, 3.4rem) !important;
+        opacity:.06 !important;
+        right:-.02em !important;
+        -webkit-text-stroke:1px rgba(255,255,255,.07) !important;
+        display:block !important;
+      }
+    }
+    @media (max-width:480px){
+      .edge-word{display:none !important}
+    }
+
+    /* ---- CONTACT / ELLE: stack, remove overflow offsets ---- */
+    @media (max-width:980px){
+      .elle-grid{grid-template-columns:1fr !important; gap:14px !important}
+      .elle-left{order:1}
+      .elle-right{order:2}
+      .elle-card{margin:18px 0 0 0 !important; padding:38px 16px 20px !important; border-radius:22px !important}
+      .elle-sage-tab{border-radius:18px 10px 0 0 !important; padding:11px 12px !important; font-size:.58rem !important}
+      .elle-sage-tab:after{display:none !important}
+      .elle-avatar{width:62px !important; height:62px !important; flex:0 0 62px !important; border-width:3px !important}
+      .elle-bubble{font-size:.50rem !important; padding:9px 10px !important; max-width:148px !important}
+      .elle-loc{margin-top:18px !important}
+      .elle-loc h3{font-size:1.55rem !important}
+      .elle-loc h3 em{font-size:1.15rem !important}
+      .elle-desc{font-size:.72rem !important; line-height:1.68 !important; margin-top:12px !important}
+      .elle-links{gap:8px 14px !important; margin-top:14px !important}
+      .elle-photo{max-width:100% !important; aspect-ratio:4/4.7 !important; border-radius:20px !important; outline:none !important; outline-offset:0 !important}
+      .elle-photo-overlay{left:12px !important; right:12px !important; bottom:12px !important; gap:7px !important}
+      .elle-brand{font-size:1.2rem !important; letter-spacing:.24em !important}
+      .elle-photo-meta{padding:9px 10px !important; gap:8px !important}
+      .elle-dock{position:static !important; transform:none !important; right:auto !important; top:auto !important; flex-direction:row !important; justify-content:center !important; align-items:center !important; gap:10px !important; margin:14px auto 0 !important; width:fit-content !important}
+      .elle-dock-dot{display:none !important}
+      .elle-dock-stack{flex-direction:row !important; gap:10px !important}
+      .elle-dock-btn{width:42px !important; height:42px !important; border-radius:11px !important}
+    }
+    @media (max-width:560px){
+      .elle-card{padding:34px 14px 18px !important}
+      .elle-loc h3{font-size:1.4rem !important}
+      .elle-photo{aspect-ratio:4/5.1 !important; border-radius:18px !important}
+      .elle-more{padding:14px !important; gap:10px !important}
+      .elle-pill{padding:9px 14px !important; font-size:.50rem !important}
+    }
+    @media (max-width:860px){
+      .elle-foot{margin-top:14px !important; grid-template-columns:1fr !important}
+      .elle-stats{padding:14px !important; border-radius:14px !important}
+      .elle-stats-grid{grid-template-columns:repeat(3,1fr) !important; gap:8px !important}
+      .elle-stats-grid b{font-size:1rem !important}
+    }
+    @media (max-width:380px){
+      .elle-stats-grid{grid-template-columns:1fr !important}
+      .elle-stats-grid span{text-align:center}
+    }
+
+    /* ---- FOOTER + misc mobile polish ---- */
+    @media (max-width:700px){
+      footer{padding:16px 14px !important; gap:10px !important; justify-content:center !important; text-align:center !important; font-size:.48rem !important; letter-spacing:.12em !important; line-height:1.6 !important}
+      footer span{flex:0 0 auto}
+    }
+    @media (hover:none), (pointer:coarse){
+      .cursor-dot, .cursor-ring{display:none !important}
+    }
+    @media (max-width:860px){
+      html, body{overflow-x:hidden !important}
+      .grain{display:none !important}
+      #sparks{opacity:.5 !important}
+      .vignette{display:none !important}
+      .scroll-hint{display:none !important}
+      /* prevent iOS text inflation */
+      body{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+      /* ensure no element forces horizontal scroll */
+      .wrap, .blk, .elle-wrap, .elle-grid, .mosaic, .tools{max-width:100% !important; overflow-wrap:break-word}
+      .tool{word-break:break-word}
+    }
+    /* ultra-narrow */
+    @media (max-width:360px){
+      .blk{padding:28px 12px !important}
+      .wrap{padding:16px 12px !important}
+      .elle-card{padding:32px 12px 16px !important}
+      .stats{grid-template-columns:1fr !important}
+    }
+    </style>
 </head>
 <body data-section="0">
 
