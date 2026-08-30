@@ -451,7 +451,7 @@
       .nav-links{gap:6px !important}
     }
 
-    /* ---- HERO MOBILE: photo smaller on top, ALL info downside in dark (user request) ---- */
+    /* ---- HERO MOBILE: mixed with background (not separate box), image down so nav not over bright ---- */
     @media (max-width:860px){
       .hero{
         height:auto !important;
@@ -462,37 +462,46 @@
         justify-content:flex-start !important;
         background:#000 !important;
       }
-      /* photo smaller — in-box only, slight crop out (as Image2), not full bleed */
+      /* image mixes with background — full-bleed behind, blended via masks (no separate card), moved down */
       .hero-bg{
-        position:relative !important;
+        position:absolute !important;
+        inset:0 !important;
         width:100% !important;
-        height:44vh !important;
-        min-height:280px !important;
-        max-height:380px !important;
-        left:auto !important; right:auto !important; top:auto !important;
-        margin:58px 0 0 0 !important;
+        height:100% !important;
+        left:0 !important; right:0 !important; top:0 !important;
+        margin:0 !important;
         object-fit:cover !important;
-        object-position:62% 18% !important; /* slight crop out left tube as Image2 ok */
+        object-position:66% 32% !important; /* down so nav (HOME..CONTACT) sits over dark top, not tube/face */
         border-radius:0 !important;
-        -webkit-mask-image:none !important;
-        mask-image:none !important;
-        opacity:1 !important;
+        -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.38) 26%, rgba(0,0,0,.76) 42%, #000 58%) !important;
+        mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.38) 26%, rgba(0,0,0,.76) 42%, #000 58%) !important;
+        opacity:.72 !important;
         transform:none !important;
-        filter:saturate(1.06) contrast(1.04) brightness(.97) !important;
-        overflow:hidden;
+        filter:saturate(1.06) contrast(1.04) brightness(.96) !important;
         z-index:1 !important;
       }
-      .hero-backdrop{display:none !important}
-      .hero:after, .hero:before, .hero-glow{display:none !important}
-      /* sparks confined to photo box only */
-      #sparks{
-        top:58px !important; height:44vh !important; min-height:280px !important; max-height:380px !important;
-        bottom:auto !important; left:0 !important; right:0 !important;
-        border-radius:0 !important; overflow:hidden;
+      .hero-backdrop img{
+        object-position:66% 32% !important;
+        -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.42) 30%, #000 62%) !important;
+        mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.42) 30%, #000 62%) !important;
+        opacity:.34 !important;
       }
-      /* ALL info downside — dark zone below photo */
+      .hero:after{
+        display:block !important;
+        inset:0 !important;
+        width:100% !important; left:0 !important; right:0 !important;
+        /* top dark for nav + left-dark for text + bottom-dark for missions — image mixes behind */
+        background:
+          linear-gradient(180deg, #000 0%, #000 54px, rgba(0,0,0,.92) 72px, rgba(0,0,0,.45) 96px, transparent 132px),
+          linear-gradient(90deg, rgba(0,0,0,.94) 0%, rgba(0,0,0,.88) 42%, rgba(0,0,0,.56) 60%, transparent 82%),
+          linear-gradient(180deg, transparent 0%, transparent 48%, rgba(0,0,0,.52) 68%, rgba(0,0,0,.86) 88%, #000 100%) !important;
+      }
+      .hero:before{display:none !important}
+      .hero-glow{display:none !important}
+      #sparks{inset:0 !important; top:0 !important; left:0 !important; right:0 !important; bottom:0 !important; border-radius:0 !important}
+      /* ALL info in downside dark zone but image still mixes behind (top dark protects nav) */
       .hero-inner{
-        padding:14px 16px 8px !important;
+        padding:76px 16px 8px !important;
         margin-top:0 !important;
         min-height:auto !important;
         display:flex !important;
@@ -500,6 +509,7 @@
         justify-content:flex-start !important;
         flex:0 0 auto !important;
         background:transparent !important;
+        position:relative !important; z-index:5 !important;
       }
       .hero-content{
         max-width:100% !important;
@@ -595,9 +605,9 @@
       .hero-reference-cards span{font-size:.66rem !important; line-height:1.48 !important}
     }
     @media (max-width:380px){
-      .hero-bg{height:38vh !important; min-height:240px !important; margin-top:58px !important}
-      #sparks{height:38vh !important; min-height:240px !important; top:58px !important}
-      .hero-inner{padding-left:14px !important; padding-right:14px !important}
+      .hero-bg{height:100% !important; min-height:0 !important; margin:0 !important}
+      #sparks{height:100% !important; min-height:0 !important; top:0 !important}
+      .hero-inner{padding-left:14px !important; padding-right:14px !important; padding-top:72px !important}
       .main-title{font-size:clamp(1.95rem, 9.8vw, 2.5rem) !important; letter-spacing:.03em !important}
       .hero-social-dock{margin:12px 14px 0 14px !important; width:calc(100% - 28px) !important}
       .hero-reference-cards{width:calc(100% - 28px) !important; margin:10px 14px 8px 14px !important; grid-template-columns:1fr !important}
