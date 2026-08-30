@@ -462,18 +462,18 @@
         justify-content:flex-start !important;
         background:#000 !important;
       }
-      /* photo smaller — top card, not full bleed; leaves dark downside for text */
+      /* photo smaller — in-box only, slight crop out (as Image2), not full bleed */
       .hero-bg{
         position:relative !important;
-        width:calc(100% - 20px) !important;
+        width:100% !important;
         height:44vh !important;
         min-height:280px !important;
         max-height:380px !important;
         left:auto !important; right:auto !important; top:auto !important;
-        margin:62px 10px 0 10px !important;
+        margin:58px 0 0 0 !important;
         object-fit:cover !important;
-        object-position:68% 14% !important;
-        border-radius:16px !important;
+        object-position:62% 18% !important; /* slight crop out left tube as Image2 ok */
+        border-radius:0 !important;
         -webkit-mask-image:none !important;
         mask-image:none !important;
         opacity:1 !important;
@@ -484,11 +484,11 @@
       }
       .hero-backdrop{display:none !important}
       .hero:after, .hero:before, .hero-glow{display:none !important}
-      /* confine sparks to photo area only so dark info zone stays clean */
+      /* sparks confined to photo box only */
       #sparks{
-        top:62px !important; height:44vh !important; min-height:280px !important; max-height:380px !important;
-        bottom:auto !important; left:10px !important; right:10px !important;
-        border-radius:16px !important; overflow:hidden;
+        top:58px !important; height:44vh !important; min-height:280px !important; max-height:380px !important;
+        bottom:auto !important; left:0 !important; right:0 !important;
+        border-radius:0 !important; overflow:hidden;
       }
       /* ALL info downside — dark zone below photo */
       .hero-inner{
@@ -527,10 +527,12 @@
         white-space:nowrap;
       }
       .main-title .char{overflow:hidden !important}
+      /* info under MY PORTFOLIO — more horizontal (wider, fewer breaks) */
       .description{
         font-size:.78rem !important;
         line-height:1.62 !important;
-        max-width:33ch !important;
+        max-width:92% !important;
+        width:100% !important;
         margin-top:6px !important;
         border-left:1px solid rgba(255,255,255,.09);
         padding-left:12px !important;
