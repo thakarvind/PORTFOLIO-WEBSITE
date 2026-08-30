@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -13,10 +13,10 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=32"></script>
+  <script defer src="assets/site.js?v=33"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=1"></script>
-  <script defer src="assets/governor.js?v=3"></script>
+  <script defer src="assets/governor.js?v=4"></script>
   <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -154,19 +154,21 @@
        the stylesheet apply, unchanged. Tiny surfaces = negligible GPU cost.
        Everything animated moves via transform/opacity (GPU compositor's job); the scroll
        engine, canvas embers and JS logic run on CPU. Each side does what it's best at. */
-    .wrap,.m-box,.elle-card,.elle-more,.elle-stats,.elle-ach,.a-box,.wrap--contact{
+    .wrap,.m-box,.a-box,.wrap--contact{
       backdrop-filter:none;
       -webkit-backdrop-filter:none;
       isolation:isolate;
     }
+    /* CONTACT FIX: keep .elle-card / .elle-more / .elle-stats frosted — removing
+       their blur made #10121a6b show as a flat dark background panel. */
      .nav-links a,.elle-dock-btn{backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:rgba(255,255,255,0.10) !important; border-color:rgba(255,255,255,0.14) !important}
      /* hpreview kept original brown gradient (#ff7a1838 -> #08080c) — do not override, matches Image 2 */
     /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal */
     html.is-scrolling .edge-word{will-change:transform}
     /* FIX: hide grain instantly (no transition) during scroll so its last frame can't
        bleed through any backdrop-filter panel as the compositor repositions layers. */
-    html.is-scrolling .grain{opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s}
-    html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0; visibility:hidden}
+    html.is-scrolling .grain{opacity:0!important;visibility:hidden!important}
+    html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0!important; visibility:hidden!important}
     html.is-scrolling .gold-link svg{animation-play-state:paused}
      /* hero-reference-cards frosted - keep lighter blur while scrolling to avoid sampling stale frames */
      html.is-scrolling .hero-reference-cards{background:rgba(16,18,26,0.42) !important; backdrop-filter:blur(10px) saturate(130%) !important; -webkit-backdrop-filter:blur(10px) saturate(130%) !important}
@@ -830,31 +832,22 @@
     .elle-card,.elle-photo,.elle-more,.elle-stats{contain:layout style}
 
     /* 3) Remove backdrop-filter from panels over near-opaque dark backgrounds.
-          Visually identical since background is essentially black — eliminates
-          the GPU re-blur pass that causes scroll jank on those surfaces. */
+          Panels keep their OWN stylesheet backgrounds (translucent over the
+          black .site-frame — visually identical to the old blur). Forcing a
+          solid background here painted an extra navy layer on sections whose
+          .wrap is designed transparent (e.g. the contact .elle-wrap). */
     .wrap{
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
-      background:#10121af2 !important;
     }
     .a-box,.m-box{
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
     }
-    .elle-more,.elle-stats,.elle-ach{
-      backdrop-filter:none !important;
-      -webkit-backdrop-filter:none !important;
-      background:#10121af0 !important;
-    }
-
     /* 4) Pause EVERY backdrop-filter during active scroll — restores instantly on settle */
     html.is-scrolling .wrap,
     html.is-scrolling .a-box,
     html.is-scrolling .m-box,
-    html.is-scrolling .elle-more,
-    html.is-scrolling .elle-stats,
-    html.is-scrolling .elle-ach,
-    html.is-scrolling .elle-card,
     html.is-scrolling nav.top.scrolled,
     html.is-scrolling .footer-cards{
       backdrop-filter:none !important;
@@ -1429,115 +1422,67 @@
   })();
    </script>
    <script>
-   // ultra-smooth scroll - direct grain/cursor toggle (no html.is-scrolling class)
+    /* CONSOLIDATED PERF SCRIPT — single scroll listener replaces 3 scripts.
+       Fixes: duplicate listeners (9 handlers -> 3), direct grain.style.display
+       mutation causing reflow, nav MutationObserver firing on every class change.
+       Grain/cursor hiding now via CSS (html.is-scrolling) - no DOM style writes. */
     (function(){
-     var grain=document.getElementById('grain'), cursorDot=document.querySelector('.cursor-dot'), cursorRing=document.querySelector('.cursor-ring'), lastMove=0, ticking=false;
-     function check(now){
-       if(now - lastMove > 180){
-         if(grain) grain.style.display='';
-         if(cursorDot) cursorDot.style.opacity='';
-         if(cursorRing) cursorRing.style.opacity='';
-         ticking=false;
-       } else {
-         requestAnimationFrame(check);
-       }
-     }
+     var html = document.documentElement;
+     var t = null;
+     /* --- is-scrolling toggle: single listener, CSS handles grain/cursor/nav --- */
      function onMove(){
-       lastMove=performance.now();
-       if(grain && grain.style.display!=='none') grain.style.display='none';
-       if(cursorDot) cursorDot.style.opacity='0';
-       if(cursorRing) cursorRing.style.opacity='0';
-       if(!ticking){
-         ticking=true;
-         requestAnimationFrame(check);
-       }
+       html.classList.add('is-scrolling');
+       if(t) clearTimeout(t);
+       t = setTimeout(function(){
+         html.classList.remove('is-scrolling');
+         t = null;
+       }, 120);
      }
      window.addEventListener('scroll', onMove, {passive:true});
      window.addEventListener('wheel', onMove, {passive:true});
      window.addEventListener('touchmove', onMove, {passive:true});
-    // also hook Lenis if exposed later
-    var tries=0; (function hookLenis(){
-      var L = window.__LenisL || window.Lenis;
-      // site.js stores instance locally as `d`, not global — fallback to scroll event is enough
-      if(tries++>40) return;
-      if(!L) return setTimeout(hookLenis, 400);
-    })();
-    // reduce parallax work when tab hidden
-    document.addEventListener('visibilitychange', function(){
-      if(document.hidden){
-        html.classList.remove('is-scrolling');
-      }
-      // PERF: pause decorative CSS animations (grainJitter / goldPulse) while the tab is hidden — no visual change when visible
-      document.body.classList.toggle('tab-hidden', document.hidden);
-    });
-    // anchor clicks: site.js (Lenis) already handles these — a second smooth-scroll
-    // handler here raced against it and made nav clicks jerky. Removed.
-    /* PERF: pause sparks canvas rAF loop when hero is offscreen -> stops 70-particle
-       gradient redraws from burning frames during the whole scroll session */
+     /* --- nav: ensure inside site-frame, prevent scrolled class --- */
      (function(){
-       var hero=document.getElementById('top'), sparksCanvas=document.getElementById('sparks');
-       if(!hero||!sparksCanvas) return;
-       window.__sparksPaused=false;
-       window.__sparksHeroVisible=true;
-       window.__sparksTabHidden=false;
-       var io=new IntersectionObserver(function(entries){
-         entries.forEach(function(en){
-           window.__sparksHeroVisible=en.isIntersecting;
-           if(window.__sparksSync) window.__sparksSync();
-           else { window.__sparksPaused=!en.isIntersecting; if(en.isIntersecting && window.__sparksKick) window.__sparksKick(); }
-         });
-       },{rootMargin:'200px'});
-       io.observe(hero);
-       document.addEventListener('visibilitychange', function(){
-         window.__sparksTabHidden=document.hidden;
-         if(window.__sparksSync) window.__sparksSync();
-         else if(document.hidden) window.__sparksPaused=true;
-         else if(hero.getBoundingClientRect().bottom>0) { window.__sparksPaused=false; if(window.__sparksKick) window.__sparksKick(); }
-       });
+       var nav = document.getElementById('topnav');
+       var frame = document.querySelector('.site-frame');
+       if(!nav || !frame) return;
+       try{
+         if(nav.parentElement !== frame){
+           frame.insertBefore(nav, frame.firstChild);
+         }
+         if(frame.style.position !== 'relative' && getComputedStyle(frame).position === 'static'){
+           frame.style.position = 'relative';
+         }
+       }catch(e){}
+       if(nav.classList.contains('scrolled')) nav.classList.remove('scrolled');
+       if(nav.classList.contains('nav-hidden')) nav.classList.remove('nav-hidden');
      })();
-  })();
-  </script>
-  <script>
-  // HERO NAV — default in hero only, sticks to hero, never shows while scrolling other sections
-  (function(){
-    var nav=document.getElementById('topnav');
-    var hero=document.getElementById('top');
-    var frame=document.querySelector('.site-frame');
-    if(!nav||!hero||!frame) return;
-    try{
-      if(nav.parentElement!==frame){
-        frame.insertBefore(nav, frame.firstChild);
-      }
-      frame.style.position='relative';
-    }catch(e){}
-    nav.classList.remove('scrolled','nav-hidden','nav-visible');
-    var mo=new MutationObserver(function(){
-      if(nav.classList.contains('scrolled')) nav.classList.remove('scrolled');
-      if(nav.classList.contains('nav-hidden')) nav.classList.remove('nav-hidden');
-    });
-    mo.observe(nav, {attributes:true, attributeFilter:['class']});
-    window.addEventListener('scroll', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
-    window.addEventListener('wheel', function(){ nav.classList.remove('scrolled','nav-hidden'); }, {passive:true});
-  })();
-  </script>
-  <script>
-  /* PERF: html.is-scrolling — activates CSS rules that pause all backdrop-filters
-     and decorative animations during scroll. Clears on settle (rAF-debounced).
-     Works with Lenis or native scroll. Zero visual change when not scrolling. */
-  (function(){
-    var html=document.documentElement, t=null;
-    function onScroll(){
-      html.classList.add('is-scrolling');
-      if(t) clearTimeout(t);
-      t=setTimeout(function(){
-        html.classList.remove('is-scrolling');
-        t=null;
-      }, 150);
-    }
-    window.addEventListener('scroll',onScroll,{passive:true});
-    window.addEventListener('wheel',onScroll,{passive:true});
-    window.addEventListener('touchmove',onScroll,{passive:true});
-  })();
-  </script>
+     /* --- PERF: pause decorative CSS animations while tab hidden --- */
+     document.addEventListener('visibilitychange', function(){
+       if(document.hidden) html.classList.remove('is-scrolling');
+       document.body.classList.toggle('tab-hidden', document.hidden);
+       if(window.__sparksSync) window.__sparksSync();
+     });
+     /* --- PERF: pause sparks canvas when hero offscreen --- */
+     (function(){
+       var hero = document.getElementById('top');
+       if(!hero) return;
+       window.__sparksPaused = false;
+       window.__sparksHeroVisible = true;
+       window.__sparksTabHidden = false;
+       var io = new IntersectionObserver(function(entries){
+         entries.forEach(function(en){
+           window.__sparksHeroVisible = en.isIntersecting;
+           if(window.__sparksSync) window.__sparksSync();
+           else {
+             window.__sparksPaused = !en.isIntersecting;
+             if(en.isIntersecting && window.__sparksKick) window.__sparksKick();
+           }
+         });
+       },{rootMargin:'350px'});
+       io.observe(hero);
+     })();
+    })();
+    </script>
 </body>
 </html>

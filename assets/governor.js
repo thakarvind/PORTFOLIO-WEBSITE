@@ -9,9 +9,10 @@
       reaching the projects section never stutters (603KB parse moved off
       the critical path).
    4) Sparks are controlled from ONE decision point: hero visible + tab
-      visible + not mid-scroll + no stage-2 hold. Scrolling up into the hero
-      no longer resumes the 70-particle canvas mid-scroll (arrival burst);
-      it starts the instant scrolling settles. */
+      visible + no stage-2 hold. Scrolling no longer pauses them (the canvas
+      lives inside the hero, so it is invisible offscreen anyway) — they keep
+      running / restart the instant the hero approaches, so the restart is
+      never visible when scrolling back up from the About section. */
 (function () {
   try {
     if (window.__perfGovernorV3) return;
@@ -38,7 +39,6 @@
     window.__sparksSync = function () {
       var pause = window.__sparksTabHidden === true
                 || window.__sparksHeroVisible === false
-                || html.classList.contains('is-scrolling')
                 || window.__perfSparkHold === true;
       if (pause === window.__sparksPaused) return;
       window.__sparksPaused = pause;
