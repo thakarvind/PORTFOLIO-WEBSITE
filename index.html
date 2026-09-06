@@ -1437,15 +1437,22 @@
        mutation causing reflow, nav MutationObserver firing on every class change.
        Grain/cursor hiding now via CSS (html.is-scrolling) - no DOM style writes. */
     (function(){
-     var html = document.documentElement;
-     var t = null;
+    var html = document.documentElement;
+    var t = null;
+    var sparkResume = null;
      /* --- is-scrolling toggle: single listener, CSS handles grain/cursor/nav --- */
      function onMove(){
        html.classList.add('is-scrolling');
        if(t) clearTimeout(t);
+       if(sparkResume) clearTimeout(sparkResume);
+       window.__sparksPaused = true;
        t = setTimeout(function(){
          html.classList.remove('is-scrolling');
          t = null;
+         sparkResume = setTimeout(function(){
+           window.__sparksPaused = false;
+           if(window.__sparksKick) window.__sparksKick();
+         }, 80);
        }, 120);
      }
      window.addEventListener('scroll', onMove, {passive:true});
