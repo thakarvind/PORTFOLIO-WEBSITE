@@ -6,6 +6,9 @@
   <link rel="icon" href="data:,"/>
   <title>THAK ARAVIND — Portfolio | Data Analyst · Project Manager · Gen AI Researcher</title>
   <meta name="description" content="THAK ARAVIND — I turn messy numbers into clear, beautiful insight."/>
+  <script>if(!location.hash){history.scrollRestoration='manual';document.documentElement.style.scrollBehavior='auto';window.scrollTo({top:0,left:0,behavior:'instant'});window.addEventListener('pageshow',function(){window.scrollTo({top:0,left:0,behavior:'instant'});},{once:true});}</script>
+  <style>html.native-smooth{scroll-behavior:auto!important}</style>
+  <script>(function(){var raf=window.requestAnimationFrame;window.requestAnimationFrame=function(cb){if(typeof cb==='function'&&cb.toString().indexOf('__edgeVisible')!==-1)return window.setTimeout(function(){cb(performance.now())},33);return raf.call(window,cb)};})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Julius+Sans+One&display=swap" rel="stylesheet">
@@ -16,7 +19,7 @@
   <script defer src="assets/site.js?v=34"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=2"></script>
-  <link rel="preload" as="image" href="hero.webp?v=1" fetchpriority="high" imagesrcset="hero.webp?v=1 1x"/>
+  <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
   <style>
@@ -68,7 +71,7 @@
          on the pitch-dark left side. Ramp rebuilt to be smooth from true 0. */
       -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.4) 12%, rgba(0,0,0,.78) 30%, rgba(0,0,0,.94) 48%, #000 62%);
       mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.4) 12%, rgba(0,0,0,.78) 30%, rgba(0,0,0,.94) 48%, #000 62%);
-      filter:none !important;
+      filter:saturate(.94) contrast(.98) brightness(1.03) !important;
       backface-visibility:hidden;
       opacity:1 !important;
     }
@@ -821,6 +824,8 @@
     /* 1) will-change only on high-frequency animated elements */
     .wipe-circle{will-change:transform}
     .edge-word{will-change:transform}
+    .silk-hero,.silk-ribbon{will-change:transform;backface-visibility:hidden;transform:translate3d(0,0,0)}
+    .char-inner,.dc{will-change:transform,opacity;backface-visibility:hidden}
     .hpreview{will-change:transform}
     .cursor-tag{will-change:transform}
     .hero-bg{will-change:transform}
@@ -951,7 +956,7 @@
   <div class="cursor-ring"></div>
 
   <div class="site-frame">
-  <div class="hero-backdrop" aria-hidden="true"><img src="hero.webp?v=1" alt="" decoding="async" fetchpriority="low"/></div>
+  <div class="hero-backdrop" aria-hidden="true"><img src="hero.png?v=2" alt="" decoding="async" fetchpriority="low"/></div>
   <div class="grain" id="grain" aria-hidden="true"></div>
   <script>
   /* film-grain: pre-baked SOFT fractal-style tile - mid-centered values + smoothing to match
@@ -980,7 +985,7 @@
   </nav>
 
   <header class="hero" id="top">
-    <img src="hero.webp?v=1" alt="Thak Aravind — the future" class="hero-bg" id="heroImg" decoding="async" fetchpriority="high"/>
+    <img src="hero.png?v=2" alt="Thak Aravind — the future" class="hero-bg" id="heroImg" decoding="async" fetchpriority="high"/>
     <div class="hero-glow"></div>
     <canvas id="sparks" aria-hidden="true"></canvas>
 
@@ -1390,6 +1395,7 @@
   <!-- PERF: defer Three.js (603KB) until gold-link near viewport; avoids startup jank during recording -->
   <script>
   (function(){
+    if(!window.__enableWebGLConnectors) return;
     var loaded=window.__threeLoaded===true;
     function load(){
       if(loaded||window.__threeLoaded) return; loaded=true; window.__threeLoaded=true;
@@ -1401,10 +1407,15 @@
     try{
       var links=document.querySelectorAll('.gold-link');
       if(!links.length) return load();
-      var io=new IntersectionObserver(function(ents){ for(var i=0;i<ents.length;i++) if(ents[i].isIntersecting){ io.disconnect(); load(); break; } }, {rootMargin:'800px'});
+      var userScroll=false;
+      function loadWhenScrolled(){ if(userScroll && window.scrollY > window.innerHeight * .55){ window.removeEventListener('scroll', loadWhenScrolled); io.disconnect(); load(); } }
+      var io=new IntersectionObserver(function(ents){ for(var i=0;i<ents.length;i++) if(ents[i].isIntersecting) loadWhenScrolled(); }, {rootMargin:'800px'});
       links.forEach(function(el){ io.observe(el); });
+      window.addEventListener('scroll', loadWhenScrolled, {passive:true});
+      window.addEventListener('wheel', function(){ userScroll=true; loadWhenScrolled(); }, {passive:true});
+      window.addEventListener('touchmove', function(){ userScroll=true; loadWhenScrolled(); }, {passive:true});
       // no idle fallback - only load when gold-link near viewport to avoid 5s jank
-      document.addEventListener('visibilitychange', function(){ if(!document.hidden && !loaded) { var near=false; try{links.forEach(function(el){ if(el.getBoundingClientRect().top < innerHeight+900) near=true; });}catch(e){} if(near) load(); } });
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden && !loaded && window.scrollY > window.innerHeight * .55) { var near=false; try{links.forEach(function(el){ if(el.getBoundingClientRect().top < innerHeight+900) near=true; });}catch(e){} if(near) load(); } });
     }catch(e){ load(); }
   })();
   </script>
