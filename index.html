@@ -852,6 +852,14 @@
     html.is-scrolling .wrap,
     html.is-scrolling .a-box,
     html.is-scrolling .m-box,
+    html.is-scrolling .elle-card,
+    html.is-scrolling .elle-more,
+    html.is-scrolling .elle-stats,
+    html.is-scrolling .elle-ach,
+    html.is-scrolling .elle-dock-btn,
+    html.is-scrolling .ce-photo-tag,
+    html.is-scrolling .ce-photo-meta,
+    html.is-scrolling .ref-photo-bar,
     html.is-scrolling nav.top.scrolled,
     html.is-scrolling .footer-cards{
       backdrop-filter:none !important;
@@ -1439,20 +1447,13 @@
     (function(){
     var html = document.documentElement;
     var t = null;
-    var sparkResume = null;
      /* --- is-scrolling toggle: single listener, CSS handles grain/cursor/nav --- */
      function onMove(){
        html.classList.add('is-scrolling');
        if(t) clearTimeout(t);
-       if(sparkResume) clearTimeout(sparkResume);
-       window.__sparksPaused = true;
        t = setTimeout(function(){
          html.classList.remove('is-scrolling');
          t = null;
-         sparkResume = setTimeout(function(){
-           window.__sparksPaused = false;
-           if(window.__sparksKick) window.__sparksKick();
-         }, 80);
        }, 120);
      }
      window.addEventListener('scroll', onMove, {passive:true});
