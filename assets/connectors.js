@@ -5,10 +5,12 @@
   if (!links.length) return;
 
   /* PERF: small decorative canvases don't need full-res backing stores.
-     Cap at 1.5x and skip MSAA on high-DPI screens (visually identical, ~50% GPU) */
+     Cap DPR and skip MSAA on high-DPI screens (visually identical, ~50% GPU) */
   var RAW_DPR = window.devicePixelRatio || 1;
   var DPR = Math.min(RAW_DPR, 1.1);
   var USE_AA = RAW_DPR < 1.5;
+  var W = 160, H = 240;
+  var BW = Math.round(W * DPR), BH = Math.round(H * DPR);
 
   var HEIGHT = 6.4, MAX_R = 2.6;
   function radiusAt(t, pinch) {
@@ -32,111 +34,112 @@
 
   var clock = new THREE.Clock();
 
-  /* PERF: build the cheap JS scene objects once, but ONLY create the WebGL context
-     (renderer) lazily when a gold-link is on/near screen, and dispose it the moment
-     it leaves. This keeps the number of LIVE GL contexts at 1-2 instead of 6, which
-     prevents WebGL context-loss glitches and GPU texture-memory climb/eviction
-     (the "smooth for a while, then starts jittering" pattern) — with zero visual
-     change, because the shape is only ever shown while the link is on screen. */
+  /* PERF: ONE scene + ONE WebGL context for the whole page.
+     Every connector shows the identical shape with identical rotation and
+     lighting, so the frame is rendered once per tick and blitted into each
+     visible connector's own 2D canvas via drawImage (160x240, trivially cheap).
+     The previous build created and disposed a WebGL context every time a
+     connector scrolled in/out of view: 50-200ms of context setup at every
+     section boundary, in both directions, plus GPU memory churn. That was the
+     "gets stuck between sections" hitch. Output pixels are unchanged. */
+  var scene, camera, mesh, key, renderer = null, rx = 0;
+  try {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 100);
+    camera.position.set(0, 0, 13);
+    scene.add(new THREE.AmbientLight(0x1a1d2e, 0.6));
+    key = new THREE.PointLight(0xff7a45, 45, 30, 2); key.position.set(4, 6, 6); scene.add(key);
+    var rim = new THREE.PointLight(0x3a5aff, 20, 30, 2); rim.position.set(-6, -4, -4); scene.add(rim);
+    var fill = new THREE.PointLight(0xffffff, 4, 20, 2); fill.position.set(0, 2, 8); scene.add(fill);
+    mesh = new THREE.Mesh(
+      new THREE.LatheGeometry(buildProfile(0.4), 48),
+      new THREE.MeshStandardMaterial({ color: 0xdfe3ea, metalness: 1, roughness: 0.1, emissive: 0x2a1208, emissiveIntensity: 0.2, side: THREE.DoubleSide })
+    );
+    scene.add(mesh);
+  } catch (err) { return; /* frosted glass fallback stays */ }
+
+  function ensureRenderer() {
+    if (renderer) return true;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: USE_AA, alpha: true });
+      renderer.setPixelRatio(DPR);
+      renderer.setSize(W, H, false);
+      renderer.setClearColor(0x000000, 0);
+      return true;
+    } catch (err) { renderer = null; return false; }
+  }
+
+  function renderFrame() {
+    var t = clock.getElapsedTime();
+    /* Cursor-reactive: yaw follows mouse X, pitch follows mouse Y (eased),
+       and the key light glints toward the pointer. */
+    mesh.rotation.y = t * 0.25 + mx * 0.42;
+    mesh.rotation.x = rx;
+    key.position.x = 4 + mx * 2.5;
+    key.position.y = 6 - my * 2.5;
+    key.intensity = 40 + Math.sin(t * 0.8) * 6;
+    renderer.render(scene, camera);
+  }
+
   var items = [];
   links.forEach(function (el) {
-    try {
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(38, 160 / 240, 0.1, 100);
-      camera.position.set(0, 0, 13);
-      scene.add(new THREE.AmbientLight(0x1a1d2e, 0.6));
-      var key = new THREE.PointLight(0xff7a45, 45, 30, 2); key.position.set(4, 6, 6); scene.add(key);
-      var rim = new THREE.PointLight(0x3a5aff, 20, 30, 2); rim.position.set(-6, -4, -4); scene.add(rim);
-      var fill = new THREE.PointLight(0xffffff, 4, 20, 2); fill.position.set(0, 2, 8); scene.add(fill);
-      var mesh = new THREE.Mesh(
-        new THREE.LatheGeometry(buildProfile(0.4), 48),
-        new THREE.MeshStandardMaterial({ color: 0xdfe3ea, metalness: 1, roughness: 0.1, emissive: 0x2a1208, emissiveIntensity: 0.2, side: THREE.DoubleSide })
-      );
-      scene.add(mesh);
-      var item = { el: el, mesh: mesh, scene: scene, camera: camera, renderer: null, key: key, visible: false, rx: 0 };
-      el.__goldItem = item;
-      items.push(item);
-    } catch (err) { /* frosted glass fallback stays */ }
+    var canvas = document.createElement("canvas");
+    canvas.width = BW; canvas.height = BH;
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    var item = { el: el, canvas: canvas, ctx: ctx, visible: false, mounted: false };
+    el.__goldItem = item;
+    items.push(item);
   });
   if (!items.length) return;
 
-  function ensureRenderer(it) {
-    if (it.renderer) return true;
-    try {
-      var renderer = new THREE.WebGLRenderer({ antialias: USE_AA, alpha: true });
-      renderer.setPixelRatio(DPR);
-      renderer.setSize(160, 240, false);
-      renderer.setClearColor(0x000000, 0);
-      it.el.appendChild(renderer.domElement);
-      it.el.classList.add("webgl-on");
-      it.renderer = renderer;
-      /* render the first frame synchronously so the link never flashes blank/frosted */
-      it.mesh.rotation.y = clock.getElapsedTime() * 0.25;
-      it.renderer.render(it.scene, it.camera);
-      return true;
-    } catch (err) { return false; }
+  function blit(it) {
+    it.ctx.clearRect(0, 0, BW, BH);
+    it.ctx.drawImage(renderer.domElement, 0, 0, BW, BH);
   }
-  function disposeRenderer(it) {
-    if (!it.renderer) return;
-    try { it.el.classList.remove("webgl-on"); } catch (e) {}
-    try { if (it.renderer.domElement && it.renderer.domElement.parentNode) it.renderer.domElement.parentNode.removeChild(it.renderer.domElement); } catch (e) {}
-    try { it.renderer.dispose(); } catch (e) {}
-    it.renderer = null;
+  function mount(it) {
+    if (it.mounted) return;
+    it.mounted = true;
+    it.el.appendChild(it.canvas);
+    it.el.classList.add("webgl-on");
   }
+
+  var visCount = 0;
+  var running = false;
+  var lastF = 0;
 
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) {
       var it = en.target.__goldItem;
-      if (!it) return;
-      if (it.visible !== en.isIntersecting) {
-        it.visible = en.isIntersecting;
-        if (en.isIntersecting) {
-          if (ensureRenderer(it)) {
-            visCount += 1;
-            if (reduced) it.renderer.render(it.scene, it.camera);
-          }
-        } else {
-          if (it.renderer) visCount = Math.max(0, visCount - 1);
-          disposeRenderer(it);
-        }
+      if (!it || it.visible === en.isIntersecting) return;
+      it.visible = en.isIntersecting;
+      visCount += it.visible ? 1 : -1;
+      if (it.visible && ensureRenderer()) {
+        /* paint the first frame synchronously so the link never flashes blank/frosted */
+        renderFrame();
+        blit(it);
+        mount(it);
       }
     });
-    /* PERF: 120Hz fix — if a gold-link just scrolled into view, wake the 3D render loop
-       up again. The loop auto-halts below when nothing is on screen (see frame()). */
+    if (visCount < 0) visCount = 0;
     if (!reduced && visCount > 0) kickFrame();
   }, { rootMargin: "120px" });
   items.forEach(function (it) { io.observe(it.el); });
 
-  var visCount = 0;
-  var lastF = 0;
-  var running = false;
-  function frame() {
-    if (document.hidden || !visCount) { running = false; return; }
-    var now = performance.now();
-    var __ival2 = 16;
-    if (now - lastF < __ival2) { requestAnimationFrame(frame); return; }
-    running = true;
+  /* No fixed-interval throttle here: skipping frames on a 16ms gate produced
+     uneven pacing (judder at 60Hz, alternate frames at 120Hz). Motion is
+     already dt-scaled, so rendering every rAF gives the same speed, smoothly. */
+  function frame(now) {
+    if (document.hidden || !visCount || !renderer) { running = false; return; }
     requestAnimationFrame(frame);
-    var pn = now;
-    var DS = Math.min((pn - (lastF || pn)) / 16.667, 3) || 1;
-    lastF = pn;
-    var t = clock.getElapsedTime();
-    var s = Math.sin(t * 0.8);
-    items.forEach(function (it) {
-      if (!it.visible || !it.renderer) return;
-      /* Cursor-reactive: yaw follows mouse X, pitch follows mouse Y (eased),
-         and the key light glints toward the pointer. Rides the existing loop
-         (which only runs while a gold-link is on screen) — zero added cost. */
-      it.mesh.rotation.y = t * 0.25 + mx * 0.42;
-      it.rx += ((my * 0.22) - it.rx) * (1 - Math.pow(0.96, DS));
-      it.mesh.rotation.x = it.rx;
-      it.key.position.x = 4 + mx * 2.5;
-      it.key.position.y = 6 - my * 2.5;
-      it.key.intensity = 40 + s * 6;
-      it.renderer.render(it.scene, it.camera);
-    });
+    var DS = Math.min((now - (lastF || now)) / 16.667, 3) || 1;
+    lastF = now;
+    rx += ((my * 0.22) - rx) * (1 - Math.pow(0.96, DS));
+    renderFrame();
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].visible && items[i].mounted) blit(items[i]);
+    }
   }
-  /* Restart the 3D loop when a gold-link scrolls back into view (see IntersectionObserver) */
-  function kickFrame() { if (!running) { running = true; requestAnimationFrame(frame); } }
+  function kickFrame() { if (!running) { running = true; lastF = 0; requestAnimationFrame(frame); } }
   document.addEventListener("visibilitychange", function () { if (!document.hidden && !reduced && visCount > 0) kickFrame(); });
 })();

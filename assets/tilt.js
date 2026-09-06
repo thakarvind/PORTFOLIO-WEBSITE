@@ -42,8 +42,8 @@
       el.addEventListener("pointerenter", onEnter);
       el.addEventListener("pointermove", onMove, { passive: true });
       el.addEventListener("pointerleave", onLeave);
-      /* Safety: if the element is removed from the DOM mid-hover, stop looping */
-      el.addEventListener("DOMNodeRemoved", function () { active = false; tx = ty = 0; });
+      /* NOTE: no DOMNodeRemoved listener. Registering any legacy mutation event
+         disables DOM fast paths for the whole document in Safari/older Chromium. */
     });
   } catch (err) { /* tilt is decorative — never block the page */ }
 })();
