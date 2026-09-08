@@ -19,6 +19,29 @@
   <script defer src="assets/site.js?v=34"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=2"></script>
+  <script defer>
+  (function(){
+    function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
+    var links=[]; var ticking=false;
+    function collect(){links=[].slice.call(document.querySelectorAll('.gold-link')); update();}
+    function update(){
+      ticking=false;
+      var vh=innerHeight;
+      links.forEach(function(link){
+        var box=link.getBoundingClientRect();
+        var center=box.top+box.height*.5;
+        var visibility=clamp(1-Math.abs(center-vh*.5)/(vh*.72),0,1);
+        var flow=clamp((center-vh*.18)/(vh*.82),0,1);
+        link.style.setProperty('--flow-opacity',(visibility*.72).toFixed(3));
+        link.style.setProperty('--flow-y',((1-flow)*18-9).toFixed(2)+'%');
+      });
+    }
+    function request(){if(!ticking){ticking=true;requestAnimationFrame(update);}}
+    addEventListener('scroll',request,{passive:true});
+    addEventListener('resize',request,{passive:true});
+    addEventListener('DOMContentLoaded',collect,{once:true});
+  })();
+  </script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -138,6 +161,8 @@
     }
     /* Gold-link connectors: ensure transparent gap never flashes rectangle */
     .gold-link{isolation:isolate; contain:layout paint; background:transparent !important;}
+    .gold-link::before{content:"";position:absolute;inset:-18%;z-index:0;pointer-events:none;opacity:var(--flow-opacity,0);transform:translate3d(0,var(--flow-y,24%),0) scale(1.08);background:radial-gradient(ellipse at 50% 18%,rgba(255,74,36,.78),rgba(255,38,24,.26) 42%,transparent 72%),url("assets/silk.jpg?v=1") center/cover no-repeat;mix-blend-mode:screen;clip-path:path("M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z");will-change:transform,opacity;transition:opacity .18s linear}
+    html.is-scrolling .gold-link{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
     .gold-link.webgl-on{background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; clip-path:none !important;}
     .gold-link canvas{display:block; backface-visibility:hidden;}
     /* Frosted panels: keep blur always — the old html.is-scrolling {backdrop-filter:none; background:rgba(...,0.92)} hack
