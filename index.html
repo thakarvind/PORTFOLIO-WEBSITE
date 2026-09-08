@@ -368,7 +368,8 @@
        .hero-social-btn svg{width:18px;height:18px}
      }
       /* === FIX: Experience dates - left side middle of empty space (only #experience) === */
-      #experience .xp-row{grid-template-columns:180px 1fr auto !important;align-items:center !important}
+      #experience .xp-row{grid-template-columns:minmax(180px,1fr) minmax(0,3fr) auto !important;align-items:center !important;overflow:visible !important}
+      #experience .xp-row > .tl-dot{position:absolute !important;}
       #experience .xp-row > .xp-when{
         position:static !important;top:auto !important;right:auto !important;
         text-align:center !important;align-self:stretch !important;justify-content:center !important;
