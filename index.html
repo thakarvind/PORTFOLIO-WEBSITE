@@ -916,6 +916,16 @@
 
     /* 10) Font rendering on GPU: subpixel AA causes CPU-GPU sync on scroll */
     body{-webkit-font-smoothing:antialiased !important; font-smooth:always !important}
+    /* Keep scrolling text on the page raster layer. Promoting every character
+       creates subpixel shimmer when Lenis moves the document. */
+    html.is-scrolling .edge-word,
+    html.is-scrolling .char-inner,
+    html.is-scrolling .dc,
+    html.is-scrolling .reveal{
+      will-change:auto !important;
+      backface-visibility:visible !important;
+      -webkit-backface-visibility:visible !important;
+    }
     </style>
 
 </head>
