@@ -137,16 +137,36 @@
       .hero-reference-cards{right:0;width:100%; border-radius:16px 16px 0 0; min-height:118px;}
       .hero-reference-cards>div{padding:18px 18px 20px !important;}
     }
-    /* Gold-link connectors: ensure transparent gap never flashes rectangle */
-    .gold-link{isolation:isolate; contain:layout paint; background:transparent !important;}
-    .gold-link::before{content:"";position:absolute;inset:-18%;z-index:0;pointer-events:none;opacity:var(--flow-opacity,0);transform:translate3d(0,var(--flow-y,24%),0) scale(1.08);background:radial-gradient(ellipse at 50% 18%,rgba(255,74,36,.78),rgba(255,38,24,.26) 42%,transparent 72%),url("assets/silk.jpg?v=1") center/cover no-repeat;mix-blend-mode:screen;clip-path:path("M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z");will-change:transform,opacity;transition:opacity .18s linear}
-    html.is-scrolling .gold-link{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-    .gold-link.webgl-on{background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; clip-path:none !important;}
+    /* Gold-link connectors: STABLE Image-2 look — static blurred silk fill, no morph.
+       Root cause of Image1->Image2 glitch: clip-path:path() is fixed-pixel (160x240)
+       so it misaligns at any other size + re-rasters async during Lenis scroll;
+       combined with html.is-scrolling backdrop-filter on/off + .18s transition,
+       the connector flashed thin-outline (Image1) mid-scroll then slowly filled
+       (Image2) on settle. Fix: scale-independent SVG mask + static blur layer,
+       zero transitions, zero scroll-toggled visuals. Lenis smoothness untouched. */
+    .gold-link{isolation:isolate; contain:layout paint; background:transparent !important; clip-path:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;}
+    .glass-link{clip-path:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:transparent !important;}
     .gold-link::before{display:none !important;}
-    .gold-link:not(.webgl-on){
-      background:linear-gradient(180deg,rgba(255,35,18,.04),rgba(255,35,18,.16),rgba(0,0,0,.12)),url("assets/silk.jpg?v=1") 56% center/cover no-repeat !important;
-      clip-path:path("M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z") !important;
+    /* Blurry filled hourglass (Image 2): silk photo, softly blurred, masked to the
+       hourglass silhouette. Mask scales with the element (unlike path()), so mobile
+       116px and desktop 160px render identically with no re-raster flash. */
+    .gold-link::after{
+      content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.12) 28%, rgba(0,0,0,0) 50%, rgba(0,0,0,.12) 72%, rgba(0,0,0,.66) 100%),
+        url("assets/silk.jpg?v=1") 50% 42%/cover no-repeat, #0d0205;
+      filter:blur(7px) brightness(.9) saturate(1.3);
+      -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 240' preserveAspectRatio='none'%3E%3Cpath d='M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z' fill='black'/%3E%3C/svg%3E");
+      mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 240' preserveAspectRatio='none'%3E%3Cpath d='M10 0C58 70 65 95 65 120C65 145 58 170 10 240L150 240C102 170 95 145 95 120C95 95 102 70 150 0Z' fill='black'/%3E%3C/svg%3E");
+      -webkit-mask-size:100% 100%; mask-size:100% 100%;
+      -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+      opacity:1 !important; transform:none !important;
+      will-change:auto !important; transition:none !important; animation:none !important;
+      mix-blend-mode:normal !important;
     }
+    .gold-link:not(.webgl-on){background:transparent !important; clip-path:none !important;}
+    .gold-link:not(.webgl-on)::before{display:none !important;}
+    .gold-link > svg{position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; z-index:1 !important; animation:none !important; transition:none !important; opacity:1 !important;}
     .gold-link canvas{display:block; backface-visibility:hidden;}
     /* Frosted panels: keep blur always — the old html.is-scrolling {backdrop-filter:none; background:rgba(...,0.92)} hack
        switched panels to opaque mid-scroll, causing the visible background-mask flash/tear between sections.
@@ -173,15 +193,18 @@
        their blur made #10121a6b show as a flat dark background panel. */
      .nav-links a,.elle-dock-btn{backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:rgba(255,255,255,0.10) !important; border-color:rgba(255,255,255,0.14) !important}
      /* hpreview kept original brown gradient (#ff7a1838 -> #08080c) — do not override, matches Image 2 */
-    /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal */
-    html.is-scrolling .edge-word{will-change:transform}
+    /* Perf: retain only non-visual pauses (hide grain/cursor) — no backdrop removal.
+       NOTE: all html.is-scrolling rules that changed connector / panel / text pixels
+       were removed — toggling backdrop-filter / will-change / backface / animation
+       mid-scroll forced a re-raster on settle = the thin-then-filled connector morph
+       + text shimmer. Grain + cursor are invisible overlays, safe to hide. */
+    /* html.is-scrolling .edge-word{will-change:transform} — removed (text glitch) */
     /* FIX: hide grain instantly (no transition) during scroll so its last frame can't
        bleed through any backdrop-filter panel as the compositor repositions layers. */
     html.is-scrolling .grain{opacity:0!important;visibility:hidden!important}
     html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0!important; visibility:hidden!important}
-    html.is-scrolling .gold-link svg{animation-play-state:paused}
-     /* hero-reference-cards frosted - keep lighter blur while scrolling to avoid sampling stale frames */
-     html.is-scrolling .hero-reference-cards{background:rgba(16,18,26,0.42) !important; backdrop-filter:blur(10px) saturate(130%) !important; -webkit-backdrop-filter:blur(10px) saturate(130%) !important}
+    /* html.is-scrolling .gold-link svg{animation-play-state:paused} — removed: connector svg has no animation now */
+     /* hero-reference-cards: keep ONE stable frosted style — no lighter mid-scroll swap (that swap was a visible flash) */
     @media (prefers-reduced-motion:reduce){
       .grain,#sparks,.hero-glow{display:none !important}
     }
@@ -344,10 +367,9 @@
      #sparks{contain:strict}
      .edge-word{contain:layout paint}
      .hero-bg,.hero-backdrop img{will-change:auto}
-     /* PERF: the fixed nav (blur 18px) and footer cards (blur 30px) re-blur moving
-        content EVERY frame while scrolling — the main remaining scroll-jank source.
-        Drop the frost only while actively scrolling; it returns when scroll settles. */
-     html.is-scrolling nav.top.scrolled,html.is-scrolling .footer-cards{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+     /* PERF: nav/footer frost stays constant — the old is-scrolling backdrop-removal
+        caused a visible frost flash on settle. Smoothness (Lenis) untouched. */
+      /* html.is-scrolling nav.top.scrolled, html.is-scrolling .footer-cards — removed */
      /* throttle grain jitter when tab hidden or reduced-motion */
      @media (prefers-reduced-motion:reduce){.grain{animation:none !important}}
      /* === HERO SOCIAL DOCK — exact left side of My Mission tab, vertical (marked location) === */
@@ -822,11 +844,15 @@
        PERF OPTIMIZATIONS — zero visual change, maximum compositor perf
        ============================================================ */
 
-    /* 1) will-change only on high-frequency animated elements */
+    /* 1) will-change only on high-frequency animated elements.
+       NOTE: per-character promotion (.char-inner/.dc) removed — promoting every
+       letter to its own GPU layer caused subpixel shimmer during Lenis scroll
+       (the text glitch). Chars animate via transform/opacity anyway; the browser
+       promotes them for the animation duration automatically. */
     .wipe-circle{will-change:transform}
     .edge-word{will-change:transform}
     .silk-hero,.silk-ribbon{will-change:transform;backface-visibility:hidden;transform:translate3d(0,0,0)}
-    .char-inner,.dc{will-change:transform,opacity;backface-visibility:hidden}
+    .char-inner,.dc{will-change:auto;backface-visibility:visible}
     .hpreview{will-change:transform}
     .cursor-tag{will-change:transform}
     .hero-bg{will-change:transform}
@@ -849,30 +875,11 @@
       backdrop-filter:none !important;
       -webkit-backdrop-filter:none !important;
     }
-    /* 4) Pause EVERY backdrop-filter during active scroll — restores instantly on settle */
-    html.is-scrolling .wrap,
-    html.is-scrolling .a-box,
-    html.is-scrolling .m-box,
-    html.is-scrolling .elle-card,
-    html.is-scrolling .elle-more,
-    html.is-scrolling .elle-stats,
-    html.is-scrolling .elle-ach,
-    html.is-scrolling .elle-dock-btn,
-    html.is-scrolling .ce-photo-tag,
-    html.is-scrolling .ce-photo-meta,
-    html.is-scrolling .ref-photo-bar,
-    html.is-scrolling nav.top.scrolled,
-    html.is-scrolling .footer-cards{
-      backdrop-filter:none !important;
-      -webkit-backdrop-filter:none !important;
-    }
+    /* 4) No backdrop toggling during scroll — every toggle was a settle-flash
+       (connector Image1->Image2 morph + panel flicker). Frost stays constant. */
 
-    /* 5) Pause decorative animations during scroll — zero visual impact while moving */
-    html.is-scrolling .grain,
-    html.is-scrolling .glass-link svg,
-    html.is-scrolling .f-pulse{
-      animation-play-state:paused !important;
-    }
+    /* 5) No animation pausing during scroll — pausing/resuming .glass-link svg and
+       grain mid-scroll produced the settle-jump. Grain/cursor hide above is enough. */
 
     /* 6) conic-gradient @property beam on .m-box:hover:after creates one GPU layer
           per card in the mosaic grid. Only promote when actually hovered. */
@@ -898,10 +905,11 @@
         -webkit-backdrop-filter:blur(8px) saturate(120%) !important;
       }
       /* sparks already opacity:0.5 on mobile — reduce particle count handled in JS */
-      /* glass-link connectors: simplify backdrop on mobile */
-      .glass-link{
-        backdrop-filter:blur(6px) saturate(130%) !important;
-        -webkit-backdrop-filter:blur(6px) saturate(130%) !important;
+      /* glass-link connectors: NO backdrop on mobile either — connector uses its own
+         masked silk fill (always blurry Image 2); backdrop re-blur caused the flash */
+      .glass-link,.gold-link{
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
       }
     }
 
@@ -920,16 +928,10 @@
 
     /* 10) Font rendering on GPU: subpixel AA causes CPU-GPU sync on scroll */
     body{-webkit-font-smoothing:antialiased !important; font-smooth:always !important}
-    /* Keep scrolling text on the page raster layer. Promoting every character
-       creates subpixel shimmer when Lenis moves the document. */
-    html.is-scrolling .edge-word,
-    html.is-scrolling .char-inner,
-    html.is-scrolling .dc,
-    html.is-scrolling .reveal{
-      will-change:auto !important;
-      backface-visibility:visible !important;
-      -webkit-backface-visibility:visible !important;
-    }
+    /* Text stays on ONE raster layer for the whole scroll — the old
+       html.is-scrolling will-change:auto/backface-visibility swap forced every
+       character (.char-inner/.dc/.edge-word/.reveal) to re-raster on settle =
+       the text glitch. Lenis smoothness untouched. */
     </style>
 
 </head>
