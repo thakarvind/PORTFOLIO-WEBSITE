@@ -339,14 +339,6 @@
      #sparks{contain:strict}
      .edge-word{contain:layout paint}
      .hero-bg,.hero-backdrop img{will-change:auto}
-     /* PERF GOVERNOR stages — engaged ONLY while real frame-time jank is measured,
-        auto-revert when the machine holds healthy frames again (see governor.js).
-        Stage 1: slow the grain jitter, freeze glow pulse + edge-letter drift.
-        Stage 2: freeze grain fully; governor.js also freezes the sparks canvas. */
-     html.perf-1 .grain{animation-duration:2.6s}
-     html.perf-1 .hero-glow{animation-play-state:paused}
-     html.perf-1 .edge-word{animation-play-state:paused}
-     html.perf-2 .grain{animation-play-state:paused}
      /* PERF: the fixed nav (blur 18px) and footer cards (blur 30px) re-blur moving
         content EVERY frame while scrolling — the main remaining scroll-jank source.
         Drop the frost only while actively scrolling; it returns when scroll settles. */
@@ -1484,7 +1476,7 @@
        document.body.classList.toggle('tab-hidden', document.hidden);
        if(window.__sparksSync) window.__sparksSync();
      });
-     /* --- PERF: pause sparks canvas when hero offscreen --- */
+    /* --- Keep the ambient spark field running continuously --- */
      (function(){
        var hero = document.getElementById('top');
        if(!hero) return;
@@ -1493,16 +1485,30 @@
        window.__sparksTabHidden = false;
        var io = new IntersectionObserver(function(entries){
          entries.forEach(function(en){
-           window.__sparksHeroVisible = en.isIntersecting;
+           window.__sparksHeroVisible = true;
            if(window.__sparksSync) window.__sparksSync();
            else {
-             window.__sparksPaused = !en.isIntersecting;
-             if(en.isIntersecting && window.__sparksKick) window.__sparksKick();
+             window.__sparksPaused = false;
+             if(window.__sparksKick) window.__sparksKick();
            }
          });
        },{rootMargin:'350px'});
        io.observe(hero);
      })();
+    })();
+    </script>
+    <script>
+    (function(){
+      var modal=document.getElementById('pmodal');
+      if(!modal) return;
+      document.addEventListener('keydown',function(event){
+        if(event.key!=='Tab'||modal.getAttribute('aria-hidden')==='true') return;
+        var focusable=modal.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])');
+        if(!focusable.length) return;
+        var first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      });
     })();
     </script>
 </body>
