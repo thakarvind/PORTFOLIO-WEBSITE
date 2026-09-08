@@ -6,6 +6,7 @@
   <link rel="icon" href="data:,"/>
   <title>THAK ARAVIND — Portfolio | Data Analyst · Project Manager · Gen AI Researcher</title>
   <meta name="description" content="THAK ARAVIND — I turn messy numbers into clear, beautiful insight."/>
+  <script>window.__startupSparksHold=true;</script>
   <script>if(!location.hash){history.scrollRestoration='manual';document.documentElement.style.scrollBehavior='auto';(function(){var released=false,timers=[];function reset(){if(!released)window.scrollTo({top:0,left:0,behavior:'instant'});}function release(){released=true;timers.forEach(clearTimeout);removeEventListener('wheel',release);removeEventListener('touchstart',release);removeEventListener('touchmove',release);}reset();addEventListener('pageshow',reset);addEventListener('load',reset);addEventListener('wheel',release,{passive:true,once:true});addEventListener('touchstart',release,{passive:true,once:true});addEventListener('touchmove',release,{passive:true,once:true});[0,100,300,700,1400].forEach(function(ms){timers.push(setTimeout(reset,ms));});})();}</script>
   <style>html.native-smooth{scroll-behavior:auto!important}</style>
   <script>(function(){var raf=window.requestAnimationFrame;window.requestAnimationFrame=function(cb){if(typeof cb==='function'&&cb.toString().indexOf('__edgeVisible')!==-1)return 0;return raf.call(window,cb)};})();</script>
@@ -1244,18 +1245,18 @@
         <div class="side">GOOGLE &#215; KAGGLE<br/>EXCELERATE &#183; STAR PERFORMER</div>
       </div>
       <div class="amosaic reveal">
-        <a class="a-box wide dual-link" href="https://www.linkedin.com/in/arvind-thak/details/certifications/" data-web-href="https://www.linkedin.com/in/arvind-thak/details/certifications/" data-app-href="linkedin://in/arvind-thak/details/certifications" target="_blank" rel="noopener">
+        <div class="a-box wide">
           <span class="a-num">01</span>
           <h3 class="a-title">5-Day AI Agents: Intensive Vibe Coding Course &#8212; Google &#215; Kaggle</h3>
           <p class="a-desc">Selected into Google &amp; Kaggle&#8217;s flagship agents intensive &#8212; vibe-coding workflows, 10x-agent patterns, memory &amp; tool use, and a deployed capstone agent.</p>
-          <span class="a-meta"><span>HACKATHON &#183; JUN 2026</span><em>VIEW &#8599;</em></span>
-        </a>
-        <a class="a-box wide dual-link" href="https://www.linkedin.com/in/arvind-thak" data-web-href="https://www.linkedin.com/in/arvind-thak" data-app-href="linkedin://in/arvind-thak" target="_blank" rel="noopener">
+          <span class="a-meta"><span>HACKATHON &#183; JUN 2026</span></span>
+        </div>
+        <div class="a-box wide">
           <span class="a-num">02</span>
           <h3 class="a-title">Excelerate &#8212; Data Analytics Virtual Internship (Star Performer)</h3>
           <p class="a-desc">Analyzed 100k+ Superhero-U campaign rows, built comparison visuals and flagged two underperforming ad sets &#8212; ~30% spend cut, completed as a star performer.</p>
-          <span class="a-meta"><span>INTERNSHIP &#183; JAN&#8211;FEB 2025</span><em>VIEW &#8599;</em></span>
-        </a>
+          <span class="a-meta"><span>INTERNSHIP &#183; JAN&#8211;FEB 2025</span></span>
+        </div>
       </div>
     </div>
   </section>
@@ -1481,7 +1482,7 @@
      (function(){
        var hero = document.getElementById('top');
        if(!hero) return;
-       window.__sparksPaused = false;
+      window.__sparksPaused = window.__startupSparksHold === true;
        window.__sparksHeroVisible = true;
        window.__sparksTabHidden = false;
        var io = new IntersectionObserver(function(entries){
@@ -1489,7 +1490,7 @@
            window.__sparksHeroVisible = true;
            if(window.__sparksSync) window.__sparksSync();
            else {
-             window.__sparksPaused = false;
+             window.__sparksPaused = window.__startupSparksHold === true;
              if(window.__sparksKick) window.__sparksKick();
            }
          });
@@ -1497,6 +1498,11 @@
        io.observe(hero);
      })();
     })();
+    setTimeout(function(){
+      window.__startupSparksHold=false;
+      window.__sparksPaused=false;
+      if(window.__sparksKick) window.__sparksKick();
+    },1600);
     </script>
     <script>
     (function(){
