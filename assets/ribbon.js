@@ -168,10 +168,10 @@
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
       camera.position.set(0, 0, 8);
-      var A = strandMesh(13.0, 3.0, 0);
-      var B = strandMesh(13.0, 3.0, 1.7);
-      A.rotation.z = 0.05;
-      B.rotation.z = -0.05;
+      var A = strandMesh(13.0, 2.1, 0);
+      var B = strandMesh(13.0, 2.1, 1.7);
+      A.rotation.z = -0.06;
+      B.rotation.z = -0.1;
       scene.add(A);
       scene.add(B);
       function size() {
@@ -192,8 +192,8 @@
         var r = area.getBoundingClientRect();
         var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
         var rh = -(t * 0.3 + bp * Math.PI * 3);
-        var open = smooth(0.16, 0.5, bp);
-        var sep = 0.35 + open * 1.4;
+        /* narrow weave pinned tight on the letter bodies (no floating above) */
+        var sep = 0.28 + open * 0.9;
         /* pin the weave ON the title: title offset within band → world units
            (visible height at z=0 is 2*8*tan(22.5°) ≈ 6.63) */
         var ty = 0;
