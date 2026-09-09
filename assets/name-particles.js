@@ -96,19 +96,26 @@
       paint(p);
     }
     function paint(p) {
-      /* 1) hero brand wraps + shatters early on scroll */
+      /* 1) hero brand wraps + shatters early on scroll.
+         PERF: values cached — style written ONLY on change; transform/opacity
+         only (compositor). The old per-frame blur() filter on the title
+         re-rastered the whole text every scroll tick = the text glitch. */
       var cp = smooth(0.06, 0.28, p);
+      var bO = (1 - cp).toFixed(3), bS = (1 - 0.35 * cp).toFixed(3);
       for (var i = 0; i < chars.length; i++) {
         var ch = chars[i];
-        ch.style.opacity = (1 - cp).toFixed(3);
-        ch.style.transform = 'scale(' + (1 - 0.35 * cp).toFixed(3) + ')';
+        if (ch.__o !== bO) { ch.__o = bO; ch.style.opacity = bO; }
+        var bT = 'scale(' + bS + ')';
+        if (ch.__t !== bT) { ch.__t = bT; ch.style.transform = bT; }
       }
-      /* 2) band title assembles late */
+      /* 2) band title assembles late — opacity + translateY only, no filter */
       var tp = smooth(0.5, 0.92, p);
-      title.style.opacity = tp.toFixed(3);
-      title.style.filter = tp >= 1 ? '' : 'blur(' + ((1 - tp) * 16).toFixed(1) + 'px)';
-      title.style.transform = tp >= 1 ? '' : 'translateY(' + ((1 - tp) * 40).toFixed(1) + 'px)';
-      band.classList.toggle('np-on', tp > 0.02);
+      var tO = tp.toFixed(3);
+      if (title.__o !== tO) { title.__o = tO; title.style.opacity = tO; }
+      var tT = tp >= 1 ? '' : 'translateY(' + ((1 - tp) * 40).toFixed(1) + 'px)';
+      if (title.__t !== tT) { title.__t = tT; title.style.transform = tT; }
+      var on = tp > 0.02;
+      if (band.__on !== on) { band.__on = on; band.classList.toggle('np-on', on); }
 
       /* 3) particles fly mid-scroll */
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);

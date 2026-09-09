@@ -956,9 +956,12 @@
        the text glitch. Lenis smoothness untouched. */
     /* === 3D EXPERIENCE PACK (feat/3d-experience) — wrap, scroll-fx, sheen, nameform.
        Small-layer transform/opacity/filter only; Lenis + site.js untouched. */
-    /* scroll-reactive connectors: glow peaks as the hourglass crosses viewport center */
+    /* scroll-reactive connectors: glow peaks as the hourglass crosses viewport center.
+       PERF: --cg drives OPACITY (compositor) — the old brightness(calc()) inside
+       filter: re-rastered every connector on every scroll frame = text/pixel glitch.
+       Filter stays static now; scale is compositor-only. */
     .gold-link{scale:calc(1 + .045*var(--cg,0));}
-    .gold-link::after{filter:blur(7px) brightness(calc(.9 + .5*var(--cg,0))) saturate(1.3);}
+    .gold-link::after{filter:blur(7px) saturate(1.3);opacity:calc(.6 + .4*var(--cg,0));}
     /* scroll-reactive edge words: gentle drift (translate composes with existing transforms) */
     .edge-word{translate:0 calc(var(--ew,0)*44px);}
     /* card sheen: cursor spotlight, hover only (.m-box keeps its beam + tilt) */
