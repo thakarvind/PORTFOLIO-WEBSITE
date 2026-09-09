@@ -67,7 +67,7 @@
       try {
         r = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
       } catch (e) { return null; }
-      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, matchMedia('(max-width: 860px)').matches ? 1 : 1.5));
       r.setClearColor(0x000000, 0);
       return r;
     }
@@ -105,6 +105,7 @@
       var canvas = document.getElementById('ribbonWrap');
       var area = document.getElementById('top');
       if (!canvas || !area) return;
+      if (matchMedia('(max-width: 860px)').matches) return; /* pill layout: band wrap covers mobile */
       var renderer = makeRenderer(canvas);
       if (!renderer) return;
       var scene = new THREE.Scene();
@@ -138,7 +139,8 @@
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.6);
-        var op = fade * 0.65 * smooth(0, 0.05, g) * (1 - smooth(0.26, 0.42, g));
+        /* resting glow at top, tightens on scroll, releases into particles */
+        var op = fade * 0.7 * (0.45 + 0.55 * smooth(0, 0.05, g)) * (1 - smooth(0.3, 0.45, g));
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         renderer.render(scene, camera);
@@ -198,7 +200,7 @@
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.5);
         var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
-        var op = fade * 0.5 * env;
+        var op = fade * 0.6 * env;
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         A.rotation.y += ((mx * 0.1) - A.rotation.y) * 0.04;

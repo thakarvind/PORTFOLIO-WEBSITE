@@ -37,7 +37,7 @@
     if (!chars.length) { band.classList.add('np-static'); return; }
 
     var MOBILE = matchMedia('(max-width: 860px)').matches;
-    var PER = MOBILE ? 5 : 10;
+    var PER = MOBILE ? 6 : 12;
     var parts = [];
     chars.forEach(function (c, ci) {
       for (var k = 0; k < PER; k++) {
@@ -45,7 +45,7 @@
           ci: ci, f: (ci + 0.5) / chars.length,
           jx: (Math.random() - 0.5) * 26, jy: (Math.random() - 0.5) * 34,
           ox: (Math.random() - 0.5) * 22, oy: (Math.random() - 0.5) * 18,
-          s: 0.8 + Math.random() * 1.6,
+          s: 1.2 + Math.random() * 2,
           delay: ci * 0.012 + Math.random() * 0.05
         });
       }
@@ -135,15 +135,15 @@
           ey = trect.top + trect.height * 0.52 + pt.jy;
         }
         e = easeIO(pp);
-        /* silver burst: disperse outward mid-flight, then gather into the name */
+        /* RED-SILK burst: disperse outward mid-flight, gather into the name */
         var sw = Math.sin(pp * Math.PI);
-        var gx = sx + (ex - sx) * e + pt.ox * 3 * sw;
-        var gy = sy + (ey - sy) * e + 150 * sw + pt.oy * 3 * sw;
-        a = Math.min(1, pp * 6) * (1 - pp) * 1.6 * fadeAll;
+        var gx = sx + (ex - sx) * e + pt.ox * 4 * sw;
+        var gy = sy + (ey - sy) * e + 150 * sw + pt.oy * 4 * sw;
+        a = Math.min(1, pp * 6) * (1 - pp) * 1.7 * fadeAll;
         if (a <= 0.01) continue;
         ctx.globalAlpha = Math.min(1, a);
-        var SILVER = ['#eef0f5', '#c9ccd6', '#ffffff', '#aab0bd'];
-        ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffc9a3' : SILVER[pt.ci % 4];
+        var REDSILK = ['#ff3b22', '#ff6a3d', '#ff8a5c', '#ffd9c9'];
+        ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffd9c9' : REDSILK[pt.ci % 4];
         var streak = pt.s * (1 + pp * 7);
         ctx.fillRect(gx - pt.s / 2, gy - streak / 2, pt.s, streak);
       }
