@@ -21,7 +21,6 @@
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=3"></script>
   <script defer src="assets/scroll-fx.js?v=1"></script>
-  <script defer src="assets/sheen.js?v=1"></script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -963,13 +962,8 @@
     .gold-link::after{filter:blur(7px) saturate(1.3);opacity:calc(.6 + .4*var(--cg,0));}
     /* scroll-reactive edge words: gentle drift (translate composes with existing transforms) */
     .edge-word{translate:0 calc(var(--ew,0)*44px);}
-    /* card sheen: cursor spotlight, hover only (.m-box keeps its beam + tilt) */
-    .a-box:after,.cert:after,.xp-row:after{
-      content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
-      background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.13),transparent 62%);
-      opacity:0;transition:opacity .35s ease;
-    }
-    .a-box:hover:after,.cert:hover:after,.xp-row:hover:after{opacity:1;}
+    /* white cursor sheen REMOVED (was the white-light bloom under the pointer
+       in screenshots) — cards keep their red ::before hover glow only */
     /* nameform: standalone showcase — HORIZONTAL Mincho title centered,
        horizontal reverse ribbon weave behind it */
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
