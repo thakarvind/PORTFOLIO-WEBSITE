@@ -1,8 +1,9 @@
 /* 3D silk ribbons — desktop WebGL enhancement.
-   Silk-textured wave planes drift behind the hero title AND behind the big
-   THAK ARAVIND nameform band (each canvas gets its own tiny scene, paused
-   off-screen). Boots only if THREE loaded; loader gates desktop + pointer.
-   Lenis + smoothness untouched (own rAF loops). */
+   Hero: single ribbon drifting behind FUTURE.
+   Nameform band: TWIN strands helixing around the vertical title like DNA —
+   scroll scrubs the twist (wrap tight mid-band, spread + fade as the next
+   section arrives = "opens into the other section").
+   Each canvas owns a tiny scene, paused off-screen. Lenis untouched. */
 (function () {
   try {
     if (!window.THREE) return;
@@ -46,37 +47,50 @@
       try { mx = (e.clientX / innerWidth) * 2 - 1; } catch (err) {}
     }, { passive: true });
 
-    /* canvasId, areaId, plane w/h, mesh offset, peak opacity, phase offset */
-    function boot(canvasId, areaId, o) {
-      var canvas = document.getElementById(canvasId);
-      var area = document.getElementById(areaId);
-      if (!canvas || !area) return;
-
-      var renderer;
+    function makeRenderer(canvas) {
+      var r;
       try {
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
-      } catch (e) { return; }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-      renderer.setClearColor(0x000000, 0);
-
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
-      camera.position.set(0, 0, 8);
-
-      var uniforms = { uT: { value: o.phase || 0 }, uMap: { value: tex }, uOp: { value: 0 } };
-      var mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(o.w, o.h, 72, 28),
+        r = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: false, powerPreference: 'low-power' });
+      } catch (e) { return null; }
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+      r.setClearColor(0x000000, 0);
+      return r;
+    }
+    function strandMesh(w, h, phase) {
+      var m = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, h, 64, 20),
         new THREE.ShaderMaterial({
-          uniforms: uniforms, transparent: true,
-          depthWrite: false, blending: THREE.AdditiveBlending,
+          uniforms: { uT: { value: phase }, uMap: { value: tex }, uOp: { value: 0 } },
+          transparent: true, depthWrite: false,
+          blending: THREE.AdditiveBlending,
           vertexShader: VSH, fragmentShader: FSH
         })
       );
-      mesh.position.set(o.px || 0, o.py || 0, 0);
-      mesh.rotation.z = o.rz || 0;
-      mesh.rotation.x = -0.08;
-      scene.add(mesh);
+      m.rotation.x = -0.08;
+      return m;
+    }
+    function watch(area, onVis) {
+      try {
+        new IntersectionObserver(function (en) {
+          onVis(!!en[0].isIntersecting);
+        }, { rootMargin: '100px' }).observe(area);
+      } catch (e) {}
+    }
 
+    /* ---------- hero: single ribbon left of FUTURE ---------- */
+    (function hero() {
+      var canvas = document.getElementById('ribbon');
+      var area = document.getElementById('top');
+      if (!canvas || !area) return;
+      var renderer = makeRenderer(canvas);
+      if (!renderer) return;
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
+      camera.position.set(0, 0, 8);
+      var mesh = strandMesh(10.5, 5.2, 0);
+      mesh.position.set(-1.1, 0.1, 0);
+      mesh.rotation.z = 0.06;
+      scene.add(mesh);
       function size() {
         var r = area.getBoundingClientRect();
         var w = Math.max(2, r.width), h = Math.max(2, r.height);
@@ -86,8 +100,7 @@
       }
       size();
       addEventListener('resize', size, { passive: true });
-
-      var visible = true, raf = 0, last = 0, t = o.phase || 0, fade = 0;
+      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
       function frame(now) {
         raf = 0;
         if (document.hidden || !visible) return;
@@ -95,28 +108,90 @@
         var dt = Math.min(0.05, (now - (last || now)) / 1000);
         last = now;
         t += dt;
-        uniforms.uT.value = t;
+        mesh.material.uniforms.uT.value = t;
         fade = Math.min(1, fade + dt * 0.5);
-        uniforms.uOp.value = fade * o.op;
+        mesh.material.uniforms.uOp.value = fade * 0.85;
         mesh.rotation.y += ((mx * 0.18) - mesh.rotation.y) * 0.04;
         renderer.render(scene, camera);
       }
       function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
-      try {
-        new IntersectionObserver(function (en) {
-          visible = !!en[0].isIntersecting;
-          if (visible) kick();
-        }, { rootMargin: '100px' }).observe(area);
-      } catch (e) {}
+      watch(area, function (v) { visible = v; if (v) kick(); });
       document.addEventListener('visibilitychange', function () {
         if (!document.hidden && visible) kick();
       });
       canvas.style.display = 'block';
       kick();
-    }
+    })();
 
-    /* hero: ribbon sits left behind FUTURE; band: wide, centered, subtler */
-    boot('ribbon', 'top', { w: 10.5, h: 5.2, px: -1.1, py: 0.1, rz: 0.06, op: 0.85, phase: 0 });
-    boot('ribbonBand', 'nameform', { w: 12.5, h: 4.2, px: 0, py: 0, rz: -0.04, op: 0.5, phase: 2.3 });
+    /* ---------- nameform: DNA double helix around the vertical title ----------
+       bp: band-center vs viewport-center (-0.5 entering … +0.5 leaving).
+       helix twist = idle drift + scroll-driven turns; strands cross in front /
+       behind via z (additive glow flares at crossings = weave read).
+       Near exit the strands spread wide and fade = opens into next section. */
+    (function dna() {
+      var canvas = document.getElementById('ribbonBand');
+      var area = document.getElementById('nameform');
+      if (!canvas || !area) return;
+      var renderer = makeRenderer(canvas);
+      if (!renderer) return;
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
+      camera.position.set(0, 0, 8);
+      var A = strandMesh(8.5, 3.0, 0);
+      var B = strandMesh(8.5, 3.0, 1.7);
+      A.rotation.z = 0.05;
+      B.rotation.z = -0.05;
+      scene.add(A);
+      scene.add(B);
+      function size() {
+        var r = area.getBoundingClientRect();
+        var w = Math.max(2, r.width), h = Math.max(2, r.height);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      size();
+      addEventListener('resize', size, { passive: true });
+      function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+      function smooth(a, b, v) {
+        var x = clamp01((v - a) / (b - a));
+        return x * x * (3 - 2 * x);
+      }
+      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
+      function frame(now) {
+        raf = 0;
+        if (document.hidden || !visible) return;
+        raf = requestAnimationFrame(frame);
+        var dt = Math.min(0.05, (now - (last || now)) / 1000);
+        last = now;
+        t += dt;
+        var vh = innerHeight || 1;
+        var r = area.getBoundingClientRect();
+        var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
+        var helix = t * 0.35 + bp * Math.PI * 4;
+        var open = smooth(0.16, 0.5, bp);
+        var spread = 0.55 + open * 2.7;
+        var c = Math.cos(helix), s = Math.sin(helix);
+        A.position.set(c * spread, Math.sin(helix * 0.5) * 0.35, s * 1.1);
+        B.position.set(-c * spread, -Math.sin(helix * 0.5) * 0.35, -s * 1.1);
+        A.material.uniforms.uT.value = t;
+        B.material.uniforms.uT.value = t + 1.7;
+        fade = Math.min(1, fade + dt * 0.5);
+        var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
+        var op = fade * 0.55 * env;
+        A.material.uniforms.uOp.value = op;
+        B.material.uniforms.uOp.value = op;
+        A.rotation.y += ((mx * 0.12) - A.rotation.y) * 0.04;
+        B.rotation.y += ((mx * -0.12) - B.rotation.y) * 0.04;
+        renderer.render(scene, camera);
+      }
+      function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
+      watch(area, function (v) { visible = v; if (v) kick(); });
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && visible) kick();
+      });
+      canvas.style.display = 'block';
+      kick();
+    })();
   } catch (e) { /* decorative — never block the page */ }
 })();

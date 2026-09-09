@@ -109,8 +109,14 @@
         if (pp <= 0 || pp >= 1) continue;
         sx = centers[pt.ci][0] + pt.ox;
         sy = centers[pt.ci][1] + pt.oy;
-        ex = trect.left + pt.f * trect.width + pt.jx;
-        ey = trect.top + trect.height * 0.52 + pt.jy;
+        if (trect.height > trect.width * 1.4) {
+          /* vertical tategaki column: chars land in order down the column */
+          ex = trect.left + trect.width / 2 + pt.jx * 0.5;
+          ey = trect.top + pt.f * trect.height + pt.jy;
+        } else {
+          ex = trect.left + pt.f * trect.width + pt.jx;
+          ey = trect.top + trect.height * 0.52 + pt.jy;
+        }
         e = easeIO(pp);
         a = Math.min(1, pp * 5) * (1 - pp) * 1.4 * fadeAll;
         if (a <= 0.01) continue;
