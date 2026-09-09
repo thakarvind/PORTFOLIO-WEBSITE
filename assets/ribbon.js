@@ -1,8 +1,9 @@
 /* 3D silk ribbons — desktop WebGL enhancement.
-   Hero: ambient ribbon behind FUTURE + a SHORT twin-strand wrap hugging the
-   small vertical THAK·ARAVIND brand. On scroll the wrap tightens, then the
-   brand dissolves into particles (see name-particles.js) as the wrap fades.
-   Nameform band ("MY NAME"): soft ambient ribbon behind the assembled title.
+   Hero: a SHORT twin-strand wrap hugging the small vertical THAK·ARAVIND
+   brand (no wide ambient ribbon — the portrait stays clean). On scroll the
+   wrap tightens, then lets go as the brand dissolves into particles.
+   MY NAME band: horizontal REVERSE twin-wrap sweeping across the section
+   while particles assemble into the title, spreading + fading toward About.
    Each canvas owns a tiny scene, paused off-screen. Lenis untouched. */
 (function () {
   try {
@@ -97,49 +98,6 @@
       camera.updateProjectionMatrix();
     }
 
-    /* ---------- hero ambient ribbon behind FUTURE ---------- */
-    (function hero() {
-      var canvas = document.getElementById('ribbon');
-      var area = document.getElementById('top');
-      if (!canvas || !area) return;
-      var renderer = makeRenderer(canvas);
-      if (!renderer) return;
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
-      camera.position.set(0, 0, 8);
-      var mesh = strandMesh(10.5, 5.2, 0);
-      mesh.position.set(-1.1, 0.1, 0);
-      mesh.rotation.z = 0.06;
-      scene.add(mesh);
-      function size() {
-        var r = area.getBoundingClientRect();
-        fitTo(renderer, camera, r.width, r.height);
-      }
-      size();
-      addEventListener('resize', size, { passive: true });
-      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
-      function frame(now) {
-        raf = 0;
-        if (document.hidden || !visible) return;
-        raf = requestAnimationFrame(frame);
-        var dt = Math.min(0.05, (now - (last || now)) / 1000);
-        last = now;
-        t += dt;
-        mesh.material.uniforms.uT.value = t;
-        fade = Math.min(1, fade + dt * 0.5);
-        mesh.material.uniforms.uOp.value = fade * 0.85;
-        mesh.rotation.y += ((mx * 0.18) - mesh.rotation.y) * 0.04;
-        renderer.render(scene, camera);
-      }
-      function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
-      watch(area, function (v) { visible = v; if (v) kick(); });
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden && visible) kick();
-      });
-      canvas.style.display = 'block';
-      kick();
-    })();
-
     /* ---------- SHORT wrap hugging the small hero brand ----------
        Twin strands stand vertical along the brand strip; scroll twists them
        tight around the text, then everything lets go as it particle-dissolves. */
@@ -194,7 +152,10 @@
       kick();
     })();
 
-    /* ---------- MY NAME band: soft ambient ribbon behind the title ---------- */
+    /* ---------- MY NAME band: horizontal REVERSE wrap ----------
+       Wide strands run left–right and weave over/under in the opposite
+       direction while particles become the title; they spread apart and
+       fade as the next section arrives. */
     (function band() {
       var canvas = document.getElementById('ribbonBand');
       var area = document.getElementById('nameform');
@@ -204,16 +165,19 @@
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
       camera.position.set(0, 0, 8);
-      var mesh = strandMesh(12.5, 4.2, 2.3);
-      mesh.rotation.z = -0.04;
-      scene.add(mesh);
+      var A = strandMesh(12.5, 2.4, 0);
+      var B = strandMesh(12.5, 2.4, 1.7);
+      A.rotation.z = 0.05;
+      B.rotation.z = -0.05;
+      scene.add(A);
+      scene.add(B);
       function size() {
         var r = area.getBoundingClientRect();
         fitTo(renderer, camera, r.width, r.height);
       }
       size();
       addEventListener('resize', size, { passive: true });
-      var visible = true, raf = 0, last = 0, t = 2.3, fade = 0;
+      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
       function frame(now) {
         raf = 0;
         if (document.hidden || !visible) return;
@@ -221,10 +185,24 @@
         var dt = Math.min(0.05, (now - (last || now)) / 1000);
         last = now;
         t += dt;
-        mesh.material.uniforms.uT.value = t;
+        var vh = innerHeight || 1;
+        var r = area.getBoundingClientRect();
+        var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
+        var rh = -(t * 0.3 + bp * Math.PI * 3);
+        var open = smooth(0.16, 0.5, bp);
+        var sep = 0.45 + open * 1.9;
+        var c = Math.cos(rh), s = Math.sin(rh);
+        A.position.set(s * 0.6, c * sep, s * 1.0);
+        B.position.set(-s * 0.6, -c * sep, -s * 1.0);
+        A.material.uniforms.uT.value = t;
+        B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.5);
-        mesh.material.uniforms.uOp.value = fade * 0.4;
-        mesh.rotation.y += ((mx * 0.12) - mesh.rotation.y) * 0.04;
+        var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
+        var op = fade * 0.5 * env;
+        A.material.uniforms.uOp.value = op;
+        B.material.uniforms.uOp.value = op;
+        A.rotation.y += ((mx * 0.1) - A.rotation.y) * 0.04;
+        B.rotation.y += ((mx * -0.1) - B.rotation.y) * 0.04;
         renderer.render(scene, camera);
       }
       function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }

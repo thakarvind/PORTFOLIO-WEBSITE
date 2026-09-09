@@ -51,13 +51,25 @@
       }
     });
 
+    /* document-space launch cache: the brand scrolls off-screen fast, so
+       frozen launch points keep particles visible travelling down-screen */
+    var startCache = [];
+    function snapStarts() {
+      var sc = window.scrollY || 0;
+      startCache = chars.map(function (c) {
+        var r = c.getBoundingClientRect();
+        return [r.left + r.width / 2, r.top + sc + r.height / 2];
+      });
+    }
+    snapStarts();
+
     var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
     function size() {
       canvas.width = Math.round(innerWidth * DPR);
       canvas.height = Math.round(innerHeight * DPR);
     }
     size();
-    addEventListener('resize', size, { passive: true });
+    addEventListener('resize', function () { size(); snapStarts(); kick(); }, { passive: true });
 
     function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
     function smooth(a, b, v) {
@@ -80,6 +92,7 @@
       var p = flowG();
       if (p === lastP && (p === 0 || p === 1)) { paint(p); return; }
       lastP = p;
+      if (p < 0.03) snapStarts();
       paint(p);
     }
     function paint(p) {
@@ -105,10 +118,8 @@
       if (fadeAll <= 0) return;
       var trect = title.getBoundingClientRect();
       var i2, pt, pp, sx, sy, ex, ey, e, a;
-      var centers = chars.map(function (c) {
-        var r = c.getBoundingClientRect();
-        return [r.left + r.width / 2, r.top + r.height / 2];
-      });
+      var sc = window.scrollY || 0;
+      var centers = startCache.map(function (s) { return [s[0], s[1] - sc]; });
       for (i2 = 0; i2 < parts.length; i2++) {
         pt = parts[i2];
         pp = clamp01((p - pt.delay) / 0.6);
@@ -124,15 +135,17 @@
           ey = trect.top + trect.height * 0.52 + pt.jy;
         }
         e = easeIO(pp);
-        a = Math.min(1, pp * 5) * (1 - pp) * 1.4 * fadeAll;
+        /* silver burst: disperse outward mid-flight, then gather into the name */
+        var sw = Math.sin(pp * Math.PI);
+        var gx = sx + (ex - sx) * e + pt.ox * 3 * sw;
+        var gy = sy + (ey - sy) * e + 150 * sw + pt.oy * 3 * sw;
+        a = Math.min(1, pp * 6) * (1 - pp) * 1.6 * fadeAll;
         if (a <= 0.01) continue;
         ctx.globalAlpha = Math.min(1, a);
-        ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffc9a3' : '#ffffff';
-        /* falling micro-streaks: stretch vertically mid-flight, settle to dots */
-        var px = sx + (ex - sx) * e;
-        var py = sy + (ey - sy) * e + Math.sin(pp * Math.PI) * 150;
+        var SILVER = ['#eef0f5', '#c9ccd6', '#ffffff', '#aab0bd'];
+        ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffc9a3' : SILVER[pt.ci % 4];
         var streak = pt.s * (1 + pp * 7);
-        ctx.fillRect(px - pt.s / 2, py - streak / 2, pt.s, streak);
+        ctx.fillRect(gx - pt.s / 2, gy - streak / 2, pt.s, streak);
       }
       ctx.globalAlpha = 1;
     }
