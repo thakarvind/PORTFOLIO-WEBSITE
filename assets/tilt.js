@@ -6,12 +6,12 @@
   try {
     if (!matchMedia("(pointer:fine)").matches) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var MAX = 5; /* max tilt in degrees — subtle, premium feel */
-
-    var cards = document.querySelectorAll(".m-box, .a-box");
+    var cards = document.querySelectorAll(".m-box, .a-box, .nameform-col");
     Array.prototype.forEach.call(cards, function (el) {
       if (el.__tilt) return;
       el.__tilt = true;
+      /* name column gets a gentler tilt than small cards */
+      var MAX = el.classList.contains("nameform-col") ? 2.5 : 5;
 
       var raf = 0, active = false, tx = 0, ty = 0, cx = 0, cy = 0;
 

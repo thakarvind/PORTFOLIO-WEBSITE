@@ -975,8 +975,16 @@
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
     .nameform-col{margin:0 auto;text-align:center;}
     .nameform-kicker{font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);margin:0 0 26px;text-transform:uppercase;}
-    /* WORLD — same kicker voice, pinned to the section's bottom-right corner */
-    .nameform-world{position:absolute;right:clamp(20px,6vw,90px);bottom:clamp(18px,5vh,54px);margin:0;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;z-index:1;}
+    /* WORLD — same kicker voice, pinned to the section's bottom-right corner.
+       Higher-specificity selector so the generic .nameform > * rule can't
+       override its absolute positioning. */
+    .nameform > p.nameform-world{position:absolute;right:clamp(20px,6vw,90px);bottom:clamp(18px,5vh,54px);margin:0;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;z-index:2;}
+    /* minimal 3D dust: tiny ember sparkles drifting in the section (CSS only,
+       compositor transforms, hidden under reduced-motion / halved on mobile) */
+    .nameform .nf-spark{position:absolute;left:var(--sx);top:var(--sy);width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#ffd9c9,#ff5c33 60%,transparent 72%);opacity:.2;pointer-events:none;z-index:1;animation:nfFloat var(--t,9s) ease-in-out var(--d,0s) infinite alternate;}
+    @keyframes nfFloat{from{transform:translate3d(0,0,0);opacity:.12}50%{opacity:.85}to{transform:translate3d(14px,-28px,0);opacity:.2}}
+    @media (prefers-reduced-motion:reduce){.nameform .nf-spark{display:none}}
+    @media (max-width:860px){.nameform .nf-spark:nth-of-type(even){display:none}}
     /* MY NAME title: the exact ABOUT edge-word treatment — hollow outline
        letters (transparent fill, 1px stroke) over the red silk glow.
        Horizontal + centered like the section, same stroke/glow recipe. */
@@ -1121,6 +1129,14 @@
       <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>HAK ARAVIND</h2>
     </div>
     <p class="nameform-world">World</p>
+    <i class="nf-spark" style="--sx:9%;--sy:24%;--d:0s;--t:9s"></i>
+    <i class="nf-spark" style="--sx:16%;--sy:64%;--d:-3s;--t:11s"></i>
+    <i class="nf-spark" style="--sx:28%;--sy:38%;--d:-5s;--t:8s"></i>
+    <i class="nf-spark" style="--sx:70%;--sy:26%;--d:-2s;--t:10s"></i>
+    <i class="nf-spark" style="--sx:82%;--sy:60%;--d:-6s;--t:12s"></i>
+    <i class="nf-spark" style="--sx:90%;--sy:40%;--d:-4s;--t:9s"></i>
+    <i class="nf-spark" style="--sx:48%;--sy:16%;--d:-7s;--t:10s"></i>
+    <i class="nf-spark" style="--sx:58%;--sy:78%;--d:-1s;--t:11s"></i>
   </section>
 
   <section class="blk" id="about">
