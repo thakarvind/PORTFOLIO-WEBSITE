@@ -37,7 +37,7 @@
     if (!chars.length) { band.classList.add('np-static'); return; }
 
     var MOBILE = matchMedia('(max-width: 860px)').matches;
-    var PER = MOBILE ? 6 : 12;
+    var PER = MOBILE ? 7 : 14;
     var parts = [];
     chars.forEach(function (c, ci) {
       for (var k = 0; k < PER; k++) {
@@ -45,7 +45,7 @@
           ci: ci, f: (ci + 0.5) / chars.length,
           jx: (Math.random() - 0.5) * 26, jy: (Math.random() - 0.5) * 34,
           ox: (Math.random() - 0.5) * 22, oy: (Math.random() - 0.5) * 18,
-          s: 1.2 + Math.random() * 2,
+          s: 1.4 + Math.random() * 2.2,
           delay: ci * 0.012 + Math.random() * 0.05
         });
       }
@@ -96,6 +96,10 @@
       paint(p);
     }
     function paint(p) {
+      /* FIX: vh was referenced here but only existed in frame()'s scope —
+         paint() threw a ReferenceError EVERY call and the outer try/catch
+         swallowed it, so the red particles never rendered at all. */
+      var vh = innerHeight || 1;
       /* 1) hero brand wraps + shatters early on scroll.
          PERF: values cached — style written ONLY on change; transform/opacity
          only (compositor). The old per-frame blur() filter on the title
@@ -144,8 +148,8 @@
         e = easeIO(pp);
         /* RED-SILK burst: disperse outward mid-flight, gather into the name */
         var sw = Math.sin(pp * Math.PI);
-        var gx = sx + (ex - sx) * e + pt.ox * 4 * sw;
-        var gy = sy + (ey - sy) * e + 150 * sw + pt.oy * 4 * sw;
+        var gx = sx + (ex - sx) * e + pt.ox * 5 * sw;
+        var gy = sy + (ey - sy) * e + 170 * sw + pt.oy * 5 * sw;
         a = Math.min(1, pp * 6) * (1 - pp) * 1.7 * fadeAll;
         if (a <= 0.01) continue;
         ctx.globalAlpha = Math.min(1, a);
