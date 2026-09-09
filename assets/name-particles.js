@@ -46,7 +46,7 @@
           jx: (Math.random() - 0.5) * 26, jy: (Math.random() - 0.5) * 34,
           ox: (Math.random() - 0.5) * 22, oy: (Math.random() - 0.5) * 18,
           s: 1.4 + Math.random() * 2.2,
-          wrap: (k % 4 === 3), /* 25% re-form the horizontal silk wrap */
+          wrap: (k % 3 === 2), /* 33% re-form the silk wrap at the T (left) */
           delay: ci * 0.012 + Math.random() * 0.05
         });
       }
@@ -143,9 +143,11 @@
         sx = centers[pt.ci][0] + pt.ox * 0.6;
         sy = centers[pt.ci][1] + pt.oy * 0.6;
         if (pt.wrap) {
-          /* re-form the horizontal silk wrap: wavy line across the band */
-          ex = brect.left + pt.f * brect.width;
-          ey = trect.top + trect.height / 2 + Math.sin(pt.f * Math.PI * 2) * 16;
+          /* sparkle column at the LEFT side, hooking into the T: a tight
+             vertical sparkle cluster at the T + a short weave trailing right */
+          var tX = trect.left + trect.width * 0.055;
+          ex = tX + Math.pow(pt.f, 1.6) * trect.width * 0.16;
+          ey = trect.top + trect.height * 0.5 + (pt.f - 0.5) * trect.height * 0.92;
         } else if (trect.height > trect.width * 1.4) {
           /* vertical column: chars land in order down the column */
           ex = trect.left + trect.width / 2 + pt.jx * 0.5;
