@@ -975,14 +975,13 @@
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
     .nameform-col{margin:0 auto;text-align:center;}
     .nameform-kicker{font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);margin:0 0 26px;text-transform:uppercase;}
-    /* MY NAME title: exact About-heading FORMAT (Space Grotesk 500 tight +
-       Instrument Serif italic accent) — filled with RED LACQUER GLOSS:
-       bright red top → deep lacquer red core → red edge sheen, wet look */
-    .nameform-title{font-family:var(--sans);font-weight:500;letter-spacing:-.02em;line-height:1.05;font-size:clamp(2.4rem,8.5vw,6.2rem);margin:0;text-wrap:balance;background:linear-gradient(180deg,#ff5c33 0%,#e63419 26%,#a01a0c 50%,#e63419 74%,#ff5c33 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-    /* wet-lacquer sheen line + soft under-glow, no backdrop panel */
-    .nameform-title{filter:drop-shadow(0 1px 10px rgba(230,52,25,.35)) drop-shadow(0 -6px 18px rgba(255,92,51,.14));}
-    /* T: Instrument Serif italic in tint-soft, About's exact accent treatment */
-    .nameform-title .t-accent{font-family:var(--serif);font-style:italic;font-weight:400;background:linear-gradient(180deg,#ffd0a3 0%,#ffb066 45%,#ff7a3d 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    /* MY NAME title: the exact ABOUT edge-word treatment — hollow outline
+       letters (transparent fill, 1px stroke) over the red silk glow.
+       Horizontal + centered like the section, same stroke/glow recipe. */
+    .nameform-title{position:relative;isolation:isolate;font-family:var(--sans);font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:.95;font-size:clamp(2.4rem,8.5vw,6.2rem);margin:0;text-wrap:balance;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.13);}
+    .nameform-title:before{content:"";position:absolute;inset:-15px;z-index:-1;pointer-events:none;background:url("assets/silk.jpg?v=1") center/cover no-repeat;filter:hue-rotate(25deg) saturate(1.25) brightness(.9) blur(14px);mix-blend-mode:screen;opacity:.55;-webkit-mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);mask-image:radial-gradient(60% 55% at 50% 50%,#000 25%,transparent 80%);}
+    /* T matches the rest — same hollow stroke, no special fill */
+    .nameform-title .t-accent{font-style:normal;background:none;color:transparent;-webkit-text-fill-color:transparent;}
     @media (max-width:860px){
       .nameform{min-height:84svh;}
       .nameform-col{margin:0 auto;text-align:center;}
@@ -1117,7 +1116,7 @@
     <canvas id="ribbonBand" aria-hidden="true"></canvas>
     <div class="nameform-col">
       <p class="nameform-kicker">My name</p>
-      <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>hak Aravind</h2>
+      <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>HAK ARAVIND</h2>
     </div>
   </section>
 
