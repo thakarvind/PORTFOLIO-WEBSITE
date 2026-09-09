@@ -975,10 +975,10 @@
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
     .nameform-col{position:relative;width:fit-content;margin:0 auto;text-align:center;}
     /* WELCOME TO hugs the title's top-left (per annotation) */
-    .nameform-kicker{position:absolute;left:2px;bottom:calc(100% + 20px);margin:0;text-align:left;white-space:nowrap;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;}
+    .nameform-kicker{position:absolute;left:2px;bottom:calc(100% + 20px);margin:0;text-align:left;white-space:nowrap;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;font-size:.82rem;line-height:1;letter-spacing:.42em;color:var(--tint);text-transform:uppercase;}
     /* WORLD hugs the title's bottom-right (per annotation) — scoped inside
        the column so it tracks the title on every screen size */
-    .nameform-col > p.nameform-world{position:absolute;right:2px;top:calc(100% + 20px);margin:0;text-align:right;white-space:nowrap;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;z-index:2;}
+    .nameform-col > p.nameform-world{position:absolute;right:2px;top:calc(100% + 20px);margin:0;text-align:right;white-space:nowrap;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;font-size:.82rem;line-height:1;letter-spacing:.42em;color:var(--tint);text-transform:uppercase;z-index:2;}
     /* minimal 3D dust: tiny ember sparkles drifting in the section (CSS only,
        compositor transforms, hidden under reduced-motion / halved on mobile) */
     .nameform .nf-spark{position:absolute;left:var(--sx);top:var(--sy);width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#ffd9c9,#ff5c33 60%,transparent 72%);opacity:.2;pointer-events:none;z-index:1;animation:nfFloat var(--t,9s) ease-in-out var(--d,0s) infinite alternate;}
