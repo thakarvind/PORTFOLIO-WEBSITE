@@ -7,7 +7,7 @@
   <title>THAK ARAVIND — Portfolio | Data Analyst · Project Manager · Gen AI Researcher</title>
   <meta name="description" content="THAK ARAVIND — I turn messy numbers into clear, beautiful insight."/>
   <script>window.__startupSparksHold=true;</script>
-  <script>if(!location.hash){history.scrollRestoration='manual';document.documentElement.style.scrollBehavior='auto';(function(){var released=false,timers=[];function reset(){if(!released)window.scrollTo({top:0,left:0,behavior:'instant'});}function release(){released=true;timers.forEach(clearTimeout);removeEventListener('wheel',release);removeEventListener('touchstart',release);removeEventListener('touchmove',release);}reset();addEventListener('pageshow',reset);addEventListener('load',reset);addEventListener('wheel',release,{passive:true,once:true});addEventListener('touchstart',release,{passive:true,once:true});addEventListener('touchmove',release,{passive:true,once:true});[0,100,300,700,1400].forEach(function(ms){timers.push(setTimeout(reset,ms));});})();}</script>
+  <script>if(!location.hash){history.scrollRestoration='manual';document.documentElement.style.scrollBehavior='auto';(function(){var released=false,timers=[];function reset(){if(!released)window.scrollTo({top:0,left:0,behavior:'instant'});}function release(){released=true;timers.forEach(clearTimeout);removeEventListener('wheel',release);removeEventListener('touchstart',release);removeEventListener('touchmove',release);removeEventListener('keydown',release);removeEventListener('pointerdown',release);}reset();addEventListener('pageshow',reset);addEventListener('load',reset);addEventListener('wheel',release,{passive:true,once:true});addEventListener('touchstart',release,{passive:true,once:true});addEventListener('touchmove',release,{passive:true,once:true});addEventListener('keydown',release,{passive:true,once:true});addEventListener('pointerdown',release,{passive:true,once:true});[0,100,300,700,1400].forEach(function(ms){timers.push(setTimeout(reset,ms));});})();}</script>
   <style>html.native-smooth{scroll-behavior:auto!important}</style>
   <script>(function(){var raf=window.requestAnimationFrame;window.requestAnimationFrame=function(cb){if(typeof cb==='function'&&cb.toString().indexOf('__edgeVisible')!==-1)return 0;return raf.call(window,cb)};})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
   <script defer src="assets/site.js?v=34"></script>
   <script defer src="assets/parallax.js?v=6"></script>
-  <script defer src="assets/tilt.js?v=2"></script>
+  <script defer src="assets/tilt.js?v=3"></script>
   <script defer src="assets/scroll-fx.js?v=1"></script>
   <script defer src="assets/sheen.js?v=1"></script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
@@ -973,12 +973,12 @@
     /* nameform: standalone showcase — HORIZONTAL Mincho title centered,
        horizontal reverse ribbon weave behind it */
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
-    .nameform-col{margin:0 auto;text-align:center;}
-    .nameform-kicker{font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);margin:0 0 26px;text-transform:uppercase;}
-    /* WORLD — same kicker voice, pinned to the section's bottom-right corner.
-       Higher-specificity selector so the generic .nameform > * rule can't
-       override its absolute positioning. */
-    .nameform > p.nameform-world{position:absolute;right:clamp(20px,6vw,90px);bottom:clamp(18px,5vh,54px);margin:0;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;z-index:2;}
+    .nameform-col{position:relative;width:fit-content;margin:0 auto;text-align:center;}
+    /* WELCOME TO hugs the title's top-left (per annotation) */
+    .nameform-kicker{position:absolute;left:2px;bottom:calc(100% + 20px);margin:0;text-align:left;white-space:nowrap;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;}
+    /* WORLD hugs the title's bottom-right (per annotation) — scoped inside
+       the column so it tracks the title on every screen size */
+    .nameform-col > p.nameform-world{position:absolute;right:2px;top:calc(100% + 20px);margin:0;text-align:right;white-space:nowrap;font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);text-transform:uppercase;z-index:2;}
     /* minimal 3D dust: tiny ember sparkles drifting in the section (CSS only,
        compositor transforms, hidden under reduced-motion / halved on mobile) */
     .nameform .nf-spark{position:absolute;left:var(--sx);top:var(--sy);width:3px;height:3px;border-radius:50%;background:radial-gradient(circle,#ffd9c9,#ff5c33 60%,transparent 72%);opacity:.2;pointer-events:none;z-index:1;animation:nfFloat var(--t,9s) ease-in-out var(--d,0s) infinite alternate;}
@@ -1127,8 +1127,8 @@
     <div class="nameform-col">
       <p class="nameform-kicker">Welcome to</p>
       <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>HAK ARAVIND</h2>
+      <p class="nameform-world">World</p>
     </div>
-    <p class="nameform-world">World</p>
     <i class="nf-spark" style="--sx:9%;--sy:24%;--d:0s;--t:9s"></i>
     <i class="nf-spark" style="--sx:16%;--sy:64%;--d:-3s;--t:11s"></i>
     <i class="nf-spark" style="--sx:28%;--sy:38%;--d:-5s;--t:8s"></i>
@@ -1541,7 +1541,7 @@
         if(done) return; done=true;
         var s=document.createElement('script'); s.src='assets/three.min.js'; s.defer=true;
         s.onload=function(){
-          var r=document.createElement('script'); r.src='assets/ribbon.js?v=1'; r.defer=true;
+          var r=document.createElement('script'); r.src='assets/ribbon.js?v=2'; r.defer=true;
           document.body.appendChild(r);
         };
         document.body.appendChild(s);

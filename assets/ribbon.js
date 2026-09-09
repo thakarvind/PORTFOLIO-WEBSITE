@@ -182,7 +182,7 @@
       }
       size();
       addEventListener('resize', size, { passive: true });
-      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
+      var visible = true, raf = 0, last = 0, t = 0, fade = 1;
       function frame(now) {
         raf = 0;
         if (document.hidden || !visible) return;
@@ -212,7 +212,7 @@
         B.position.set(-s * 0.6, ty - c * sep, -s * 1.0);
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
-        fade = Math.min(1, fade + dt * 0.5);
+        /* fade starts at 1: first frame renders full, no mid-scroll pop-in */
         /* soft + permanent: steady weave while the section is on screen */
         var op = fade * 0.62;
         A.material.uniforms.uOp.value = op;
