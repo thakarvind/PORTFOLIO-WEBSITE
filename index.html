@@ -12,7 +12,7 @@
   <script>(function(){var raf=window.requestAnimationFrame;window.requestAnimationFrame=function(cb){if(typeof cb==='function'&&cb.toString().indexOf('__edgeVisible')!==-1)return 0;return raf.call(window,cb)};})();</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Julius+Sans+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Julius+Sans+One&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- 120Hz buttery smooth scroll: Lenis is an ES module that exports the class.
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
@@ -273,6 +273,22 @@
       text-shadow:0 1px 12px rgba(0,0,0,0.55) !important;
     }
     .hero-brand em{ color:var(--tint) !important; font-style:normal; letter-spacing:.62em !important; }
+    /* === Japanese-minimal typography (Mincho) — FUTURE / PORTFOLIO / THAK ARAVIND ===
+       English words kept, rendered in Shippori Mincho (Japanese serif) with airy
+       tracking. Positions, sizes and animations untouched. */
+    .main-title{
+      font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif !important;
+      font-weight:500 !important;
+      letter-spacing:.14em !important;
+    }
+    .hero-brand{
+      font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif !important;
+      font-weight:600 !important;
+    }
+    #loader .l-name{
+      font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif !important;
+      letter-spacing:.35em !important;
+    }
     /* glow for Achieved (a-box), Tool Box (.tool) and Services (.svc) on hover - like STACK Image 5 */
     .a-box, .svc, .tool, .xp-row, .cert{
       position:relative !important;
