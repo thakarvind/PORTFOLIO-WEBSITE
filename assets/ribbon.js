@@ -29,7 +29,7 @@
       'void main(){',
       '  vec2 uv = vUv + vec2(uT * 0.008, sin(uT * 0.3 + vUv.x * 4.0) * 0.01);',
       '  vec3 c = texture2D(uMap, uv).rgb;',
-      '  c *= vec3(1.35, 0.85, 0.72);',
+      '  c *= vec3(1.15, 0.82, 0.74);',
       '  float mx = smoothstep(0.0, 0.28, vUv.x) * (1.0 - smoothstep(0.72, 1.0, vUv.x));',
       '  float my = smoothstep(0.0, 0.30, vUv.y) * (1.0 - smoothstep(0.70, 1.0, vUv.y));',
       '  float a = mx * my * uOp;',
@@ -139,8 +139,8 @@
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.6);
-        /* resting glow at top, tightens on scroll, releases into particles */
-        var op = fade * 0.95 * (0.55 + 0.45 * smooth(0, 0.05, g)) * (1 - smooth(0.3, 0.45, g));
+        /* soft + permanent: steady presence, twist still responds to scroll */
+        var op = fade * 0.38;
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         renderer.render(scene, camera);
@@ -211,8 +211,8 @@
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.5);
-        var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
-        var op = fade * 0.85 * env;
+        /* soft + permanent: steady weave while the section is on screen */
+        var op = fade * 0.38;
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         A.rotation.y += ((mx * 0.1) - A.rotation.y) * 0.04;
