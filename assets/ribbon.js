@@ -29,7 +29,7 @@
       'void main(){',
       '  vec2 uv = vUv + vec2(uT * 0.008, sin(uT * 0.3 + vUv.x * 4.0) * 0.01);',
       '  vec3 c = texture2D(uMap, uv).rgb;',
-      '  c *= vec3(1.2, 0.82, 0.72);',
+      '  c *= vec3(1.35, 0.85, 0.72);',
       '  float mx = smoothstep(0.0, 0.28, vUv.x) * (1.0 - smoothstep(0.72, 1.0, vUv.x));',
       '  float my = smoothstep(0.0, 0.30, vUv.y) * (1.0 - smoothstep(0.70, 1.0, vUv.y));',
       '  float a = mx * my * uOp;',
@@ -111,8 +111,8 @@
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
       camera.position.set(0, 0, 8);
-      var A = strandMesh(5.5, 1.6, 0);
-      var B = strandMesh(5.5, 1.6, 1.7);
+      var A = strandMesh(6.0, 2.0, 0);
+      var B = strandMesh(6.0, 2.0, 1.7);
       A.rotation.z = Math.PI / 2 + 0.06;
       B.rotation.z = Math.PI / 2 - 0.06;
       scene.add(A);
@@ -140,7 +140,7 @@
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.6);
         /* resting glow at top, tightens on scroll, releases into particles */
-        var op = fade * 0.7 * (0.45 + 0.55 * smooth(0, 0.05, g)) * (1 - smooth(0.3, 0.45, g));
+        var op = fade * 0.95 * (0.55 + 0.45 * smooth(0, 0.05, g)) * (1 - smooth(0.3, 0.45, g));
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         renderer.render(scene, camera);
@@ -167,8 +167,8 @@
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
       camera.position.set(0, 0, 8);
-      var A = strandMesh(12.5, 2.4, 0);
-      var B = strandMesh(12.5, 2.4, 1.7);
+      var A = strandMesh(13.0, 3.0, 0);
+      var B = strandMesh(13.0, 3.0, 1.7);
       A.rotation.z = 0.05;
       B.rotation.z = -0.05;
       scene.add(A);
@@ -200,7 +200,7 @@
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.5);
         var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
-        var op = fade * 0.6 * env;
+        var op = fade * 0.85 * env;
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         A.rotation.y += ((mx * 0.1) - A.rotation.y) * 0.04;
