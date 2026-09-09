@@ -46,6 +46,7 @@
           jx: (Math.random() - 0.5) * 26, jy: (Math.random() - 0.5) * 34,
           ox: (Math.random() - 0.5) * 22, oy: (Math.random() - 0.5) * 18,
           s: 1.4 + Math.random() * 2.2,
+          wrap: (k % 4 === 3), /* 25% re-form the horizontal silk wrap */
           delay: ci * 0.012 + Math.random() * 0.05
         });
       }
@@ -128,17 +129,25 @@
       var fadeAll = 1 - smooth(0.82, 1, p);
       if (fadeAll <= 0) return;
       var trect = title.getBoundingClientRect();
+      var brect = band.getBoundingClientRect();
       var i2, pt, pp, sx, sy, ex, ey, e, a;
       var sc = window.scrollY || 0;
       var centers = startCache.map(function (s) { return [s[0], s[1] - sc]; });
+      /* narrow column while over the hero; spread + small LEFT curve after */
+      var spreadMul = smooth(0.3, 0.52, p);
+      var bend = -90 * Math.sin(smooth(0.24, 0.62, p) * Math.PI);
       for (i2 = 0; i2 < parts.length; i2++) {
         pt = parts[i2];
         pp = clamp01((p - pt.delay) / 0.6);
         if (pp <= 0 || pp >= 1) continue;
-        sx = centers[pt.ci][0] + pt.ox;
-        sy = centers[pt.ci][1] + pt.oy;
-        if (trect.height > trect.width * 1.4) {
-          /* vertical tategaki column: chars land in order down the column */
+        sx = centers[pt.ci][0] + pt.ox * 0.6;
+        sy = centers[pt.ci][1] + pt.oy * 0.6;
+        if (pt.wrap) {
+          /* re-form the horizontal silk wrap: wavy line across the band */
+          ex = brect.left + pt.f * brect.width;
+          ey = trect.top + trect.height / 2 + Math.sin(pt.f * Math.PI * 2) * 16;
+        } else if (trect.height > trect.width * 1.4) {
+          /* vertical column: chars land in order down the column */
           ex = trect.left + trect.width / 2 + pt.jx * 0.5;
           ey = trect.top + pt.f * trect.height + pt.jy;
         } else {
@@ -146,15 +155,15 @@
           ey = trect.top + trect.height * 0.52 + pt.jy;
         }
         e = easeIO(pp);
-        /* RED-SILK burst: disperse outward mid-flight, gather into the name */
+        /* RED-SILK: narrow over hero, spread after, small left curve */
         var sw = Math.sin(pp * Math.PI);
-        var gx = sx + (ex - sx) * e + pt.ox * 5 * sw;
-        var gy = sy + (ey - sy) * e + 170 * sw + pt.oy * 5 * sw;
+        var gx = sx + (ex - sx) * e + pt.ox * 5 * sw * spreadMul + bend;
+        var gy = sy + (ey - sy) * e + 170 * sw + pt.oy * 5 * sw * spreadMul;
         a = Math.min(1, pp * 6) * (1 - pp) * 1.7 * fadeAll;
         if (a <= 0.01) continue;
         ctx.globalAlpha = Math.min(1, a);
-        var REDSILK = ['#ff3b22', '#ff6a3d', '#ff8a5c', '#ffd9c9'];
-        ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffd9c9' : REDSILK[pt.ci % 4];
+        var REDSILK = ['#ff4d2e', '#d42b16', '#8f130b', '#ff7a52'];
+        ctx.fillStyle = (pt.ci % 7 === 0) ? '#ffb39a' : REDSILK[pt.ci % 4];
         var streak = pt.s * (1 + pp * 7);
         ctx.fillRect(gx - pt.s / 2, gy - streak / 2, pt.s, streak);
       }

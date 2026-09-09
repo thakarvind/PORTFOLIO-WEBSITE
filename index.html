@@ -976,8 +976,11 @@
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
     .nameform-col{margin:0 auto;text-align:center;}
     .nameform-kicker{font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);margin:0 0 26px;text-transform:uppercase;}
-    .nameform-title{font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:clamp(2.2rem,8vw,6rem);letter-spacing:.12em;line-height:1.05;color:#f2f0ec;margin:0;text-wrap:balance;}
-    .nameform-title .t-accent{color:var(--tint);}
+    /* glossy black title over a silk-blur backdrop that follows the full text */
+    .nameform-title{position:relative;isolation:isolate;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:clamp(2.2rem,8vw,6rem);letter-spacing:.12em;line-height:1.05;color:#0c0c12;margin:0;text-wrap:balance;background:linear-gradient(180deg,#54545e 0%,#16161d 26%,#050508 52%,#16161d 76%,#474751 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .nameform-title::before{content:"";position:absolute;inset:-18px -6%;z-index:-1;border-radius:24px;background:url("assets/silk.jpg?v=1") 50% 42%/cover no-repeat;filter:blur(16px) brightness(.82) saturate(1.35);-webkit-mask-image:radial-gradient(80% 95% at 50% 50%,#000 42%,transparent 80%);mask-image:radial-gradient(80% 95% at 50% 50%,#000 42%,transparent 80%);}
+    /* T keeps the ember accent inside the black gloss */
+    .nameform-title .t-accent{background:linear-gradient(180deg,#6b4630 0%,#241510 30%,#0a0507 55%,#241510 78%,#584030 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
     @media (max-width:860px){
       .nameform{min-height:84svh;}
       .nameform-col{margin:0 auto;text-align:center;}
