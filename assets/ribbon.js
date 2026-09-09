@@ -122,7 +122,7 @@
       }
       size();
       addEventListener('resize', size, { passive: true });
-      var visible = true, raf = 0, last = 0, t = 0, fade = 0;
+      var visible = true, raf = 0, last = 0, t = 0, fade = 1;
       function frame(now) {
         raf = 0;
         if (document.hidden || !visible) return;
@@ -134,13 +134,15 @@
         var twist = t * 0.5 + g * Math.PI * 3;
         var spread = 0.32 + 0.5 * smooth(0.05, 0.3, g);
         var c = Math.cos(twist), s = Math.sin(twist);
-        A.position.set(c * spread, s * 0.9, s * 0.8);
-        B.position.set(-c * spread, -s * 0.9, -s * 0.8);
+        /* hand-off: as the brand dissolves, the wrap sinks + drifts down-left
+           toward the MY NAME section, carrying the silk into the next band */
+        var sink = smooth(0.18, 0.5, g);
+        A.position.set(c * spread - sink * 1.4, s * 0.9 - sink * 2.6, s * 0.8);
+        B.position.set(-c * spread + sink * 1.4, -s * 0.9 - sink * 2.6, -s * 0.8);
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
-        fade = Math.min(1, fade + dt * 0.6);
-        /* soft + permanent: steady presence, twist still responds to scroll */
-        var op = fade * 0.62;
+        /* steady from frame one (fade starts at 1 — no 2s ramp) */
+        var op = 0.62;
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
         renderer.render(scene, camera);

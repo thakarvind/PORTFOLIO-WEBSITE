@@ -22,7 +22,6 @@
   <script defer src="assets/tilt.js?v=2"></script>
   <script defer src="assets/scroll-fx.js?v=1"></script>
   <script defer src="assets/sheen.js?v=1"></script>
-  <script defer src="assets/name-particles.js?v=1"></script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -971,17 +970,17 @@
       opacity:0;transition:opacity .35s ease;
     }
     .a-box:hover:after,.cert:hover:after,.xp-row:hover:after{opacity:1;}
-    /* nameform: standalone showcase — HORIZONTAL Mincho title docked slightly
-       right, horizontal reverse ribbon weave behind it */
+    /* nameform: standalone showcase — HORIZONTAL Mincho title centered,
+       horizontal reverse ribbon weave behind it */
     .nameform{position:relative;min-height:90svh;display:flex;flex-direction:column;justify-content:center;padding:9vh 0;overflow:clip;}
     .nameform-col{margin:0 auto;text-align:center;}
     .nameform-kicker{font:500 .62rem/1 var(--mono);letter-spacing:.42em;color:var(--dim2);margin:0 0 26px;text-transform:uppercase;}
-    /* glossy LIGHT title (site's FUTURE gloss) — black was invisible on the
-       dark page. Silk backdrop kept but MUCH softer: more blur, less glow. */
-    .nameform-title{position:relative;isolation:isolate;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:clamp(2.2rem,8vw,6rem);letter-spacing:.12em;line-height:1.05;margin:0;text-wrap:balance;background:linear-gradient(180deg,#fdfbf7 0%,#d7d9e0 30%,#8f93a3 55%,#d7d9e0 80%,#fdfbf7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 14px rgba(255,60,25,.18));}
-    .nameform-title::before{content:"";position:absolute;inset:-16px -5%;z-index:-1;border-radius:24px;background:url("assets/silk.jpg?v=1") 50% 42%/cover no-repeat;filter:blur(22px) brightness(.5) saturate(1.2);opacity:.5;-webkit-mask-image:radial-gradient(75% 90% at 50% 50%,#000 38%,transparent 78%);mask-image:radial-gradient(75% 90% at 50% 50%,#000 38%,transparent 78%);}
-    /* T keeps the ember accent inside the gloss */
-    .nameform-title .t-accent{background:linear-gradient(180deg,#ffd9ae 0%,#ff7a45 55%,#ff3d1e 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    /* MY NAME title: GLOSSY BLACK on a bright blurred-silk backdrop that
+       follows the whole text (black reads because the silk behind is vivid) */
+    .nameform-title{position:relative;isolation:isolate;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:600;font-size:clamp(2.2rem,8vw,6rem);letter-spacing:.12em;line-height:1.05;margin:0;text-wrap:balance;background:linear-gradient(180deg,#55555f 0%,#101016 30%,#020204 52%,#101016 74%,#4c4c56 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .nameform-title::before{content:"";position:absolute;inset:-14px -4%;z-index:-1;border-radius:24px;background:url("assets/silk.jpg?v=1") 50% 42%/cover no-repeat;filter:blur(18px) brightness(1.08) saturate(1.45);opacity:.92;-webkit-mask-image:radial-gradient(78% 92% at 50% 50%,#000 40%,transparent 80%);mask-image:radial-gradient(78% 92% at 50% 50%,#000 40%,transparent 80%);}
+    /* T: dark ember gloss so it reads on the bright silk */
+    .nameform-title .t-accent{background:linear-gradient(180deg,#4a2410 0%,#120806 52%,#4a2410 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
     @media (max-width:860px){
       .nameform{min-height:84svh;}
       .nameform-col{margin:0 auto;text-align:center;}
@@ -1467,7 +1466,6 @@
     <span>DATA → DECISIONS → PRODUCTS</span>
   </footer>
 
-  <canvas id="brandParticles" aria-hidden="true"></canvas>
   <div id="pmodal" aria-hidden="true">
     <div class="pm-back" id="pmBack"></div>
     <div class="pm-panel" role="dialog" aria-modal="true">
@@ -1528,8 +1526,11 @@
         };
         document.body.appendChild(s);
       }
-      if(document.readyState==='complete') setTimeout(load,900);
-      else addEventListener('load',function(){ setTimeout(load,900); });
+      if(document.readyState==='complete') load();
+      else addEventListener('load', load);
+      /* fallback: some browsers fire load before this script registers;
+         DOMContentLoaded guarantees boot at the earliest safe moment (0s) */
+      if(document.readyState==='loading') addEventListener('DOMContentLoaded', load);
     }catch(e){}
   })();
   </script>
