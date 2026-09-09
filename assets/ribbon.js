@@ -161,6 +161,7 @@
     (function band() {
       var canvas = document.getElementById('ribbonBand');
       var area = document.getElementById('nameform');
+      var titleEl = document.getElementById('nameformTitle');
       if (!canvas || !area) return;
       var renderer = makeRenderer(canvas);
       if (!renderer) return;
@@ -192,10 +193,21 @@
         var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
         var rh = -(t * 0.3 + bp * Math.PI * 3);
         var open = smooth(0.16, 0.5, bp);
-        var sep = 0.45 + open * 1.9;
+        var sep = 0.35 + open * 1.4;
+        /* pin the weave ON the title: title offset within band → world units
+           (visible height at z=0 is 2*8*tan(22.5°) ≈ 6.63) */
+        var ty = 0;
+        try {
+          if (titleEl) {
+            var br = area.getBoundingClientRect();
+            var tr = titleEl.getBoundingClientRect();
+            var frac = ((tr.top + tr.height / 2) - (br.top + br.height / 2)) / Math.max(1, br.height);
+            ty = -frac * 6.63;
+          }
+        } catch (e) {}
         var c = Math.cos(rh), s = Math.sin(rh);
-        A.position.set(s * 0.6, c * sep, s * 1.0);
-        B.position.set(-s * 0.6, -c * sep, -s * 1.0);
+        A.position.set(s * 0.6, ty + c * sep, s * 1.0);
+        B.position.set(-s * 0.6, ty - c * sep, -s * 1.0);
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
         fade = Math.min(1, fade + dt * 0.5);
