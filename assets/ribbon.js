@@ -1,8 +1,8 @@
 /* 3D silk ribbons — desktop WebGL enhancement.
-   Hero: single ribbon drifting behind FUTURE.
-   Nameform band: TWIN strands helixing around the vertical title like DNA —
-   scroll scrubs the twist (wrap tight mid-band, spread + fade as the next
-   section arrives = "opens into the other section").
+   Hero: ambient ribbon behind FUTURE + a SHORT twin-strand wrap hugging the
+   small vertical THAK·ARAVIND brand. On scroll the wrap tightens, then the
+   brand dissolves into particles (see name-particles.js) as the wrap fades.
+   Nameform band ("MY NAME"): soft ambient ribbon behind the assembled title.
    Each canvas owns a tiny scene, paused off-screen. Lenis untouched. */
 (function () {
   try {
@@ -47,6 +47,20 @@
       try { mx = (e.clientX / innerWidth) * 2 - 1; } catch (err) {}
     }, { passive: true });
 
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    function smooth(a, b, v) {
+      var x = clamp01((v - a) / (b - a));
+      return x * x * (3 - 2 * x);
+    }
+    /* shared scroll flow: 0 at top → 1 when MY NAME band centers on screen */
+    function flowG() {
+      var band = document.getElementById('nameform');
+      if (!band) return 0;
+      var vh = innerHeight || 1;
+      var r = band.getBoundingClientRect();
+      var y1 = (r.top + (window.scrollY || 0)) + r.height / 2 - vh / 2;
+      return clamp01((window.scrollY || 0) / Math.max(1, y1));
+    }
     function makeRenderer(canvas) {
       var r;
       try {
@@ -76,8 +90,14 @@
         }, { rootMargin: '100px' }).observe(area);
       } catch (e) {}
     }
+    function fitTo(renderer, camera, w, h) {
+      w = Math.max(2, w); h = Math.max(2, h);
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
 
-    /* ---------- hero: single ribbon left of FUTURE ---------- */
+    /* ---------- hero ambient ribbon behind FUTURE ---------- */
     (function hero() {
       var canvas = document.getElementById('ribbon');
       var area = document.getElementById('top');
@@ -93,10 +113,7 @@
       scene.add(mesh);
       function size() {
         var r = area.getBoundingClientRect();
-        var w = Math.max(2, r.width), h = Math.max(2, r.height);
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
+        fitTo(renderer, camera, r.width, r.height);
       }
       size();
       addEventListener('resize', size, { passive: true });
@@ -123,40 +140,29 @@
       kick();
     })();
 
-    /* ---------- nameform: DNA double helix around the vertical title ----------
-       bp: band-center vs viewport-center (-0.5 entering … +0.5 leaving).
-       helix twist = idle drift + scroll-driven turns; strands cross in front /
-       behind via z (additive glow flares at crossings = weave read).
-       Near exit the strands spread wide and fade = opens into next section. */
-    (function dna() {
-      var canvas = document.getElementById('ribbonBand');
-      var area = document.getElementById('nameform');
+    /* ---------- SHORT wrap hugging the small hero brand ----------
+       Twin strands stand vertical along the brand strip; scroll twists them
+       tight around the text, then everything lets go as it particle-dissolves. */
+    (function wrap() {
+      var canvas = document.getElementById('ribbonWrap');
+      var area = document.getElementById('top');
       if (!canvas || !area) return;
       var renderer = makeRenderer(canvas);
       if (!renderer) return;
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
       camera.position.set(0, 0, 8);
-      var A = strandMesh(8.5, 3.0, 0);
-      var B = strandMesh(8.5, 3.0, 1.7);
-      A.rotation.z = 0.05;
-      B.rotation.z = -0.05;
+      var A = strandMesh(5.5, 1.6, 0);
+      var B = strandMesh(5.5, 1.6, 1.7);
+      A.rotation.z = Math.PI / 2 + 0.06;
+      B.rotation.z = Math.PI / 2 - 0.06;
       scene.add(A);
       scene.add(B);
       function size() {
-        var r = area.getBoundingClientRect();
-        var w = Math.max(2, r.width), h = Math.max(2, r.height);
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
+        fitTo(renderer, camera, canvas.clientWidth || 150, canvas.clientHeight || 360);
       }
       size();
       addEventListener('resize', size, { passive: true });
-      function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-      function smooth(a, b, v) {
-        var x = clamp01((v - a) / (b - a));
-        return x * x * (3 - 2 * x);
-      }
       var visible = true, raf = 0, last = 0, t = 0, fade = 0;
       function frame(now) {
         raf = 0;
@@ -165,24 +171,60 @@
         var dt = Math.min(0.05, (now - (last || now)) / 1000);
         last = now;
         t += dt;
-        var vh = innerHeight || 1;
-        var r = area.getBoundingClientRect();
-        var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
-        var helix = t * 0.35 + bp * Math.PI * 4;
-        var open = smooth(0.16, 0.5, bp);
-        var spread = 0.55 + open * 2.7;
-        var c = Math.cos(helix), s = Math.sin(helix);
-        A.position.set(c * spread, Math.sin(helix * 0.5) * 0.35, s * 1.1);
-        B.position.set(-c * spread, -Math.sin(helix * 0.5) * 0.35, -s * 1.1);
+        var g = flowG();
+        var twist = t * 0.5 + g * Math.PI * 3;
+        var spread = 0.32 + 0.5 * smooth(0.05, 0.3, g);
+        var c = Math.cos(twist), s = Math.sin(twist);
+        A.position.set(c * spread, s * 0.9, s * 0.8);
+        B.position.set(-c * spread, -s * 0.9, -s * 0.8);
         A.material.uniforms.uT.value = t;
         B.material.uniforms.uT.value = t + 1.7;
-        fade = Math.min(1, fade + dt * 0.5);
-        var env = smooth(-0.55, -0.15, bp) * (1 - smooth(0.3, 0.55, bp));
-        var op = fade * 0.55 * env;
+        fade = Math.min(1, fade + dt * 0.6);
+        var op = fade * 0.65 * smooth(0, 0.05, g) * (1 - smooth(0.26, 0.42, g));
         A.material.uniforms.uOp.value = op;
         B.material.uniforms.uOp.value = op;
-        A.rotation.y += ((mx * 0.12) - A.rotation.y) * 0.04;
-        B.rotation.y += ((mx * -0.12) - B.rotation.y) * 0.04;
+        renderer.render(scene, camera);
+      }
+      function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
+      watch(area, function (v) { visible = v; if (v) kick(); });
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && visible) kick();
+      });
+      canvas.style.display = 'block';
+      kick();
+    })();
+
+    /* ---------- MY NAME band: soft ambient ribbon behind the title ---------- */
+    (function band() {
+      var canvas = document.getElementById('ribbonBand');
+      var area = document.getElementById('nameform');
+      if (!canvas || !area) return;
+      var renderer = makeRenderer(canvas);
+      if (!renderer) return;
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 50);
+      camera.position.set(0, 0, 8);
+      var mesh = strandMesh(12.5, 4.2, 2.3);
+      mesh.rotation.z = -0.04;
+      scene.add(mesh);
+      function size() {
+        var r = area.getBoundingClientRect();
+        fitTo(renderer, camera, r.width, r.height);
+      }
+      size();
+      addEventListener('resize', size, { passive: true });
+      var visible = true, raf = 0, last = 0, t = 2.3, fade = 0;
+      function frame(now) {
+        raf = 0;
+        if (document.hidden || !visible) return;
+        raf = requestAnimationFrame(frame);
+        var dt = Math.min(0.05, (now - (last || now)) / 1000);
+        last = now;
+        t += dt;
+        mesh.material.uniforms.uT.value = t;
+        fade = Math.min(1, fade + dt * 0.5);
+        mesh.material.uniforms.uOp.value = fade * 0.4;
+        mesh.rotation.y += ((mx * 0.12) - mesh.rotation.y) * 0.04;
         renderer.render(scene, camera);
       }
       function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }

@@ -67,18 +67,24 @@
     function easeIO(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
     var ticking = false, lastP = -1;
+    /* shared scroll flow with the ribbon wrap: 0 at top → 1 when MY NAME centers */
+    function flowG() {
+      var vh = innerHeight || 1;
+      var r = band.getBoundingClientRect();
+      var y1 = (r.top + (window.scrollY || 0)) + r.height / 2 - vh / 2;
+      return clamp01((window.scrollY || 0) / Math.max(1, y1));
+    }
     function frame() {
       ticking = false;
       var vh = innerHeight || 1;
-      var bandTop = band.getBoundingClientRect().top;
-      var p = clamp01((vh * 0.92 - bandTop) / (vh * 0.75));
+      var p = flowG();
       if (p === lastP && (p === 0 || p === 1)) { paint(p); return; }
       lastP = p;
       paint(p);
     }
     function paint(p) {
-      /* 1) brand shatters early */
-      var cp = smooth(0, 0.3, p);
+      /* 1) hero brand wraps + shatters early on scroll */
+      var cp = smooth(0.06, 0.28, p);
       for (var i = 0; i < chars.length; i++) {
         var ch = chars[i];
         ch.style.opacity = (1 - cp).toFixed(3);
@@ -105,7 +111,7 @@
       });
       for (i2 = 0; i2 < parts.length; i2++) {
         pt = parts[i2];
-        pp = clamp01((p - pt.delay) / 0.55);
+        pp = clamp01((p - pt.delay) / 0.6);
         if (pp <= 0 || pp >= 1) continue;
         sx = centers[pt.ci][0] + pt.ox;
         sy = centers[pt.ci][1] + pt.oy;
@@ -122,9 +128,11 @@
         if (a <= 0.01) continue;
         ctx.globalAlpha = Math.min(1, a);
         ctx.fillStyle = (pt.ci % 5 === 0) ? '#ffc9a3' : '#ffffff';
-        ctx.fillRect(sx + (ex - sx) * e - pt.s / 2,
-                     sy + (ey - sy) * e + Math.sin(pp * Math.PI) * 90 - pt.s / 2,
-                     pt.s, pt.s);
+        /* falling micro-streaks: stretch vertically mid-flight, settle to dots */
+        var px = sx + (ex - sx) * e;
+        var py = sy + (ey - sy) * e + Math.sin(pp * Math.PI) * 150;
+        var streak = pt.s * (1 + pp * 7);
+        ctx.fillRect(px - pt.s / 2, py - streak / 2, pt.s, streak);
       }
       ctx.globalAlpha = 1;
     }
