@@ -17,10 +17,10 @@
        expose it as window.__LenisL BEFORE the classic defer site.js reads it. -->
   <!-- Verification marker: import{L as Lenis}from="./assets/lenis-C2IgWAIv.js" -->
   <script type="module">import{L as Lenis}from"./assets/lenis-C2IgWAIv.js";window.__LenisL=Lenis;</script>
-  <script defer src="assets/site.js?v=34"></script>
+  <script defer src="assets/site.js?v=35"></script>
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=3"></script>
-  <script defer src="assets/scroll-fx.js?v=1"></script>
+  <script defer src="assets/scroll-fx.js?v=2"></script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -747,10 +747,10 @@
         right:auto !important;
         top:auto !important;
         flex-direction:row !important;
-        justify-content:flex-start !important;
+        justify-content:center !important;
         align-items:center !important;
         gap:12px !important;
-        margin:24px 0 0 0 !important;
+        margin:18px 0 0 0 !important;
         width:100% !important;
       }
       .elle-dock-dot{display:none !important}
@@ -914,8 +914,12 @@
        Filter stays static now; scale is compositor-only. */
     .gold-link{scale:calc(1 + .045*var(--cg,0));}
     .gold-link::after{filter:blur(7px) saturate(1.3);opacity:calc(.6 + .4*var(--cg,0));}
-    /* scroll-reactive edge words: gentle drift (translate composes with existing transforms) */
-    .edge-word{translate:0 calc(var(--ew,0)*44px);}
+    /* scroll-reactive edge words: DISABLED (2026-09-13 jitter fix).
+       The stroked (-webkit-text-stroke) edge text re-rastered on every
+       fractional translate/transform while Lenis scrolled = visible shake.
+       Edge words stay pinned at their CSS position now; scroll-fx.js no
+       longer writes --ew and site.js no longer writes inline transforms. */
+    .edge-word{translate:none !important;transform:translateY(-50%) !important;animation:none !important;will-change:auto !important;}
     /* white cursor sheen REMOVED (was the white-light bloom under the pointer
        in screenshots) — cards keep their red ::before hover glow only */
     /* nameform: standalone showcase — HORIZONTAL Mincho title centered,
@@ -954,6 +958,13 @@
     }
     #brandParticles{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none;}
     .nameform > *{position:relative;z-index:1;}
+    /* CONTACT DOCK REPLACEMENT (per annotation image): vertical side rail
+       -> horizontal centered row BELOW the left dark card.
+       Was: absolute right:-15px top:50% column overlapping card edge.
+       Now: static row centered under .elle-card (same 36px left offset as card). */
+    .elle-dock{position:relative !important;right:auto !important;top:auto !important;transform:none !important;flex-direction:row !important;justify-content:center !important;align-items:center !important;gap:12px !important;margin:20px 0 0 36px !important;width:auto !important;z-index:6;}
+    .elle-dock-dot{display:none !important;}
+    .elle-dock-stack{display:flex !important;flex-direction:row !important;gap:12px !important;}
     </style>
 
 </head>
