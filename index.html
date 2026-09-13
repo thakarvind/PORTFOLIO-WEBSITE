@@ -204,6 +204,12 @@
        bleed through any backdrop-filter panel as the compositor repositions layers. */
     html.is-scrolling .grain{opacity:0!important;visibility:hidden!important}
     html.is-scrolling .cursor-dot,html.is-scrolling .cursor-ring{opacity:0!important; visibility:hidden!important}
+    /* JITTER FIX: freeze the silkWave drift mid-scroll. An infinitely-animating
+       blurred + screen-blended + masked layer forces a re-composite every frame
+       while Lenis moves the page = text shimmer/shake. Pausing it during scroll
+       costs nothing visually (it resumes on settle) and removes the jitter.
+       Lenis smoothness untouched. */
+    html.is-scrolling .nameform-title:before{animation-play-state:paused !important;}
     /* html.is-scrolling .gold-link svg{animation-play-state:paused} — removed: connector svg has no animation now */
      /* hero-reference-cards: keep ONE stable frosted style — no lighter mid-scroll swap (that swap was a visible flash) */
     @media (prefers-reduced-motion:reduce){
@@ -930,12 +936,14 @@
     /* MY NAME title: the exact ABOUT edge-word treatment — hollow outline
        letters (transparent fill, 1px stroke) over the red silk glow.
        Horizontal + centered like the section, same stroke/glow recipe. */
-    .nameform-title{position:relative;isolation:isolate;font-family:var(--sans);font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:.95;font-size:clamp(2.4rem,8.5vw,6.2rem);margin:0;text-wrap:balance;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.92);}
-    .nameform-title:before{content:"";position:absolute;inset:-25px;z-index:-1;pointer-events:none;background:url("assets/silk.jpg?v=1") center/cover no-repeat;filter:hue-rotate(25deg) saturate(1.25) brightness(.9) blur(14px);mix-blend-mode:screen;opacity:.55;-webkit-mask-image:radial-gradient(120% 95% at 50% 50%,#000 55%,transparent 92%);mask-image:radial-gradient(120% 95% at 50% 50%,#000 55%,transparent 92%);animation:silkWave 9s ease-in-out infinite;will-change:transform;}
-    /* wave: gentle transform-only drift on the silk (GPU-friendly, no re-blur) */
+    .nameform-title{position:relative;isolation:isolate;font-family:var(--sans);font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:.95;font-size:clamp(2.4rem,8.5vw,6.2rem);margin:0;text-wrap:balance;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.92);transform:translateZ(0);}
+    .nameform-title:before{content:"";position:absolute;inset:-25px;z-index:-1;pointer-events:none;background:url("assets/silk.jpg?v=1") center/cover no-repeat;filter:hue-rotate(25deg) saturate(1.25) brightness(.9) blur(14px);mix-blend-mode:screen;opacity:.55;-webkit-mask-image:radial-gradient(120% 95% at 50% 50%,#000 55%,transparent 92%);mask-image:radial-gradient(120% 95% at 50% 50%,#000 55%,transparent 92%);animation:silkWave 9s ease-in-out infinite;}
+    /* wave: gentle translate-only drift on the silk — no scale/rotate, so the
+       layer never changes its raster size mid-scroll (scale/rotate forces a
+       re-raster each frame = shimmer). Same visible drift, stable text. */
     @keyframes silkWave{
-      0%,100%{transform:translate3d(-1.6%,0,0) scale(1.03) rotate(.15deg);}
-      50%{transform:translate3d(1.6%,0,0) scale(1.06) rotate(-.15deg);}
+      0%,100%{transform:translate3d(-1.6%,0,0);}
+      50%{transform:translate3d(1.6%,0,0);}
     }
     @media (prefers-reduced-motion: reduce){.nameform-title:before{animation:none !important;}}
     /* T matches the rest — same hollow stroke, no special fill */
