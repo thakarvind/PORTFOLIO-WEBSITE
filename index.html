@@ -253,28 +253,7 @@
       -webkit-backdrop-filter:none !important;
       border:1px solid transparent !important;
     }
-    .hero-brand{
-      position:absolute !important;
-      left:46% !important;
-      top:54% !important;
-      z-index:6 !important;
-      font-weight:800;
-      font-size:.96rem;
-      letter-spacing:.62em;
-      color:var(--ink) !important;
-      background:transparent !important;
-      padding:0 !important;
-      border-radius:0 !important;
-      text-transform:uppercase;
-      line-height:1;
-      pointer-events:auto;
-      transform:translate(-50%,-50%) rotate(-90deg) translateZ(0) !important;
-      transform-origin:center center !important;
-      white-space:nowrap !important;
-      text-shadow:0 1px 12px rgba(0,0,0,0.55) !important;
-    }
-    .hero-brand em{ color:var(--tint) !important; font-style:normal; letter-spacing:.62em !important; }
-    /* === Japanese-minimal typography (Mincho) — FUTURE / PORTFOLIO / THAK ARAVIND ===
+    /* === Japanese-minimal typography (Mincho) — FUTURE / PORTFOLIO ===
        English words kept, rendered in Shippori Mincho (Japanese serif) with airy
        tracking. Positions, sizes and animations untouched. */
     .main-title{
@@ -285,10 +264,6 @@
     /* PORTFOLIO runs 9 chars — set smaller + tighter so its final O never
        touches the vertical THAK·ARAVIND strip (FUTURE keeps the airy size) */
     .main-title.w-long{font-size:clamp(2rem,5.3vw,4.35rem) !important; letter-spacing:.1em !important;}
-    .hero-brand{
-      font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif !important;
-      font-weight:600 !important;
-    }
     #loader .l-name{
       font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif !important;
       letter-spacing:.35em !important;
@@ -349,16 +324,6 @@
       z-index:1 !important;
       overflow:clip;
       overflow-clip-margin:15px;
-    }
-    @media (max-width:860px){
-      .hero-brand{
-        left:50% !important;
-        top:58% !important;
-        transform:translate(-50%,-50%) rotate(0deg) translateZ(0) !important;
-        font-size:.82rem !important;
-        letter-spacing:.38em !important;
-      }
-      .hero-brand em{ letter-spacing:.38em !important; }
     }
     /* every word in nav bar — separate pill-shaped glossy frosted, red, short gap */
     .nav-links a{
@@ -537,23 +502,6 @@
       .hero:before{display:none !important}
       .hero-glow{display:none !important}
       #sparks{inset:0 !important; z-index:0 !important}
-
-      .hero-brand{
-        position:relative !important;
-        left:auto !important;
-        top:auto !important;
-        transform:none !important;
-        font-size:.68rem !important;
-        letter-spacing:.28em !important;
-        white-space:normal !important;
-        text-align:center !important;
-        margin:0 auto 10px auto !important;
-        display:inline-block !important;
-        background:rgba(255,255,255,.05) !important;
-        padding:8px 16px !important;
-        border-radius:999px !important;
-        z-index:6 !important;
-      }
 
       .hero-inner{
         padding:0 !important;
@@ -994,10 +942,6 @@
     /* nameform ribbon: same silk WebGL as hero, layered behind the big title */
     #ribbonBand{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:none;}
     .nameform > *{position:relative;z-index:1;}
-    /* hero wrap: short DNA twist hugging the small vertical brand (desktop only) */
-    #ribbonWrap{position:absolute;left:46%;top:54%;width:150px;height:360px;transform:translate(-50%,-50%);z-index:5;pointer-events:none;display:none;}
-    @media (max-width:860px){#ribbonWrap{display:none !important;}}
-    .hero-brand .bc{display:inline-block;}
     </style>
 
 </head>
@@ -1060,8 +1004,6 @@
   })();
   </script>
 
-  <a class="hero-brand" href="#top">THAK<em>·</em>ARAVIND</a>
-  <canvas id="ribbonWrap" aria-hidden="true"></canvas>
   <nav class="top" id="topnav">
     <div class="nav-links">
       <a href="#top" class="on magnetic">Home</a>

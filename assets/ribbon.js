@@ -194,7 +194,10 @@
         var r = area.getBoundingClientRect();
         var bp = ((vh / 2) - (r.top + r.height / 2)) / vh;
         var rh = -(t * 0.3 + bp * Math.PI * 3);
-        /* narrow weave pinned tight on the letter bodies (no floating above) */
+        /* spread: pinned tight on the letter bodies while the section is
+           centered, opens apart + fades as the next section arrives */
+        var open = 0.06 + 0.55 * smooth(0.06, 0.6, bp);
+        fade = 1 - smooth(0.5, 0.95, bp);
         var sep = 0.28 + open * 0.9;
         /* pin the weave ON the title: title offset within band → world units
            (visible height at z=0 is 2*8*tan(22.5°) ≈ 6.63) */
