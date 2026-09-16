@@ -21,6 +21,7 @@
   <script defer src="assets/parallax.js?v=6"></script>
   <script defer src="assets/tilt.js?v=3"></script>
   <script defer src="assets/scroll-fx.js?v=2"></script>
+  <script defer src="assets/dragon-wrap.js?v=1"></script>
   <link rel="preload" as="image" href="hero.png?v=2" fetchpriority="high" imagesrcset="hero.png?v=2 1x"/>
   <link rel="preload" as="image" href="assets/aravind-contact.webp" fetchpriority="low"/>
   <link rel="stylesheet" href="assets/future-BLY98nfh.css?v=47">
@@ -958,6 +959,20 @@
     }
     #brandParticles{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none;}
     .nameform > *{position:relative;z-index:1;}
+    /* === OG DRAGON WRAP (2nd section after hero) — fire dragon enters from
+       right, sweeps in, loops around THAK ARAVIND, parks as a glowing ring.
+       Canvas sits above silk glow, below text; title flips to OG solid red. */
+    #dragonWrap{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+    .nameform-col{z-index:2;}
+    .nameform-title{transition:color .5s ease;}
+    .nameform-title.og-lit{color:#f51d0c;-webkit-text-stroke:1px rgba(120,8,2,.9);
+      -webkit-text-fill-color:#f51d0c;
+      text-shadow:0 0 18px rgba(255,60,20,.55),0 0 60px rgba(255,90,20,.30),0 2px 0 rgba(80,5,0,.6);}
+    .nameform-title.og-lit .t-accent{color:#ff4a1e;-webkit-text-fill-color:#ff4a1e;}
+    @media (prefers-reduced-motion:reduce){
+      #dragonWrap{display:none;}
+      .nameform-title{color:#f51d0c;-webkit-text-fill-color:#f51d0c;-webkit-text-stroke:1px rgba(120,8,2,.9);}
+    }
     /* CONTACT DOCK REPLACEMENT (per annotation image): vertical side rail
        -> horizontal centered row BELOW the left dark card.
        Was: absolute right:-15px top:50% column overlapping card edge.
@@ -1082,6 +1097,7 @@
   <div class="scroll-hint"><i></i>SCROLL</div>
 
   <section class="nameform" id="nameform" aria-label="Thak Aravind">
+    <canvas id="dragonWrap" aria-hidden="true"></canvas>
     <div class="nameform-col">
       <p class="nameform-kicker">Welcome to</p>
       <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>HAK ARAVIND</h2>
