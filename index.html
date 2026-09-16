@@ -963,6 +963,10 @@
        right, sweeps in, loops around THAK ARAVIND, parks as a glowing ring.
        Canvas sits above silk glow, below text; title flips to OG solid red. */
     #dragonWrap{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+    #dragonFly{position:absolute;left:0;top:0;z-index:3;pointer-events:none;opacity:0;
+      width:clamp(140px,26vw,300px);height:auto;
+      filter:drop-shadow(0 0 18px rgba(255,90,20,.55));
+      will-change:transform,opacity;}
     .nameform-col{z-index:2;}
     .nameform-title{transition:color .5s ease;}
     .nameform-title.og-lit{color:#f51d0c;-webkit-text-stroke:1px rgba(120,8,2,.9);
@@ -971,6 +975,7 @@
     .nameform-title.og-lit .t-accent{color:#ff4a1e;-webkit-text-fill-color:#ff4a1e;}
     @media (prefers-reduced-motion:reduce){
       #dragonWrap{display:none;}
+      #dragonFly{display:none;}
       .nameform-title{color:#f51d0c;-webkit-text-fill-color:#f51d0c;-webkit-text-stroke:1px rgba(120,8,2,.9);}
     }
     /* CONTACT DOCK REPLACEMENT (per annotation image): vertical side rail
@@ -1098,6 +1103,7 @@
 
   <section class="nameform" id="nameform" aria-label="Thak Aravind">
     <canvas id="dragonWrap" aria-hidden="true"></canvas>
+    <img id="dragonFly" src="assets/dragon.png" alt="" aria-hidden="true" decoding="async" loading="lazy"/>
     <div class="nameform-col">
       <p class="nameform-kicker">Welcome to</p>
       <h2 class="nameform-title" id="nameformTitle"><span class="t-accent">T</span>HAK ARAVIND</h2>
